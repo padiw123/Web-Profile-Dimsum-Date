@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Golden Dragon Dimsum | Authentic Chinese Cuisine</title>
+    <title>Dimsum Date</title>
+    <link rel="icon" href="/assets/img/logo-dimsum.svg" type="image/svg">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="{{ asset('./assets/css/dimsum.css') }}">
@@ -14,8 +15,8 @@
         <div class="container">
             <div class="navbar-brand">
                 <a href="#home">
-                    <img src="https://images.pexels.com/photos/5799157/pexels-photo-5799157.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Golden Dragon Logo" class="logo-img">
-                    <span>Golden Dragon</span>
+                    <img src="/assets/img/logo-dimsum.jpg" alt="Dimsum Date" class="logo-img">
+                    <span>Dimsum Date</span>
                 </a>
             </div>
             <div class="navbar-menu" id="navbarMenu">
@@ -311,7 +312,7 @@
                         <i class="fas fa-map-marker-alt"></i>
                         <div>
                             <h3>Location</h3>
-                            <p>123 Dragon Street<br>Chinatown, CA 94133</p>
+                            <a href="https://maps.app.goo.gl/i75AbVTMPiejnNNZA"><p>Ruko R5 Ramayana, Kotabaru,<br> Kec. Serang, Kota Serang, Banten 42112</p></a>
                         </div>
                     </div>
 
@@ -319,8 +320,8 @@
                         <i class="fas fa-clock"></i>
                         <div>
                             <h3>Opening Hours</h3>
-                            <p>Monday to Friday: 11:00 AM - 10:00 PM<br>
-                            Saturday & Sunday: 10:00 AM - 11:00 PM</p>
+                            <p>Monday to Friday: 10:00 - 21:00<br>
+                            Saturday & Sunday: 10:00 - 22:00</p>
                         </div>
                     </div>
 
@@ -333,46 +334,42 @@
                     </div>
 
                     <div class="social-links">
-                        <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
-                        <a href="#" class="social-link"><i class="fab fa-yelp"></i></a>
+                        <a href="https://tiktok.com/@dimsum_date" class="social-link"><i class="fab fa-tiktok"></i></a>
+                        <a href="https://www.instagram.com/dimsum_date?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" class="social-link"><i class="fab fa-instagram"></i></a>
                     </div>
                 </div>
 
                 <div class="contact-form">
                     <h3>Make a Reservation</h3>
-                    <form action="#" method="POST">
+                    <form action="{{ route('send.reservation') }}" method="POST" target="_blank">
+                        @csrf
                         <div class="form-group">
-                            <input type="text" name="name" placeholder="Your Name" required>
+                            <input type="text" name="name" placeholder="Your Name" value="{{ old('name') }}" required>
                         </div>
                         <div class="form-group">
-                            <input type="email" name="email" placeholder="Your Email" required>
+                            <input type="email" name="email" placeholder="Your Email" value="{{ old('email') }}" required>
                         </div>
                         <div class="form-group">
-                            <input type="tel" name="phone" placeholder="Phone Number" required>
+                            <input type="tel" name="phone" placeholder="Phone Number" value="{{ old('phone') }}" required>
                         </div>
                         <div class="form-row">
                             <div class="form-group">
-                                <input type="date" name="date" required>
+                                <input type="date" name="date" value="{{ old('date') }}" required>
                             </div>
                             <div class="form-group">
-                                <input type="time" name="time" required>
+                                <input type="time" name="time" value="{{ old('time') }}" required>
                             </div>
                         </div>
                         <div class="form-group">
                             <select name="guests" required>
-                                <option value="" disabled selected>Number of Guests</option>
-                                <option value="1">1 Person</option>
-                                <option value="2">2 People</option>
-                                <option value="3">3 People</option>
-                                <option value="4">4 People</option>
-                                <option value="5">5 People</option>
-                                <option value="6+">6+ People</option>
+                                <option value="" disabled {{ old('guests') ? '' : 'selected' }}>Number of Guests</option>
+                                @foreach (['1' => '1 Person', '2' => '2 People', '3' => '3 People', '4' => '4 People', '5' => '5 People', '6+' => '6+ People'] as $value => $label)
+                                    <option value="{{ $value }}" {{ old('guests') == $value ? 'selected' : '' }}>{{ $label }}</option>
+                                @endforeach
                             </select>
                         </div>
                         <div class="form-group">
-                            <textarea name="message" placeholder="Special Requests"></textarea>
+                            <textarea name="message" placeholder="Special Requests">{{ old('message') }}</textarea>
                         </div>
                         <button type="submit" class="btn btn-primary">Reserve Table</button>
                     </form>
@@ -386,7 +383,7 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-logo">
-                    <h2>Golden Dragon</h2>
+                    <h2>Dimsum Date</h2>
                     <p>Authentic Dimsum Since 1985</p>
                 </div>
 
