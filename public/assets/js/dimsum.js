@@ -136,26 +136,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (contactForm) {
         contactForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            // Simple form validation - could be expanded
             let isValid = true;
-            const inputs = contactForm.querySelectorAll('input, select, textarea');
+            const inputs = contactForm.querySelectorAll('input[required], select[required], textarea[required]');
 
             inputs.forEach(function(input) {
-                if (input.hasAttribute('required') && !input.value.trim()) {
-                    isValid = false;
-                    input.style.borderColor = 'var(--error-color)';
-                } else {
-                    input.style.borderColor = 'var(--gray-medium)';
-                }
+                const isEmpty = !input.value.trim();
+                input.classList.toggle('input-error', isEmpty);
+                if (isEmpty) isValid = false;
             });
 
-            if (isValid) {
-                // Form submission logic would go here
-                alert('Thank you for your reservation request! We will contact you shortly to confirm your booking.');
-                contactForm.reset();
-            } else {
+            if (!isValid) {
+                e.preventDefault();
                 alert('Please fill in all required fields.');
             }
         });
