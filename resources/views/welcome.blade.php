@@ -122,7 +122,7 @@
 
                 <div class="menu-item" data-category="fried">
                     <div class="menu-image">
-                        <img src="https://images.pexels.com/photos/14188208/pexels-photo-14188208.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Fried Wontons">
+                        <img src="https://redhousespice.com/wp-content/uploads/2024/01/deep-fried-wontons-0.jpg" alt="Fried Wontons">
                     </div>
                     <div class="menu-content">
                         <h3>Fried Wontons <span class="price">$6.25</span></h3>
@@ -164,7 +164,7 @@
 
                 <div class="menu-item" data-category="desserts">
                     <div class="menu-image">
-                        <img src="https://images.pexels.com/photos/1374358/pexels-photo-1374358.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Mango Pudding">
+                        <img src="https://www.nomss.com/wp-content/uploads/2022/09/HK-Style-Mango-Pudding-recipe-nomss-sq-1.jpg" alt="Mango Pudding">
                     </div>
                     <div class="menu-content">
                         <h3>Mango Pudding <span class="price">$5.25</span></h3>
@@ -221,7 +221,10 @@
                     <img src="https://images.pexels.com/photos/5409015/pexels-photo-5409015.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Steaming Baskets">
                 </div>
                 <div class="gallery-item">
-                    <img src="https://images.pexels.com/photos/1001090/pexels-photo-1001090.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Tea Service">
+                    <img src="https://images.pexels.com/photos/5409015/pexels-photo-5409015.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Steaming Baskets">
+                </div>
+                <div class="gallery-item">
+                    <img src="https://redhousespice.com/wp-content/uploads/2024/01/deep-fried-wontons-0.jpg" alt="Tea Service">
                 </div>
                 <div class="gallery-item">
                     <img src="https://images.pexels.com/photos/3217156/pexels-photo-3217156.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Dining Experience">
@@ -329,13 +332,14 @@
                         <i class="fas fa-phone-alt"></i>
                         <div>
                             <h3>Reservations</h3>
-                            <p>+1 (555) 123-4567<br>reservations@goldendragon.com</p>
+                            <p>+62 851-7966-9785<br>reservations@goldendragon.com</p>
                         </div>
                     </div>
 
                     <div class="social-links">
-                        <a href="https://tiktok.com/@dimsum_date" class="social-link"><i class="fab fa-tiktok"></i></a>
-                        <a href="https://www.instagram.com/dimsum_date?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" class="social-link"><i class="fab fa-instagram"></i></a>
+                        <a href="https://tiktok.com/@dimsum_date" class="social-link" target="_blank"><i class="fab fa-tiktok"></i></a>
+                        <a href="https://linktr.ee/dimsumdate?utm_source=linktree_profile_share&ltsid=c76934ad-601e-47db-ae8c-73a3d4287aa4" class="social-link" target="_blank"><img src="/assets/img/Linktree.png" alt="Linktree" style="color: #FFFFFF; width: 16px;"></a>
+                        <a href="https://www.instagram.com/dimsum_date?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" class="social-link" target="_blank"><i class="fab fa-instagram"></i></a>
                     </div>
                 </div>
 
@@ -399,9 +403,12 @@
                 </div>
 
                 <div class="footer-newsletter">
-                    <h3>Newsletter</h3>
-                    <p>Subscribe to receive special offers and updates</p>
-                    <form action="#" method="POST" class="newsletter-form">
+                    @if(session('success'))
+                        <p style="color: green;">{{ session('success') }}</p>
+                    @endif
+
+                    <form action="{{ route('newsletter.subscribe') }}" method="POST" class="newsletter-form">
+                        @csrf
                         <input type="email" name="email" placeholder="Your Email" required>
                         <button type="submit"><i class="fas fa-paper-plane"></i></button>
                     </form>
@@ -409,7 +416,7 @@
             </div>
 
             <div class="footer-bottom">
-                <p>&copy; 2025 Golden Dragon Dimsum. All rights reserved.</p>
+                <p>&copy; 2025 Dimsum Date. All rights reserved.</p>
             </div>
         </div>
     </footer>
