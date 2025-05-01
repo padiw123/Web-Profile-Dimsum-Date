@@ -131,6 +131,28 @@ document.addEventListener('DOMContentLoaded', function() {
     // Trigger on load
     revealOnScroll();
 
+// ScrollSpy Active Navbar Link
+    const sections = document.querySelectorAll('section[id]');
+
+    window.addEventListener('scroll', () => {
+        let scrollPos = window.scrollY + 150; // Adjust offset if needed
+
+        sections.forEach(section => {
+            const top = section.offsetTop;
+            const height = section.offsetHeight;
+            const id = section.getAttribute('id');
+
+            if (scrollPos >= top && scrollPos < top + height) {
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === `#${id}`) {
+                        link.classList.add('active');
+                    }
+                });
+            }
+        });
+    });
+
     // Form validation
     const contactForm = document.querySelector('.contact-form form');
 
