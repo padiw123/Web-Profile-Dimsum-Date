@@ -173,4 +173,17 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+
+    const toggleBtn = document.getElementById('toggleMenuBtn');
+    const extraMenus = document.querySelectorAll('.extra-menu');
+    let isExpanded = false;
+
+    toggleBtn.addEventListener('click', () => {
+        extraMenus.forEach(item => {
+            item.classList.toggle('hidden');
+        });
+
+        isExpanded = !isExpanded;
+        toggleBtn.textContent = isExpanded ? 'Show Less' : 'View Full Menu';
+    });
 });

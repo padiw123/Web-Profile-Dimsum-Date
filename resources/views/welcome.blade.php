@@ -88,93 +88,21 @@
             </div>
 
             <div class="menu-grid">
-                <!-- Steamed Items -->
-                <div class="menu-item" data-category="steamed">
-                    <div class="menu-image">
-                        <img src="https://images.pexels.com/photos/955137/pexels-photo-955137.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Har Gow">
+                @foreach ($menus as $index => $menu)
+                    <div class="menu-item {{ $index >= 6 ? 'hidden extra-menu' : '' }}" data-category="{{ $menu->category }}">
+                        <div class="menu-image">
+                            <img src="{{ $menu->image_url }}" alt="{{ $menu->name }}">
+                        </div>
+                        <div class="menu-content">
+                            <h3>{{ $menu->name }} <span class="price">${{ number_format($menu->price, 2) }}</span></h3>
+                            <p>{{ $menu->description }}</p>
+                        </div>
                     </div>
-                    <div class="menu-content">
-                        <h3>Har Gow <span class="price">$6.50</span></h3>
-                        <p>Crystal shrimp dumplings with bamboo shoots</p>
-                    </div>
-                </div>
-
-                <div class="menu-item" data-category="steamed">
-                    <div class="menu-image">
-                        <img src="https://images.pexels.com/photos/2664443/pexels-photo-2664443.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Siu Mai">
-                    </div>
-                    <div class="menu-content">
-                        <h3>Siu Mai <span class="price">$5.95</span></h3>
-                        <p>Open-faced dumplings with pork, shrimp and mushroom</p>
-                    </div>
-                </div>
-
-                <!-- Fried Items -->
-                <div class="menu-item" data-category="fried">
-                    <div class="menu-image">
-                        <img src="https://images.pexels.com/photos/15913452/pexels-photo-15913452/free-photo-of-spring-rolls-on-plate.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Spring Rolls">
-                    </div>
-                    <div class="menu-content">
-                        <h3>Spring Rolls <span class="price">$5.50</span></h3>
-                        <p>Crispy vegetable spring rolls with sweet chili sauce</p>
-                    </div>
-                </div>
-
-                <div class="menu-item" data-category="fried">
-                    <div class="menu-image">
-                        <img src="https://redhousespice.com/wp-content/uploads/2024/01/deep-fried-wontons-0.jpg" alt="Fried Wontons">
-                    </div>
-                    <div class="menu-content">
-                        <h3>Fried Wontons <span class="price">$6.25</span></h3>
-                        <p>Crispy pork wontons with sweet and sour dipping sauce</p>
-                    </div>
-                </div>
-
-                <!-- Buns -->
-                <div class="menu-item" data-category="buns">
-                    <div class="menu-image">
-                        <img src="https://images.pexels.com/photos/9470516/pexels-photo-9470516.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Char Siu Bao">
-                    </div>
-                    <div class="menu-content">
-                        <h3>Char Siu Bao <span class="price">$5.25</span></h3>
-                        <p>Steamed buns filled with barbecue pork</p>
-                    </div>
-                </div>
-
-                <div class="menu-item" data-category="buns">
-                    <div class="menu-image">
-                        <img src="https://images.pexels.com/photos/674574/pexels-photo-674574.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Lotus Seed Bun">
-                    </div>
-                    <div class="menu-content">
-                        <h3>Lotus Seed Bun <span class="price">$4.95</span></h3>
-                        <p>Sweet buns filled with lotus seed paste</p>
-                    </div>
-                </div>
-
-                <!-- Desserts -->
-                <div class="menu-item" data-category="desserts">
-                    <div class="menu-image">
-                        <img src="https://images.pexels.com/photos/2313682/pexels-photo-2313682.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Egg Tarts">
-                    </div>
-                    <div class="menu-content">
-                        <h3>Egg Tarts <span class="price">$4.50</span></h3>
-                        <p>Flaky pastry tarts filled with sweet egg custard</p>
-                    </div>
-                </div>
-
-                <div class="menu-item" data-category="desserts">
-                    <div class="menu-image">
-                        <img src="https://www.nomss.com/wp-content/uploads/2022/09/HK-Style-Mango-Pudding-recipe-nomss-sq-1.jpg" alt="Mango Pudding">
-                    </div>
-                    <div class="menu-content">
-                        <h3>Mango Pudding <span class="price">$5.25</span></h3>
-                        <p>Creamy mango pudding topped with fresh fruit</p>
-                    </div>
-                </div>
+                @endforeach
             </div>
 
-            <div class="menu-cta">
-                <a href="#" class="btn btn-primary">View Full Menu</a>
+            <div class="menu-cta text-center mt-4">
+                <button id="toggleMenuBtn" class="btn btn-primary">View Full Menu</button>
             </div>
         </div>
     </section>
@@ -184,13 +112,13 @@
         <div class="container">
             <div class="about-content">
                 <div class="about-image">
-                    <img src="https://images.pexels.com/photos/2098134/pexels-photo-2098134.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="About Golden Dragon">
+                    <img src="https://images.pexels.com/photos/2098134/pexels-photo-2098134.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="About Dimsum Date">
                 </div>
                 <div class="about-text">
                     <div class="section-header">
                         <h2>Our Story</h2>
                     </div>
-                    <p>Founded in 1985 by Master Chef Liu, Golden Dragon has been serving authentic dimsum for over three decades. Our recipes have been passed down through generations, preserving the art and tradition of handcrafted dimsum.</p>
+                    <p>Founded in 1985 by Master Chef Liu, Dimsum Date has been serving authentic dimsum for over three decades. Our recipes have been passed down through generations, preserving the art and tradition of handcrafted dimsum.</p>
                     <p>Each dimsum is meticulously prepared by our team of skilled chefs who have trained for years to perfect their craft. We source only the freshest ingredients daily to ensure exceptional quality and flavor in every bite.</p>
                     <p>Our restaurant combines traditional Chinese aesthetics with modern comfort, creating a warm and inviting atmosphere for an unforgettable dining experience.</p>
                     <a href="#contact" class="btn btn-secondary">Contact Us</a>
@@ -267,7 +195,7 @@
                             <i class="fas fa-star"></i>
                             <i class="fas fa-star"></i>
                         </div>
-                        <p>"Golden Dragon has been our family's go-to for dimsum for years. Their har gow is simply unmatched!"</p>
+                        <p>"Dimsum Date has been our family's go-to for dimsum for years. Their har gow is simply unmatched!"</p>
                         <div class="testimonial-author">
                             <h4>Michael Wong</h4>
                             <p>Regular Customer</p>
@@ -314,8 +242,22 @@
                     <div class="contact-item">
                         <i class="fas fa-map-marker-alt"></i>
                         <div>
-                            <h3>Location</h3>
-                            <a href="https://maps.app.goo.gl/i75AbVTMPiejnNNZA"><p>Ruko R5 Ramayana, Kotabaru,<br> Kec. Serang, Kota Serang, Banten 42112</p></a>
+                            <h3>Find Us On Map</h3>
+                            <div class="h-64 rounded-lg overflow-hidden">
+                                <iframe
+                                    class="w-full h-full"
+                                    frameborder="0"
+                                    scrolling="no"
+                                    marginheight="0"
+                                    marginwidth="0"
+                                    allowfullscreen
+                                    loading="lazy"
+                                    referrerpolicy="no-referrer-when-downgrade"
+                                        src="https://maps.google.com/maps?q=-6.116312383077391, 106.15421359101309&z=15&output=embed">
+                                      </iframe>
+                                </a>
+                            </div>
+                            <p>Ruko R5 Ramayana, Kotabaru, Kec. Serang,<br> Kota Serang, Banten 42112</p>
                         </div>
                     </div>
 
