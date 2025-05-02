@@ -9,7 +9,7 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $menus = Menu::take(6)->get();
+        $menus = Menu::all();
         return view('welcome', compact('menus'));
     }
 }
