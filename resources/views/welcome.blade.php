@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Golden Dragon Dimsum | Authentic Chinese Cuisine</title>
+    <title>Dimsum Date</title>
+    <link rel="icon" href="/assets/img/logo-dimsum.svg" type="image/svg">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="{{ asset('./assets/css/dimsum.css') }}">
@@ -14,8 +15,8 @@
         <div class="container">
             <div class="navbar-brand">
                 <a href="#home">
-                    <img src="https://images.pexels.com/photos/5799157/pexels-photo-5799157.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Golden Dragon Logo" class="logo-img">
-                    <span>Golden Dragon</span>
+                    <img src="/assets/img/logo-dimsum.jpg" alt="Dimsum Date" class="logo-img">
+                    <span>Dimsum Date</span>
                 </a>
             </div>
             <div class="navbar-menu" id="navbarMenu">
@@ -87,93 +88,21 @@
             </div>
 
             <div class="menu-grid">
-                <!-- Steamed Items -->
-                <div class="menu-item" data-category="steamed">
-                    <div class="menu-image">
-                        <img src="https://images.pexels.com/photos/955137/pexels-photo-955137.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Har Gow">
+                @foreach ($menus as $index => $menu)
+                    <div class="menu-item {{ $index >= 6 ? 'hidden extra-menu' : '' }}" data-category="{{ $menu->category }}">
+                        <div class="menu-image">
+                            <img src="{{ $menu->image_url }}" alt="{{ $menu->name }}">
+                        </div>
+                        <div class="menu-content">
+                            <h3>{{ $menu->name }} <span class="price">${{ number_format($menu->price, 2) }}</span></h3>
+                            <p>{{ $menu->description }}</p>
+                        </div>
                     </div>
-                    <div class="menu-content">
-                        <h3>Har Gow <span class="price">$6.50</span></h3>
-                        <p>Crystal shrimp dumplings with bamboo shoots</p>
-                    </div>
-                </div>
-
-                <div class="menu-item" data-category="steamed">
-                    <div class="menu-image">
-                        <img src="https://images.pexels.com/photos/2664443/pexels-photo-2664443.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Siu Mai">
-                    </div>
-                    <div class="menu-content">
-                        <h3>Siu Mai <span class="price">$5.95</span></h3>
-                        <p>Open-faced dumplings with pork, shrimp and mushroom</p>
-                    </div>
-                </div>
-
-                <!-- Fried Items -->
-                <div class="menu-item" data-category="fried">
-                    <div class="menu-image">
-                        <img src="https://images.pexels.com/photos/15913452/pexels-photo-15913452/free-photo-of-spring-rolls-on-plate.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Spring Rolls">
-                    </div>
-                    <div class="menu-content">
-                        <h3>Spring Rolls <span class="price">$5.50</span></h3>
-                        <p>Crispy vegetable spring rolls with sweet chili sauce</p>
-                    </div>
-                </div>
-
-                <div class="menu-item" data-category="fried">
-                    <div class="menu-image">
-                        <img src="https://images.pexels.com/photos/14188208/pexels-photo-14188208.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Fried Wontons">
-                    </div>
-                    <div class="menu-content">
-                        <h3>Fried Wontons <span class="price">$6.25</span></h3>
-                        <p>Crispy pork wontons with sweet and sour dipping sauce</p>
-                    </div>
-                </div>
-
-                <!-- Buns -->
-                <div class="menu-item" data-category="buns">
-                    <div class="menu-image">
-                        <img src="https://images.pexels.com/photos/9470516/pexels-photo-9470516.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Char Siu Bao">
-                    </div>
-                    <div class="menu-content">
-                        <h3>Char Siu Bao <span class="price">$5.25</span></h3>
-                        <p>Steamed buns filled with barbecue pork</p>
-                    </div>
-                </div>
-
-                <div class="menu-item" data-category="buns">
-                    <div class="menu-image">
-                        <img src="https://images.pexels.com/photos/674574/pexels-photo-674574.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Lotus Seed Bun">
-                    </div>
-                    <div class="menu-content">
-                        <h3>Lotus Seed Bun <span class="price">$4.95</span></h3>
-                        <p>Sweet buns filled with lotus seed paste</p>
-                    </div>
-                </div>
-
-                <!-- Desserts -->
-                <div class="menu-item" data-category="desserts">
-                    <div class="menu-image">
-                        <img src="https://images.pexels.com/photos/2313682/pexels-photo-2313682.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Egg Tarts">
-                    </div>
-                    <div class="menu-content">
-                        <h3>Egg Tarts <span class="price">$4.50</span></h3>
-                        <p>Flaky pastry tarts filled with sweet egg custard</p>
-                    </div>
-                </div>
-
-                <div class="menu-item" data-category="desserts">
-                    <div class="menu-image">
-                        <img src="https://images.pexels.com/photos/1374358/pexels-photo-1374358.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Mango Pudding">
-                    </div>
-                    <div class="menu-content">
-                        <h3>Mango Pudding <span class="price">$5.25</span></h3>
-                        <p>Creamy mango pudding topped with fresh fruit</p>
-                    </div>
-                </div>
+                @endforeach
             </div>
 
-            <div class="menu-cta">
-                <a href="#" class="btn btn-primary">View Full Menu</a>
+            <div class="menu-cta text-center mt-4">
+                <button id="toggleMenuBtn" class="btn btn-primary">View Full Menu</button>
             </div>
         </div>
     </section>
@@ -183,13 +112,13 @@
         <div class="container">
             <div class="about-content">
                 <div class="about-image">
-                    <img src="https://images.pexels.com/photos/2098134/pexels-photo-2098134.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="About Golden Dragon">
+                    <img src="https://images.pexels.com/photos/2098134/pexels-photo-2098134.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="About Dimsum Date">
                 </div>
                 <div class="about-text">
                     <div class="section-header">
                         <h2>Our Story</h2>
                     </div>
-                    <p>Founded in 1985 by Master Chef Liu, Golden Dragon has been serving authentic dimsum for over three decades. Our recipes have been passed down through generations, preserving the art and tradition of handcrafted dimsum.</p>
+                    <p>Founded in 1985 by Master Chef Liu, Dimsum Date has been serving authentic dimsum for over three decades. Our recipes have been passed down through generations, preserving the art and tradition of handcrafted dimsum.</p>
                     <p>Each dimsum is meticulously prepared by our team of skilled chefs who have trained for years to perfect their craft. We source only the freshest ingredients daily to ensure exceptional quality and flavor in every bite.</p>
                     <p>Our restaurant combines traditional Chinese aesthetics with modern comfort, creating a warm and inviting atmosphere for an unforgettable dining experience.</p>
                     <a href="#contact" class="btn btn-secondary">Contact Us</a>
@@ -220,7 +149,10 @@
                     <img src="https://images.pexels.com/photos/5409015/pexels-photo-5409015.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Steaming Baskets">
                 </div>
                 <div class="gallery-item">
-                    <img src="https://images.pexels.com/photos/1001090/pexels-photo-1001090.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Tea Service">
+                    <img src="https://images.pexels.com/photos/5409015/pexels-photo-5409015.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Steaming Baskets">
+                </div>
+                <div class="gallery-item">
+                    <img src="https://redhousespice.com/wp-content/uploads/2024/01/deep-fried-wontons-0.jpg" alt="Tea Service">
                 </div>
                 <div class="gallery-item">
                     <img src="https://images.pexels.com/photos/3217156/pexels-photo-3217156.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Dining Experience">
@@ -263,7 +195,7 @@
                             <i class="fas fa-star"></i>
                             <i class="fas fa-star"></i>
                         </div>
-                        <p>"Golden Dragon has been our family's go-to for dimsum for years. Their har gow is simply unmatched!"</p>
+                        <p>"Dimsum Date has been our family's go-to for dimsum for years. Their har gow is simply unmatched!"</p>
                         <div class="testimonial-author">
                             <h4>Michael Wong</h4>
                             <p>Regular Customer</p>
@@ -310,8 +242,22 @@
                     <div class="contact-item">
                         <i class="fas fa-map-marker-alt"></i>
                         <div>
-                            <h3>Location</h3>
-                            <p>123 Dragon Street<br>Chinatown, CA 94133</p>
+                            <h3>Find Us On Map</h3>
+                            <div class="h-64 rounded-lg overflow-hidden">
+                                <iframe
+                                    class="w-full h-full"
+                                    frameborder="0"
+                                    scrolling="no"
+                                    marginheight="0"
+                                    marginwidth="0"
+                                    allowfullscreen
+                                    loading="lazy"
+                                    referrerpolicy="no-referrer-when-downgrade"
+                                        src="https://maps.google.com/maps?q=-6.116312383077391, 106.15421359101309&z=15&output=embed">
+                                      </iframe>
+                                </a>
+                            </div>
+                            <p>Ruko R5 Ramayana, Kotabaru, Kec. Serang,<br> Kota Serang, Banten 42112</p>
                         </div>
                     </div>
 
@@ -319,8 +265,8 @@
                         <i class="fas fa-clock"></i>
                         <div>
                             <h3>Opening Hours</h3>
-                            <p>Monday to Friday: 11:00 AM - 10:00 PM<br>
-                            Saturday & Sunday: 10:00 AM - 11:00 PM</p>
+                            <p>Monday to Friday: 10:00 - 21:00<br>
+                            Saturday & Sunday: 10:00 - 22:00</p>
                         </div>
                     </div>
 
@@ -328,51 +274,48 @@
                         <i class="fas fa-phone-alt"></i>
                         <div>
                             <h3>Reservations</h3>
-                            <p>+1 (555) 123-4567<br>reservations@goldendragon.com</p>
+                            <p>+62 851-7966-9785<br>reservations@goldendragon.com</p>
                         </div>
                     </div>
 
                     <div class="social-links">
-                        <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
-                        <a href="#" class="social-link"><i class="fab fa-yelp"></i></a>
+                        <a href="https://tiktok.com/@dimsum_date" class="social-link" target="_blank"><i class="fab fa-tiktok"></i></a>
+                        <a href="https://linktr.ee/dimsumdate?utm_source=linktree_profile_share&ltsid=c76934ad-601e-47db-ae8c-73a3d4287aa4" class="social-link" target="_blank"><img src="/assets/img/Linktree.png" alt="Linktree" style="color: #FFFFFF; width: 16px;"></a>
+                        <a href="https://www.instagram.com/dimsum_date?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" class="social-link" target="_blank"><i class="fab fa-instagram"></i></a>
                     </div>
                 </div>
 
                 <div class="contact-form">
                     <h3>Make a Reservation</h3>
-                    <form action="#" method="POST">
+                    <form action="{{ route('send.reservation') }}" method="POST" target="_blank">
+                        @csrf
                         <div class="form-group">
-                            <input type="text" name="name" placeholder="Your Name" required>
+                            <input type="text" name="name" placeholder="Your Name" value="{{ old('name') }}" required>
                         </div>
                         <div class="form-group">
-                            <input type="email" name="email" placeholder="Your Email" required>
+                            <input type="email" name="email" placeholder="Your Email" value="{{ old('email') }}" required>
                         </div>
                         <div class="form-group">
-                            <input type="tel" name="phone" placeholder="Phone Number" required>
+                            <input type="tel" name="phone" placeholder="Phone Number" value="{{ old('phone') }}" required>
                         </div>
                         <div class="form-row">
                             <div class="form-group">
-                                <input type="date" name="date" required>
+                                <input type="date" name="date" value="{{ old('date') }}" required>
                             </div>
                             <div class="form-group">
-                                <input type="time" name="time" required>
+                                <input type="time" name="time" value="{{ old('time') }}" required>
                             </div>
                         </div>
                         <div class="form-group">
                             <select name="guests" required>
-                                <option value="" disabled selected>Number of Guests</option>
-                                <option value="1">1 Person</option>
-                                <option value="2">2 People</option>
-                                <option value="3">3 People</option>
-                                <option value="4">4 People</option>
-                                <option value="5">5 People</option>
-                                <option value="6+">6+ People</option>
+                                <option value="" disabled {{ old('guests') ? '' : 'selected' }}>Number of Guests</option>
+                                @foreach (['1' => '1 Person', '2' => '2 People', '3' => '3 People', '4' => '4 People', '5' => '5 People', '6+' => '6+ People'] as $value => $label)
+                                    <option value="{{ $value }}" {{ old('guests') == $value ? 'selected' : '' }}>{{ $label }}</option>
+                                @endforeach
                             </select>
                         </div>
                         <div class="form-group">
-                            <textarea name="message" placeholder="Special Requests"></textarea>
+                            <textarea name="message" placeholder="Special Requests">{{ old('message') }}</textarea>
                         </div>
                         <button type="submit" class="btn btn-primary">Reserve Table</button>
                     </form>
@@ -386,7 +329,7 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-logo">
-                    <h2>Golden Dragon</h2>
+                    <h2>Dimsum Date</h2>
                     <p>Authentic Dimsum Since 1985</p>
                 </div>
 
@@ -402,9 +345,12 @@
                 </div>
 
                 <div class="footer-newsletter">
-                    <h3>Newsletter</h3>
-                    <p>Subscribe to receive special offers and updates</p>
-                    <form action="#" method="POST" class="newsletter-form">
+                    @if(session('success'))
+                        <p style="color: green;">{{ session('success') }}</p>
+                    @endif
+
+                    <form action="{{ route('newsletter.subscribe') }}" method="POST" class="newsletter-form">
+                        @csrf
                         <input type="email" name="email" placeholder="Your Email" required>
                         <button type="submit"><i class="fas fa-paper-plane"></i></button>
                     </form>
@@ -412,7 +358,7 @@
             </div>
 
             <div class="footer-bottom">
-                <p>&copy; 2025 Golden Dragon Dimsum. All rights reserved.</p>
+                <p>&copy; 2025 Dimsum Date. All rights reserved.</p>
             </div>
         </div>
     </footer>
