@@ -131,33 +131,59 @@ document.addEventListener('DOMContentLoaded', function() {
     // Trigger on load
     revealOnScroll();
 
+// ScrollSpy Active Navbar Link
+    const sections = document.querySelectorAll('section[id]');
+
+    window.addEventListener('scroll', () => {
+        let scrollPos = window.scrollY + 150; // Adjust offset if needed
+
+        sections.forEach(section => {
+            const top = section.offsetTop;
+            const height = section.offsetHeight;
+            const id = section.getAttribute('id');
+
+            if (scrollPos >= top && scrollPos < top + height) {
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === `#${id}`) {
+                        link.classList.add('active');
+                    }
+                });
+            }
+        });
+    });
+
     // Form validation
     const contactForm = document.querySelector('.contact-form form');
 
     if (contactForm) {
         contactForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            // Simple form validation - could be expanded
             let isValid = true;
-            const inputs = contactForm.querySelectorAll('input, select, textarea');
+            const inputs = contactForm.querySelectorAll('input[required], select[required], textarea[required]');
 
             inputs.forEach(function(input) {
-                if (input.hasAttribute('required') && !input.value.trim()) {
-                    isValid = false;
-                    input.style.borderColor = 'var(--error-color)';
-                } else {
-                    input.style.borderColor = 'var(--gray-medium)';
-                }
+                const isEmpty = !input.value.trim();
+                input.classList.toggle('input-error', isEmpty);
+                if (isEmpty) isValid = false;
             });
 
-            if (isValid) {
-                // Form submission logic would go here
-                alert('Thank you for your reservation request! We will contact you shortly to confirm your booking.');
-                contactForm.reset();
-            } else {
+            if (!isValid) {
+                e.preventDefault();
                 alert('Please fill in all required fields.');
             }
         });
     }
+
+    const toggleBtn = document.getElementById('toggleMenuBtn');
+    const extraMenus = document.querySelectorAll('.extra-menu');
+    let isExpanded = false;
+
+    toggleBtn.addEventListener('click', () => {
+        extraMenus.forEach(item => {
+            item.classList.toggle('hidden');
+        });
+
+        isExpanded = !isExpanded;
+        toggleBtn.textContent = isExpanded ? 'Show Less' : 'View Full Menu';
+    });
 });
