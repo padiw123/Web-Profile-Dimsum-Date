@@ -22,6 +22,7 @@
             <div class="navbar-menu" id="navbarMenu">
                 <ul class="navbar-nav">
                     <li class="nav-item"><a href="#home" class="nav-link">Home</a></li>
+                    <li class="nav-item"><a href="#promo" class="nav-link">Promo</a></li>
                     <li class="nav-item"><a href="#menu" class="nav-link">Menu</a></li>
                     <li class="nav-item"><a href="#about" class="nav-link">About</a></li>
                     <li class="nav-item"><a href="#gallery" class="nav-link">Gallery</a></li>
@@ -71,6 +72,54 @@
         </div>
     </section>
 
+    <!-- Promotions Section -->
+    <section id="promo" class="promotions">
+        <div class="container">
+            <div class="section-header">
+                <h2>Special Offers</h2>
+                <p>Exclusive deals for an extraordinary dining experience</p>
+            </div>
+
+            <div class="promo-grid">
+                <div class="promo-card">
+                    <h3>Weekday Lunch Special</h3>
+                    <div class="price">$24.99 <span>per person</span></div>
+                    <ul>
+                        <li>6 pieces of Premium Dimsum</li>
+                        <li>Chinese Tea Selection</li>
+                        <li>Dessert of the Day</li>
+                        <li>Valid Mon-Fri, 11AM-3PM</li>
+                    </ul>
+                    <a href="#contact" class="btn btn-secondary">Book Now</a>
+                </div>
+
+                <div class="promo-card">
+                    <h3>Family Feast</h3>
+                    <div class="price">$89.99 <span>for 4 people</span></div>
+                    <ul>
+                        <li>20 pieces of Signature Dimsum</li>
+                        <li>4 Bowl of Special Soup</li>
+                        <li>4 Desserts</li>
+                        <li>Valid All Week</li>
+                    </ul>
+                    <a href="#contact" class="btn btn-secondary">Book Now</a>
+                </div>
+
+                <div class="promo-card">
+                    <h3>Weekend All-You-Can-Eat</h3>
+                    <div class="price">$39.99 <span>per person</span></div>
+                    <ul>
+                        <li>Unlimited Dimsum Selection</li>
+                        <li>Free Flow Chinese Tea</li>
+                        <li>Signature Dessert Buffet</li>
+                        <li>Valid Sat-Sun, 2-Hour Seating</li>
+                    </ul>
+                    <a href="#contact" class="btn btn-secondary">Book Now</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Menu Section -->
     <section id="menu" class="menu">
         <div class="container">
@@ -80,11 +129,13 @@
             </div>
 
             <div class="menu-categories">
-                <button class="menu-category active" data-category="all">All</button>
-                <button class="menu-category" data-category="steamed">Steamed</button>
-                <button class="menu-category" data-category="fried">Fried</button>
-                <button class="menu-category" data-category="buns">Buns</button>
-                <button class="menu-category" data-category="desserts">Desserts</button>
+                <button class="menu-category active" data-category="all">Semua</button>
+                <button class="menu-category" data-category="Dimsum Ayam">Dimsum Ayam</button>
+                <button class="menu-category" data-category="Dimsum Ayam Udang">Dimsum Ayam Udang</button>
+                <button class="menu-category" data-category="Mie">Mie</button>
+                <button class="menu-category" data-category="Camilan">Camilan</button>
+                <button class="menu-category" data-category="Paket Hemat">Paket Hemat</button>
+                <button class="menu-category" data-category="Minuman">Minuman</button>
             </div>
 
             <div class="menu-grid">
@@ -137,25 +188,25 @@
 
             <div class="gallery-grid">
                 <div class="gallery-item">
-                    <img src="https://images.pexels.com/photos/6941001/pexels-photo-6941001.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Dimsum Assortment">
+                    <img src="" alt="Dimsum Assortment">
                 </div>
                 <div class="gallery-item">
-                    <img src="https://images.pexels.com/photos/2347311/pexels-photo-2347311.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Chef Preparing Dimsum">
+                    <img src="" alt="Chef Preparing Dimsum">
                 </div>
                 <div class="gallery-item">
-                    <img src="https://images.pexels.com/photos/5865196/pexels-photo-5865196.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Restaurant Interior">
+                    <img src="" alt="Restaurant Interior">
                 </div>
                 <div class="gallery-item">
-                    <img src="https://images.pexels.com/photos/5409015/pexels-photo-5409015.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Steaming Baskets">
+                    <img src="" alt="Steaming Baskets">
                 </div>
                 <div class="gallery-item">
-                    <img src="https://images.pexels.com/photos/5409015/pexels-photo-5409015.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Steaming Baskets">
+                    <img src="" alt="Steaming Baskets">
                 </div>
                 <div class="gallery-item">
-                    <img src="https://redhousespice.com/wp-content/uploads/2024/01/deep-fried-wontons-0.jpg" alt="Tea Service">
+                    <img src="" alt="Tea Service">
                 </div>
                 <div class="gallery-item">
-                    <img src="https://images.pexels.com/photos/3217156/pexels-photo-3217156.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Dining Experience">
+                    <img src="" alt="Dining Experience">
                 </div>
             </div>
         </div>
@@ -274,7 +325,7 @@
                         <i class="fas fa-phone-alt"></i>
                         <div>
                             <h3>Reservations</h3>
-                            <p>+62 851-7966-9785<br>reservations@goldendragon.com</p>
+                            <p>+62 851-7966-9785<br>dimsumdate@gmail.com</p>
                         </div>
                     </div>
 
@@ -337,6 +388,7 @@
                     <h3>Quick Links</h3>
                     <ul>
                         <li><a href="#home">Home</a></li>
+                        <li><a href="#promo">Promo</a></li>
                         <li><a href="#menu">Menu</a></li>
                         <li><a href="#about">About</a></li>
                         <li><a href="#gallery">Gallery</a></li>

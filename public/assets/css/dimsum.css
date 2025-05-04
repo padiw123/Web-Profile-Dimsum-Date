@@ -901,3 +901,81 @@ textarea {
         grid-template-columns: 1fr;
     }
 }
+
+/* Promotions Section */
+.promotions {
+    background-color: var(--dark-color);
+    color: var(--light-color);
+    padding: 5rem 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.promotions::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, rgba(178, 34, 34, 0.8), rgba(212, 175, 55, 0.4));
+    z-index: 1;
+}
+
+.promotions .container {
+    position: relative;
+    z-index: 2;
+}
+
+.promo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 3rem;
+}
+
+.promo-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: var(--border-radius);
+    padding: 2rem;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: transform var(--transition-speed) ease;
+}
+
+.promo-card:hover {
+    transform: translateY(-10px);
+}
+
+.promo-card h3 {
+    color: var(--secondary-color);
+    margin-bottom: 1rem;
+}
+
+.promo-card .price {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--light-color);
+    margin: 1rem 0;
+}
+
+.promo-card .price span {
+    font-size: 1rem;
+    opacity: 0.8;
+}
+
+.promo-card ul {
+    list-style: none;
+    margin: 1.5rem 0;
+}
+
+.promo-card ul li {
+    margin: 0.5rem 0;
+    opacity: 0.9;
+}
+
+.promo-card .btn {
+    width: 100%;
+    margin-top: 1rem;
+}
