@@ -158,12 +158,12 @@
 
             <div class="menu-categories">
                 <button class="menu-category active" data-category="all">Semua</button>
-                <button class="menu-category" data-category="Dimsum Ayam">Dimsum Ayam</button>
-                <button class="menu-category" data-category="Dimsum Ayam Udang">Dimsum Ayam Udang</button>
-                <button class="menu-category" data-category="Mie">Mie</button>
-                <button class="menu-category" data-category="Camilan">Camilan</button>
-                <button class="menu-category" data-category="Paket Hemat">Paket Hemat</button>
-                <button class="menu-category" data-category="Minuman">Minuman</button>
+                <button class="menu-category" data-category="dimsum ayam">Dimsum Ayam</button>
+                <button class="menu-category" data-category="dimsum ayam udang">Dimsum Ayam Udang</button>
+                <button class="menu-category" data-category="mie">Mie</button>
+                <button class="menu-category" data-category="camilan">Camilan</button>
+                <button class="menu-category" data-category="paket hemat">Paket Hemat</button>
+                <button class="menu-category" data-category="minuman">Minuman</button>
             </div>
 
             <div class="menu-grid">
@@ -173,7 +173,8 @@
                             <img src="{{ $menu->image_url }}" alt="{{ $menu->name }}">
                         </div>
                         <div class="menu-content">
-                            <h3>{{ $menu->name }} <span class="price">${{ number_format($menu->price, 2) }}</span></h3>
+                            <h3>{{ $menu->name }}</h3>
+                            <span class="price">Rp {{ number_format($menu->price, 0, ',', '.') }}</span>
                             <p>{{ $menu->description }}</p>
                         </div>
                     </div>
