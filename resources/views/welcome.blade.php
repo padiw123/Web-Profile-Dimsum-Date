@@ -80,42 +80,70 @@
                 <p>Exclusive deals for an extraordinary dining experience</p>
             </div>
 
-            <div class="promo-grid">
-                <div class="promo-card">
-                    <h3>Weekday Lunch Special</h3>
-                    <div class="price">$24.99 <span>per person</span></div>
-                    <ul>
-                        <li>6 pieces of Premium Dimsum</li>
-                        <li>Chinese Tea Selection</li>
-                        <li>Dessert of the Day</li>
-                        <li>Valid Mon-Fri, 11AM-3PM</li>
-                    </ul>
-                    <a href="#contact" class="btn btn-secondary">Book Now</a>
+            <div class="promo-slider">
+                <div class="promo-arrow prev">
+                    <i class="fas fa-chevron-left"></i>
                 </div>
 
-                <div class="promo-card">
-                    <h3>Family Feast</h3>
-                    <div class="price">$89.99 <span>for 4 people</span></div>
-                    <ul>
-                        <li>20 pieces of Signature Dimsum</li>
-                        <li>4 Bowl of Special Soup</li>
-                        <li>4 Desserts</li>
-                        <li>Valid All Week</li>
-                    </ul>
-                    <a href="#contact" class="btn btn-secondary">Book Now</a>
+                <div class="promo-container">
+                    <div class="promo-slide">
+                        <div class="promo-card">
+                            <h3>Weekday Lunch Special</h3>
+                            <div class="description">
+                                <p>Enjoy our premium dimsum selection at special prices</p>
+                                <p class="price">$24.99 <span>per person</span></p>
+                                <ul>
+                                    <li>6 pieces of Premium Dimsum</li>
+                                    <li>Chinese Tea Selection</li>
+                                    <li>Dessert of the Day</li>
+                                </ul>
+                            </div>
+                            <a href="#contact" class="btn btn-secondary">Book Now</a>
+                        </div>
+                    </div>
+
+                    <div class="promo-slide">
+                        <div class="promo-card">
+                            <h3>Family Feast</h3>
+                            <div class="description">
+                                <p>Perfect for family gatherings and celebrations</p>
+                                <p class="price">$89.99 <span>for 4 people</span></p>
+                                <ul>
+                                    <li>20 pieces of Signature Dimsum</li>
+                                    <li>4 Bowl of Special Soup</li>
+                                    <li>4 Desserts</li>
+                                </ul>
+                            </div>
+                            <a href="#contact" class="btn btn-secondary">Book Now</a>
+                        </div>
+                    </div>
+
+                    <div class="promo-slide">
+                        <div class="promo-card">
+                            <h3>Weekend All-You-Can-Eat</h3>
+                            <div class="description">
+                                <p>Unlimited dimsum experience every weekend</p>
+                                <p class="price">$39.99 <span>per person</span></p>
+                                <ul>
+                                    <li>Unlimited Dimsum Selection</li>
+                                    <li>Free Flow Chinese Tea</li>
+                                    <li>Signature Dessert Buffet</li>
+                                </ul>
+                            </div>
+                            <a href="#contact" class="btn btn-secondary">Book Now</a>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="promo-card">
-                    <h3>Weekend All-You-Can-Eat</h3>
-                    <div class="price">$39.99 <span>per person</span></div>
-                    <ul>
-                        <li>Unlimited Dimsum Selection</li>
-                        <li>Free Flow Chinese Tea</li>
-                        <li>Signature Dessert Buffet</li>
-                        <li>Valid Sat-Sun, 2-Hour Seating</li>
-                    </ul>
-                    <a href="#contact" class="btn btn-secondary">Book Now</a>
+                <div class="promo-arrow next">
+                    <i class="fas fa-chevron-right"></i>
                 </div>
+            </div>
+
+            <div class="promo-navigation">
+                <div class="promo-dot active"></div>
+                <div class="promo-dot"></div>
+                <div class="promo-dot"></div>
             </div>
         </div>
     </section>

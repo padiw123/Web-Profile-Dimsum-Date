@@ -186,4 +186,77 @@ document.addEventListener('DOMContentLoaded', function() {
         isExpanded = !isExpanded;
         toggleBtn.textContent = isExpanded ? 'Show Less' : 'View Full Menu';
     });
+
+    // Promotions Slider
+    const promoContainer = document.querySelector('.promo-container');
+    const promoSlides = document.querySelectorAll('.promo-slide');
+    const prevButton = document.querySelector('.promo-arrow.prev');
+    const nextButton = document.querySelector('.promo-arrow.next');
+    const dots1 = document.querySelectorAll('.promo-dot');
+    let currentSlide1 = 0;
+    let slideInterval;
+
+    function updateSlidePosition() {
+        promoContainer.style.transform = `translateX(-${currentSlide1 * 100}%)`;
+
+        // Update dots1
+        dots1.forEach(dot => dot.classList.remove('active'));
+        dots1[currentSlide1].classList.add('active');
+
+        // Update cards
+        promoSlides.forEach((slide, index) => {
+            const card = slide.querySelector('.promo-card');
+            if (index === currentSlide1) {
+                card.classList.add('active');
+            } else {
+                card.classList.remove('active');
+            }
+        });
+    }
+
+    function nextSlide() {
+        currentSlide1 = (currentSlide1 + 1) % promoSlides.length;
+        updateSlidePosition();
+    }
+
+    function prevSlide() {
+        currentSlide1 = (currentSlide1 - 1 + promoSlides.length) % promoSlides.length;
+        updateSlidePosition();
+    }
+
+    function startSlideShow() {
+        slideInterval = setInterval(nextSlide, 5000);
+    }
+
+    function stopSlideShow() {
+        clearInterval(slideInterval);
+    }
+
+    // Event Listeners
+    prevButton.addEventListener('click', () => {
+        prevSlide();
+        stopSlideShow();
+        startSlideShow();
+    });
+
+    nextButton.addEventListener('click', () => {
+        nextSlide();
+        stopSlideShow();
+        startSlideShow();
+    });
+
+    dots1.forEach((dot, index) => {
+        dot.addEventListener('click', () => {
+            currentSlide1 = index;
+            updateSlidePosition();
+            stopSlideShow();
+            startSlideShow();
+        });
+    });
+
+    promoContainer.addEventListener('mouseenter', stopSlideShow);
+    promoContainer.addEventListener('mouseleave', startSlideShow);
+
+    // Start the slideshow
+    startSlideShow();
 });
