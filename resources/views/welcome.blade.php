@@ -86,53 +86,27 @@
                 </div>
 
                 <div class="promo-container">
-                    <div class="promo-slide">
-                        <div class="promo-card">
-                            <h3>Weekday Lunch Special</h3>
-                            <div class="description">
-                                <p>Enjoy our premium dimsum selection at special prices</p>
-                                <p class="price">$24.99 <span>per person</span></p>
-                                <ul>
-                                    <li>6 pieces of Premium Dimsum</li>
-                                    <li>Chinese Tea Selection</li>
-                                    <li>Dessert of the Day</li>
-                                </ul>
+                    @foreach($promos as $promo)
+                        <div class="promo-slide">
+                            <div class="promo-card">
+                                <h3>{{ $promo->title }}</h3>
+                                <div class="description">
+                                    <p>{{ $promo->description }}</p>
+                                    @if($promo->price)
+                                        <p class="price">${{ number_format($promo->price, 2) }} <span>{{ $promo->price_note }}</span></p>
+                                    @endif
+                                    @if($promo->features)
+                                        <ul>
+                                            @foreach(json_decode($promo->features) as $feature)
+                                                <li>{{ $feature }}</li>
+                                            @endforeach
+                                        </ul>
+                                    @endif
+                                </div>
+                                <a href="{{ $promo->cta_link ?? '#contact' }}" class="btn btn-secondary">Book Now</a>
                             </div>
-                            <a href="#contact" class="btn btn-secondary">Book Now</a>
                         </div>
-                    </div>
-
-                    <div class="promo-slide">
-                        <div class="promo-card">
-                            <h3>Family Feast</h3>
-                            <div class="description">
-                                <p>Perfect for family gatherings and celebrations</p>
-                                <p class="price">$89.99 <span>for 4 people</span></p>
-                                <ul>
-                                    <li>20 pieces of Signature Dimsum</li>
-                                    <li>4 Bowl of Special Soup</li>
-                                    <li>4 Desserts</li>
-                                </ul>
-                            </div>
-                            <a href="#contact" class="btn btn-secondary">Book Now</a>
-                        </div>
-                    </div>
-
-                    <div class="promo-slide">
-                        <div class="promo-card">
-                            <h3>Weekend All-You-Can-Eat</h3>
-                            <div class="description">
-                                <p>Unlimited dimsum experience every weekend</p>
-                                <p class="price">$39.99 <span>per person</span></p>
-                                <ul>
-                                    <li>Unlimited Dimsum Selection</li>
-                                    <li>Free Flow Chinese Tea</li>
-                                    <li>Signature Dessert Buffet</li>
-                                </ul>
-                            </div>
-                            <a href="#contact" class="btn btn-secondary">Book Now</a>
-                        </div>
-                    </div>
+                        @endforeach
                 </div>
 
                 <div class="promo-arrow next">
