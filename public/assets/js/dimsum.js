@@ -32,28 +32,68 @@ document.addEventListener('DOMContentLoaded', function() {
     // Menu filtering
     const menuCategories = document.querySelectorAll('.menu-category');
     const menuItems = document.querySelectorAll('.menu-item');
+    const toggleBtn = document.getElementById('toggleMenuBtn');
+    let isExpanded = false;
 
-    menuCategories.forEach(function(category) {
-        category.addEventListener('click', function() {
-            // Remove active class from all categories
-            menuCategories.forEach(function(cat) {
-                cat.classList.remove('active');
-            });
+    // Menu Filtering
+    menuCategories.forEach(function(categoryBtn) {
+        categoryBtn.addEventListener('click', function() {
+            // Reset active class
+            menuCategories.forEach(btn => btn.classList.remove('active'));
+            categoryBtn.classList.add('active');
 
-            // Add active class to clicked category
-            this.classList.add('active');
+            const selectedCategory = categoryBtn.getAttribute('data-category');
+            let visibleCount = 0;
 
-            const filter = this.getAttribute('data-category');
+            // Reset state
+            isExpanded = false;
+            toggleBtn.textContent = 'View Full Menu';
 
-            // Show or hide menu items based on category
-            menuItems.forEach(function(item) {
-                if (filter === 'all' || item.getAttribute('data-category') === filter) {
-                    item.style.display = 'block';
-                } else {
-                    item.style.display = 'none';
+            // Loop semua item
+            menuItems.forEach(item => {
+                const itemCategory = item.getAttribute('data-category');
+
+                // Reset semua item
+                item.classList.add('hidden');
+                item.classList.remove('extra-menu');
+
+                const isMatch = selectedCategory === 'all' || itemCategory === selectedCategory;
+
+                if (isMatch) {
+                    if (visibleCount < 6) {
+                        item.classList.remove('hidden');
+                    } else {
+                        item.classList.add('extra-menu'); // Akan dikendalikan oleh tombol
+                        if (isExpanded) {
+                            item.classList.remove('hidden');
+                        }
+                    }
+                    visibleCount++;
                 }
             });
         });
+    });
+
+    // Toggle Full Menu
+    toggleBtn.addEventListener('click', () => {
+        const activeCategory = document.querySelector('.menu-category.active').getAttribute('data-category');
+        isExpanded = !isExpanded;
+
+        let visibleCount = 0;
+
+        menuItems.forEach(item => {
+            const itemCategory = item.getAttribute('data-category');
+            const isMatch = activeCategory === 'all' || itemCategory === activeCategory;
+
+            if (isMatch) {
+                if (visibleCount >= 6) {
+                    item.classList.toggle('hidden', !isExpanded);
+                }
+                visibleCount++;
+            }
+        });
+
+        toggleBtn.textContent = isExpanded ? 'Show Less' : 'View Full Menu';
     });
 
     // Testimonial slider
@@ -174,16 +214,76 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    const toggleBtn = document.getElementById('toggleMenuBtn');
-    const extraMenus = document.querySelectorAll('.extra-menu');
-    let isExpanded = false;
+    // Promotions Slider
+    const promoContainer = document.querySelector('.promo-container');
+    const promoSlides = document.querySelectorAll('.promo-slide');
+    const prevButton = document.querySelector('.promo-arrow.prev');
+    const nextButton = document.querySelector('.promo-arrow.next');
+    const dots1 = document.querySelectorAll('.promo-dot');
+    let currentSlide1 = 0;
+    let slideInterval;
 
-    toggleBtn.addEventListener('click', () => {
-        extraMenus.forEach(item => {
-            item.classList.toggle('hidden');
+    function updateSlidePosition() {
+        promoContainer.style.transform = `translateX(-${currentSlide1 * 100}%)`;
+
+        // Update dots1
+        dots1.forEach(dot => dot.classList.remove('active'));
+        dots1[currentSlide1].classList.add('active');
+
+        // Update cards
+        promoSlides.forEach((slide, index) => {
+            const card = slide.querySelector('.promo-card');
+            if (index === currentSlide1) {
+                card.classList.add('active');
+            } else {
+                card.classList.remove('active');
+            }
         });
+    }
 
-        isExpanded = !isExpanded;
-        toggleBtn.textContent = isExpanded ? 'Show Less' : 'View Full Menu';
+    function nextSlide() {
+        currentSlide1 = (currentSlide1 + 1) % promoSlides.length;
+        updateSlidePosition();
+    }
+
+    function prevSlide() {
+        currentSlide1 = (currentSlide1 - 1 + promoSlides.length) % promoSlides.length;
+        updateSlidePosition();
+    }
+
+    function startSlideShow() {
+        slideInterval = setInterval(nextSlide, 5000);
+    }
+
+    function stopSlideShow() {
+        clearInterval(slideInterval);
+    }
+
+    // Event Listeners
+    prevButton.addEventListener('click', () => {
+        prevSlide();
+        stopSlideShow();
+        startSlideShow();
     });
+
+    nextButton.addEventListener('click', () => {
+        nextSlide();
+        stopSlideShow();
+        startSlideShow();
+    });
+
+    dots1.forEach((dot, index) => {
+        dot.addEventListener('click', () => {
+            currentSlide1 = index;
+            updateSlidePosition();
+            stopSlideShow();
+            startSlideShow();
+        });
+    });
+
+    promoContainer.addEventListener('mouseenter', stopSlideShow);
+    promoContainer.addEventListener('mouseleave', startSlideShow);
+
+    // Start the slideshow
+    startSlideShow();
 });

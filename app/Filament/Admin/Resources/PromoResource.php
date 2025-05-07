@@ -1,0 +1,56 @@
+<?php
+
+namespace App\Filament\Admin\Resources;
+
+use App\Filament\Admin\Resources\PromoResource\Pages;
+use App\Filament\Admin\Resources\PromoResource\RelationManagers;
+use App\Models\Promo;
+use Filament\Forms;
+use Filament\Forms\Form;
+use Filament\Resources\Resource;
+use Filament\Tables;
+use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
+
+class PromoResource extends Resource
+{
+    protected static ?string $model = Promo::class;
+
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationLabel = 'Promo';
+    protected static ?string $pluralModelLabel = 'Promotions';
+
+    public static function form(Form $form): Form
+    {
+        return $form
+            ->schema([
+                Forms\Components\TextInput::make('title')->required(),
+                Forms\Components\Textarea::make('description')->required(),
+                Forms\Components\TextInput::make('price')->numeric(),
+                Forms\Components\TextInput::make('price_note'),
+                Forms\Components\TagsInput::make('features')->placeholder('Add features one by one'),
+                Forms\Components\TextInput::make('cta_link')->label('CTA Link'),
+            ]);
+    }
+
+    public static function table(Table $table): Table
+    {
+        return $table
+            ->columns([
+                Tables\Columns\TextColumn::make('title')->sortable()->searchable(),
+                Tables\Columns\TextColumn::make('price')->money('USD'),
+                Tables\Columns\TextColumn::make('created_at')->dateTime(),
+            ])
+            ->filters([]);
+    }
+
+    public static function getPages(): array
+    {
+        return [
+            'index' => Pages\ListPromos::route('/'),
+            'create' => Pages\CreatePromo::route('/create'),
+            'edit' => Pages\EditPromo::route('/{record}/edit'),
+        ];
+    }
+}

@@ -80,42 +80,44 @@
                 <p>Exclusive deals for an extraordinary dining experience</p>
             </div>
 
-            <div class="promo-grid">
-                <div class="promo-card">
-                    <h3>Weekday Lunch Special</h3>
-                    <div class="price">$24.99 <span>per person</span></div>
-                    <ul>
-                        <li>6 pieces of Premium Dimsum</li>
-                        <li>Chinese Tea Selection</li>
-                        <li>Dessert of the Day</li>
-                        <li>Valid Mon-Fri, 11AM-3PM</li>
-                    </ul>
-                    <a href="#contact" class="btn btn-secondary">Book Now</a>
+            <div class="promo-slider">
+                <div class="promo-arrow prev">
+                    <i class="fas fa-chevron-left"></i>
                 </div>
 
-                <div class="promo-card">
-                    <h3>Family Feast</h3>
-                    <div class="price">$89.99 <span>for 4 people</span></div>
-                    <ul>
-                        <li>20 pieces of Signature Dimsum</li>
-                        <li>4 Bowl of Special Soup</li>
-                        <li>4 Desserts</li>
-                        <li>Valid All Week</li>
-                    </ul>
-                    <a href="#contact" class="btn btn-secondary">Book Now</a>
+                <div class="promo-container">
+                    @foreach($promos as $promo)
+                        <div class="promo-slide">
+                            <div class="promo-card">
+                                <h3>{{ $promo->title }}</h3>
+                                <div class="description">
+                                    <p>{{ $promo->description }}</p>
+                                    @if($promo->price)
+                                        <p class="price">${{ number_format($promo->price, 2) }} <span>{{ $promo->price_note }}</span></p>
+                                    @endif
+                                    @if($promo->features)
+                                        <ul>
+                                            @foreach(json_decode($promo->features) as $feature)
+                                                <li>{{ $feature }}</li>
+                                            @endforeach
+                                        </ul>
+                                    @endif
+                                </div>
+                                <a href="{{ $promo->cta_link ?? '#contact' }}" class="btn btn-secondary">Book Now</a>
+                            </div>
+                        </div>
+                        @endforeach
                 </div>
 
-                <div class="promo-card">
-                    <h3>Weekend All-You-Can-Eat</h3>
-                    <div class="price">$39.99 <span>per person</span></div>
-                    <ul>
-                        <li>Unlimited Dimsum Selection</li>
-                        <li>Free Flow Chinese Tea</li>
-                        <li>Signature Dessert Buffet</li>
-                        <li>Valid Sat-Sun, 2-Hour Seating</li>
-                    </ul>
-                    <a href="#contact" class="btn btn-secondary">Book Now</a>
+                <div class="promo-arrow next">
+                    <i class="fas fa-chevron-right"></i>
                 </div>
+            </div>
+
+            <div class="promo-navigation">
+                <div class="promo-dot active"></div>
+                <div class="promo-dot"></div>
+                <div class="promo-dot"></div>
             </div>
         </div>
     </section>
@@ -130,12 +132,12 @@
 
             <div class="menu-categories">
                 <button class="menu-category active" data-category="all">Semua</button>
-                <button class="menu-category" data-category="Dimsum Ayam">Dimsum Ayam</button>
-                <button class="menu-category" data-category="Dimsum Ayam Udang">Dimsum Ayam Udang</button>
-                <button class="menu-category" data-category="Mie">Mie</button>
-                <button class="menu-category" data-category="Camilan">Camilan</button>
-                <button class="menu-category" data-category="Paket Hemat">Paket Hemat</button>
-                <button class="menu-category" data-category="Minuman">Minuman</button>
+                <button class="menu-category" data-category="dimsum ayam">Dimsum Ayam</button>
+                <button class="menu-category" data-category="dimsum ayam udang">Dimsum Ayam Udang</button>
+                <button class="menu-category" data-category="mie">Mie</button>
+                <button class="menu-category" data-category="camilan">Camilan</button>
+                <button class="menu-category" data-category="paket hemat">Paket Hemat</button>
+                <button class="menu-category" data-category="minuman">Minuman</button>
             </div>
 
             <div class="menu-grid">
@@ -145,7 +147,8 @@
                             <img src="{{ $menu->image_url }}" alt="{{ $menu->name }}">
                         </div>
                         <div class="menu-content">
-                            <h3>{{ $menu->name }} <span class="price">${{ number_format($menu->price, 2) }}</span></h3>
+                            <h3>{{ $menu->name }}</h3>
+                            <span class="price">Rp {{ number_format($menu->price, 0, ',', '.') }}</span>
                             <p>{{ $menu->description }}</p>
                         </div>
                     </div>
