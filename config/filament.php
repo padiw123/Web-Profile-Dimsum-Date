@@ -14,6 +14,8 @@ return [
     |
     */
 
+    'path' => 'admin',
+
     'broadcasting' => [
 
         // 'echo' => [

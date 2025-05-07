@@ -115,9 +115,9 @@
             </div>
 
             <div class="promo-navigation">
-                <div class="promo-dot active"></div>
-                <div class="promo-dot"></div>
-                <div class="promo-dot"></div>
+                @foreach($promos as $index => $promo)
+                    <div class="promo-dot {{ $index === 0 ? 'active' : '' }}" data-index="{{ $index }}"></div>
+                @endforeach
             </div>
         </div>
     </section>
