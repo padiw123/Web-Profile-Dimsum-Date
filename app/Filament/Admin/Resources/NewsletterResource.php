@@ -17,7 +17,7 @@ class NewsletterResource extends Resource
 {
     protected static ?string $model = Newsletter::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-mail';
+    protected static ?string $navigationIcon = 'heroicon-o-document-text';
 
     public static function form(Form $form): Form
     {
@@ -31,7 +31,10 @@ class NewsletterResource extends Resource
         return $table->columns([
             Tables\Columns\TextColumn::make('email')->searchable(),
             Tables\Columns\TextColumn::make('created_at')->dateTime(),
-        ]);
+        ])
+        ->actions([
+                Tables\Actions\DeleteAction::make(),
+            ]);
     }
 
     public static function getPages(): array
@@ -39,7 +42,6 @@ class NewsletterResource extends Resource
         return [
             'index' => Pages\ListNewsletters::route('/'),
             'create' => Pages\CreateNewsletter::route('/create'),
-            'edit' => Pages\EditNewsletter::route('/{record}/edit'),
         ];
     }
 }
