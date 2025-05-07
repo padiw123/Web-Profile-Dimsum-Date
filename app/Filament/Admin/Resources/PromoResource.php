@@ -17,7 +17,7 @@ class PromoResource extends Resource
 {
     protected static ?string $model = Promo::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-tag';
     protected static ?string $navigationLabel = 'Promo';
     protected static ?string $pluralModelLabel = 'Promotions';
 
@@ -41,6 +41,10 @@ class PromoResource extends Resource
                 Tables\Columns\TextColumn::make('title')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('price')->money('USD'),
                 Tables\Columns\TextColumn::make('created_at')->dateTime(),
+            ])
+            ->actions([
+                Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->filters([]);
     }
