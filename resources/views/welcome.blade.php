@@ -15,7 +15,7 @@
         <div class="container">
             <div class="navbar-brand">
                 <a href="#home">
-                    <img src="/assets/img/logo-dimsum.jpg" alt="Dimsum Date" class="logo-img">
+                    <img src="/assets/img/logo-dimsum.svg" alt="Dimsum Date" class="logo-img">
                     <span>Dimsum Date</span>
                 </a>
             </div>
@@ -26,6 +26,7 @@
                     <li class="nav-item"><a href="#menu" class="nav-link">Menu</a></li>
                     <li class="nav-item"><a href="#about" class="nav-link">About</a></li>
                     <li class="nav-item"><a href="#gallery" class="nav-link">Gallery</a></li>
+                    <li class="nav-item"><a href="#testimoni" class="nav-link">Testimoni</a></li>
                     <li class="nav-item"><a href="#contact" class="nav-link">Contact</a></li>
                 </ul>
             </div>
@@ -76,7 +77,7 @@
     <section id="promo" class="promotions">
         <div class="container">
             <div class="section-header">
-                <h2>Special Offers</h2>
+                <h2>Promo Tersedia</h2>
                 <p>Exclusive deals for an extraordinary dining experience</p>
             </div>
 
@@ -126,7 +127,7 @@
     <section id="menu" class="menu">
         <div class="container">
             <div class="section-header">
-                <h2>Our Menu</h2>
+                <h2>Menu Kami</h2>
                 <p>Discover our handcrafted selection of authentic dimsum</p>
             </div>
 
@@ -166,7 +167,7 @@
         <div class="container">
             <div class="about-content">
                 <div class="about-image">
-                    <img src="https://images.pexels.com/photos/2098134/pexels-photo-2098134.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="About Dimsum Date">
+                    <img src="" alt="About Dimsum Date">
                 </div>
                 <div class="about-text">
                     <div class="section-header">
@@ -216,69 +217,36 @@
     </section>
 
     <!-- Testimonials Section -->
-    <section class="testimonials">
+    <section id="testimoni" class="testimonials">
         <div class="container">
             <div class="section-header">
-                <h2>What Our Customers Say</h2>
+                <h2 style="color:#B22222;">Apa Sih yang Dibicarain Pelanggan?</h2>
             </div>
 
-            <div class="testimonial-slider">
-                <div class="testimonial-slide">
-                    <div class="testimonial-content">
-                        <div class="stars">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
+            <div class="review-container">
+                <div class="review-grid">
+                    @for ($i = 0; $i < 8; $i++)
+                    <div class="review-card">
+                        <div class="review-stars">
+                            @for ($star = 0; $star < 5; $star++)
+                                <i class="fas fa-star"></i>
+                            @endfor
                         </div>
-                        <p>"The best dimsum I've had outside of Hong Kong. Authentic flavors and impeccable service!"</p>
-                        <div class="testimonial-author">
-                            <h4>Sarah Chen</h4>
-                            <p>Food Critic</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="testimonial-slide">
-                    <div class="testimonial-content">
-                        <div class="stars">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                        </div>
-                        <p>"Dimsum Date has been our family's go-to for dimsum for years. Their har gow is simply unmatched!"</p>
-                        <div class="testimonial-author">
-                            <h4>Michael Wong</h4>
-                            <p>Regular Customer</p>
+                        <h4 class="review-title">Amazing Dimsum!</h4>
+                        <div class="review-header">
+                            {{-- <img src="" alt="Reviewer" class="reviewer-image"> --}}
+                            <div class="reviewer-info">
+                                <div class="reviewer-name">Reviewer Name</div>
+                                <div class="review-date">2 days ago</div>
+                            </div>
                         </div>
                     </div>
-                </div>
-
-                <div class="testimonial-slide">
-                    <div class="testimonial-content">
-                        <div class="stars">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star-half-alt"></i>
-                        </div>
-                        <p>"A hidden gem with the most delicious dimsum and a wonderful atmosphere. Perfect for family gatherings!"</p>
-                        <div class="testimonial-author">
-                            <h4>Emily Johnson</h4>
-                            <p>Food Blogger</p>
-                        </div>
-                    </div>
+                    @endfor
                 </div>
             </div>
 
-            <div class="testimonial-dots">
-                <span class="dot active"></span>
-                <span class="dot"></span>
-                <span class="dot"></span>
+            <div class="review-button">
+                <a href="{{ route('review') }}" class="btn-review">Write a Review</a>
             </div>
         </div>
     </section>
@@ -333,8 +301,8 @@
                     </div>
 
                     <div class="social-links">
-                        <a href="https://tiktok.com/@dimsum_date" class="social-link" target="_blank"><i class="fab fa-tiktok"></i></a>
                         <a href="https://linktr.ee/dimsumdate?utm_source=linktree_profile_share&ltsid=c76934ad-601e-47db-ae8c-73a3d4287aa4" class="social-link" target="_blank"><img src="/assets/img/Linktree.png" alt="Linktree" style="color: #FFFFFF; width: 16px;"></a>
+                        <a href="https://tiktok.com/@dimsum_date" class="social-link" target="_blank"><i class="fab fa-tiktok"></i></a>
                         <a href="https://www.instagram.com/dimsum_date?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" class="social-link" target="_blank"><i class="fab fa-instagram"></i></a>
                     </div>
                 </div>
@@ -395,6 +363,7 @@
                         <li><a href="#menu">Menu</a></li>
                         <li><a href="#about">About</a></li>
                         <li><a href="#gallery">Gallery</a></li>
+                        <li><a href="#testimoni">Testimoni</a></li>
                         <li><a href="#contact">Contact</a></li>
                     </ul>
                 </div>
