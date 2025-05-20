@@ -7,10 +7,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-color: #B22222;
+            --primary-color: #980300;
             --secondary-color: #D4AF37;
             --dark-color: #121212;
             --light-color: #FFFFFF;
+            --accent-color: #320100;
             --error-color: #FF0000;
         }
 
@@ -26,7 +27,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(135deg, var(--primary-color), #800000);
+            background: linear-gradient(90deg, #980300 0%, #320100 50%);
         }
 
         .login-container {
@@ -55,6 +56,7 @@
         }
 
         .login-form {
+            border-color: ;
             flex: 1;
             padding: 50px;
             display: flex;
@@ -63,7 +65,8 @@
         }
 
         .login-form h1 {
-            font-family: 'Playfair Display', serif;
+            text-align: center;
+            font-family: 'Poppins', sans-serif;
             font-size: 2.5rem;
             margin-bottom: 30px;
             color: var(--dark-color);
@@ -77,15 +80,15 @@
         .form-group input {
             width: 100%;
             padding: 12px 40px;
-            border: 1px solid #ddd;
-            border-radius: 25px;
+            border: 1px solid var(--primary-color);
+            border-radius: 15px;
             font-size: 1rem;
             transition: border-color 0.3s ease;
         }
 
         .form-group input:focus {
             outline: none;
-            border-color: var(--primary-color);
+            border-color: var(--accent-color);
         }
 
         .form-group i {
@@ -99,7 +102,8 @@
         .login-btn {
             background-color: var(--primary-color);
             color: var(--light-color);
-            padding: 12px;
+            padding: 15px;
+            width: 150px;
             border: none;
             border-radius: 25px;
             font-size: 1rem;
@@ -109,7 +113,7 @@
         }
 
         .login-btn:hover {
-            background-color: #8B0000;
+            background-color: var(--accent-color);
         }
 
         @media (max-width: 768px) {
@@ -132,22 +136,24 @@
 <body>
     <div class="login-container">
         <div class="login-image">
-            <img src="/assets/img/logo-dimsum.jpg" alt="Dimsum Logo">
+            <img src="/assets/img/logo-dimsum.png" alt="Dimsum Logo">
         </div>
         <div class="login-form">
             <h1>Login</h1>
             <form action="{{ route('admin.login') }}" method="POST">
-                @csrf
-                <div class="form-group">
-                    <i class="fas fa-user"></i>
-                    <input type="email" name="email" placeholder="E-mail" required>
-                </div>
-                <div class="form-group">
-                    <i class="fas fa-lock"></i>
-                    <input type="password" name="password" placeholder="Password" required>
-                </div>
-                <button type="submit" class="login-btn">Login</button>
-            </form>
+                <center>
+                    @csrf
+                    <div class="form-group">
+                        <i class="fas fa-user"></i>
+                        <input type="email" name="email" placeholder="E-mail" required>
+                    </div>
+                    <div class="form-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" name="password" placeholder="Password" required>
+                    </div>
+                    <button type="submit" class="login-btn">Login</button>
+                </form>
+            </center>
         </div>
     </div>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">

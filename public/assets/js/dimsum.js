@@ -96,54 +96,8 @@ document.addEventListener('DOMContentLoaded', function() {
         toggleBtn.textContent = isExpanded ? 'Show Less' : 'View Full Menu';
     });
 
-    // Testimonial slider
-    const testimonialSlides = document.querySelectorAll('.testimonial-slide');
-    const dots = document.querySelectorAll('.dot');
-    let currentSlide = 0;
-
-    function showSlide(n) {
-        // Hide all slides
-        testimonialSlides.forEach(function(slide) {
-            slide.style.display = 'none';
-        });
-
-        // Remove active class from all dots
-        dots.forEach(function(dot) {
-            dot.classList.remove('active');
-        });
-
-        // Show current slide and activate corresponding dot
-        testimonialSlides[n].style.display = 'block';
-        dots[n].classList.add('active');
-    }
-
-    // Initialize slider
-    showSlide(currentSlide);
-
-    // Add click event to dots
-    dots.forEach(function(dot, index) {
-        dot.addEventListener('click', function() {
-            showSlide(index);
-            currentSlide = index;
-            resetTimer();
-        });
-    });
-
-    // Auto slide
-    let slideTimer = setInterval(nextSlide, 5000);
-
-    function nextSlide() {
-        currentSlide = (currentSlide + 1) % testimonialSlides.length;
-        showSlide(currentSlide);
-    }
-
-    function resetTimer() {
-        clearInterval(slideTimer);
-        slideTimer = setInterval(nextSlide, 5000);
-    }
-
     // Reveal animations on scroll
-    const revealElements = document.querySelectorAll('.section-header, .featured-item, .menu-item, .about-content, .gallery-item, .testimonial-slider, .contact-content');
+    const revealElements = document.querySelectorAll('.section-header, .featured-item, .menu-item, .about-content, .gallery-item, .contact-content');
 
     function revealOnScroll() {
         let windowHeight = window.innerHeight;
