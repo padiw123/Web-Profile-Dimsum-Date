@@ -1,3 +1,7 @@
+@php
+    use Illuminate\Support\Str;
+@endphp
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -21,13 +25,13 @@
             </div>
             <div class="navbar-menu" id="navbarMenu">
                 <ul class="navbar-nav">
-                    <li class="nav-item"><a href="#home" class="nav-link">Home</a></li>
+                    <li class="nav-item"><a href="#home" class="nav-link">Beranda</a></li>
                     <li class="nav-item"><a href="#promo" class="nav-link">Promo</a></li>
                     <li class="nav-item"><a href="#menu" class="nav-link">Menu</a></li>
-                    <li class="nav-item"><a href="#about" class="nav-link">About</a></li>
-                    <li class="nav-item"><a href="#gallery" class="nav-link">Gallery</a></li>
+                    <li class="nav-item"><a href="#about" class="nav-link">Edukasi</a></li>
+                    {{-- <li class="nav-item"><a href="#gallery" class="nav-link">Edukasi</a></li> --}}
                     <li class="nav-item"><a href="#testimoni" class="nav-link">Testimoni</a></li>
-                    <li class="nav-item"><a href="#contact" class="nav-link">Contact</a></li>
+                    <li class="nav-item"><a href="#contact" class="nav-link">Kontak</a></li>
                 </ul>
             </div>
             <div class="navbar-toggle" id="navbarToggle">
@@ -49,6 +53,10 @@
             </div>
         </div>
     </section>
+
+    <button class="scroll-to-top" title="Scroll to top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
 
     <!-- Featured Section -->
     <section class="featured">
@@ -151,6 +159,15 @@
                             <h3>{{ $menu->name }}</h3>
                             <span class="price">Rp {{ number_format($menu->price, 0, ',', '.') }}</span>
                             <p>{{ $menu->description }}</p>
+                            <div class="quantity-control">
+                                <button class="quantity-btn minus" onclick="updateQuantity(this, -1)">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <div class="quantity-display">0</div>
+                                <button class="quantity-btn plus" onclick="updateQuantity(this, 1)">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 @endforeach
@@ -232,21 +249,20 @@
                                 <i class="fas fa-star"></i>
                             @endfor
                         </div>
-                        <h4 class="review-title">Amazing Dimsum!</h4>
-                        <div class="review-header">
+                        <h4 class="review-text">{{ Str::words('Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quasi ex perferendis minima quibusdam, pariatur et animi voluptates accusantium harum ipsa atque repellendus qui totam nam, voluptate sit iusto impedit dignissimos.', 15, '...') }}</h4>
                             {{-- <img src="" alt="Reviewer" class="reviewer-image"> --}}
                             <div class="reviewer-info">
                                 <div class="reviewer-name">Reviewer Name</div>
                                 <div class="review-date">2 days ago</div>
                             </div>
-                        </div>
                     </div>
                     @endfor
                 </div>
             </div>
 
             <div class="review-button">
-                <a href="{{ route('review') }}" class="btn-review">Write a Review</a>
+                <a href="{{ route('review') }}" class="btn-review">Tulis Testimoni</a>
+                <a href="{{ route('alltestimoni') }}" class="btn-review">Semua Testimoni</a>
             </div>
         </div>
     </section>
@@ -260,6 +276,84 @@
             </div>
 
             <div class="contact-content">
+                <div class="contact-info">
+                    <!-- Order Summary -->
+                    <div class="order-summary">
+                        <h3>Rincian Pesanan</h3>
+                        <div id="orderItems" class="order-items">
+                            <!-- Order items will be dynamically added here -->
+                        </div>
+                        <div class="order-total">
+                            <h4>Total Pembayaran</h4>
+                            <span id="totalAmount">Rp 0</span>
+                        </div>
+
+                        <div class="payment-method">
+                            <h4>Metode Pembayaran</h4>
+                            <select id="paymentSelect" onchange="togglePaymentDetails()">
+                                <option value="">Pilih metode pembayaran</option>
+                                <option value="qris">QRIS</option>
+                                <option value="cimb">Transfer Bank - CIMB Niaga</option>
+                                <option value="mandiri">Transfer Bank - Mandiri</option>
+                            </select>
+
+                            <div id="qrisDetails" class="payment-details" style="display: none;">
+                                <img src="path/to/qris-code.png" alt="QRIS Code" class="payment-qr">
+                            </div>
+
+                            <div id="cimbDetails" class="payment-details" style="display: none;">
+                                <p>Bank: CIMB Niaga</p>
+                                <p>No. Rekening: 123456789</p>
+                                <p>Atas Nama: Dimsum Date</p>
+                            </div>
+
+                            <div id="mandiriDetails" class="payment-details" style="display: none;">
+                                <p>Bank: Mandiri</p>
+                                <p>No. Rekening: 987654321</p>
+                                <p>Atas Nama: Dimsum Date</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="contact-form">
+                        <h3>Detail Pemesanan</h3>
+                        <form action="{{ route('send.reservation') }}" method="POST" target="_blank">
+                            @csrf
+                            <div class="form-group">
+                                <input type="text" name="name" placeholder="Nama Lengkap" value="{{ old('name') }}" required>
+                            </div>
+                            <div class="form-group">
+                                <input type="email" name="email" placeholder="E-Mail" value="{{ old('email') }}" required>
+                            </div>
+                            <div class="form-group">
+                                <input type="tel" name="phone" placeholder="Nomor Telepon" value="{{ old('phone') }}" required>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <input type="date" name="date" value="{{ old('date') }}" required>
+                                </div>
+                                <div class="form-group">
+                                    <input type="time" name="time" value="{{ old('time') }}" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <select name="guests" required>
+                                    <option value="" disabled {{ old('guests') ? '' : 'selected' }}>Jumlah Orang</option>
+                                    @foreach (['1' => '1 Orang', '2' => '2 Orang', '3' => '3 Orang', '4' => '4 Orang', '5' => '5 Orang', '6+' => '6+ Orang'] as $value => $label)
+                                        <option value="{{ $value }}" {{ old('guests') == $value ? 'selected' : '' }}>{{ $label }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <textarea name="message" placeholder="Catatan Khusus">{{ old('message') }}</textarea>
+                            </div>
+                            <input type="hidden" name="ordered_items_summary" id="orderedItemsSummaryInput">
+                            <input type="hidden" name="total_payment" id="totalPaymentInput">
+                            <button type="submit" class="btn btn-primary">Checkout</button>
+                        </form>
+                    </div>
+                </div>
+
                 <div class="contact-info">
                     <div class="contact-item">
                         <i class="fas fa-map-marker-alt"></i>
@@ -275,9 +369,8 @@
                                     allowfullscreen
                                     loading="lazy"
                                     referrerpolicy="no-referrer-when-downgrade"
-                                        src="https://maps.google.com/maps?q=-6.116312383077391, 106.15421359101309&z=15&output=embed">
-                                      </iframe>
-                                </a>
+                                    src="https://maps.google.com/maps?q=-6.116312383077391, 106.15421359101309&z=15&output=embed">
+                                </iframe>
                             </div>
                             <p>Ruko R5 Ramayana, Kotabaru, Kec. Serang,<br> Kota Serang, Banten 42112</p>
                         </div>
@@ -306,42 +399,6 @@
                         <a href="https://www.instagram.com/dimsum_date?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" class="social-link" target="_blank"><i class="fab fa-instagram"></i></a>
                     </div>
                 </div>
-
-                <div class="contact-form">
-                    <h3>Make a Reservation</h3>
-                    <form action="{{ route('send.reservation') }}" method="POST" target="_blank">
-                        @csrf
-                        <div class="form-group">
-                            <input type="text" name="name" placeholder="Your Name" value="{{ old('name') }}" required>
-                        </div>
-                        <div class="form-group">
-                            <input type="email" name="email" placeholder="Your Email" value="{{ old('email') }}" required>
-                        </div>
-                        <div class="form-group">
-                            <input type="tel" name="phone" placeholder="Phone Number" value="{{ old('phone') }}" required>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <input type="date" name="date" value="{{ old('date') }}" required>
-                            </div>
-                            <div class="form-group">
-                                <input type="time" name="time" value="{{ old('time') }}" required>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <select name="guests" required>
-                                <option value="" disabled {{ old('guests') ? '' : 'selected' }}>Number of Guests</option>
-                                @foreach (['1' => '1 Person', '2' => '2 People', '3' => '3 People', '4' => '4 People', '5' => '5 People', '6+' => '6+ People'] as $value => $label)
-                                    <option value="{{ $value }}" {{ old('guests') == $value ? 'selected' : '' }}>{{ $label }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <textarea name="message" placeholder="Special Requests">{{ old('message') }}</textarea>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Reserve Table</button>
-                    </form>
-                </div>
             </div>
         </div>
     </section>
@@ -361,8 +418,7 @@
                         <li><a href="#home">Home</a></li>
                         <li><a href="#promo">Promo</a></li>
                         <li><a href="#menu">Menu</a></li>
-                        <li><a href="#about">About</a></li>
-                        <li><a href="#gallery">Gallery</a></li>
+                        <li><a href="#about">Edukasi</a></li>
                         <li><a href="#testimoni">Testimoni</a></li>
                         <li><a href="#contact">Contact</a></li>
                     </ul>
@@ -388,5 +444,77 @@
     </footer>
 
     <script src="{{ asset('./assets/js/dimsum.js') }}"></script>
+    <script>
+    function updateQuantity(button, change) {
+        const display = button.parentElement.querySelector('.quantity-display');
+        const currentValue = parseInt(display.textContent);
+        const newValue = Math.max(0, currentValue + change);
+        display.textContent = newValue;
+
+        // Get menu item details
+        const menuItem = button.closest('.menu-item');
+        const name = menuItem.querySelector('h3').textContent;
+        const price = parseInt(menuItem.querySelector('.price').textContent.replace(/[^0-9]/g, ''));
+
+        updateOrderSummary(name, newValue, price);
+    }
+
+    function updateOrderSummary(itemName, quantity, price) {
+        const orderItems = document.getElementById('orderItems');
+        const totalAmount = document.getElementById('totalAmount');
+
+        // Update or add item to order summary
+        let itemElement = orderItems.querySelector(`[data-item="${itemName}"]`);
+        if (quantity > 0) {
+            if (!itemElement) {
+                itemElement = document.createElement('div');
+                itemElement.className = 'order-item';
+                itemElement.setAttribute('data-item', itemName);
+                itemElement.innerHTML = `
+                    <span>${itemName} x <span class="item-quantity">${quantity}</span></span>
+                    <span class="item-total">Rp ${(price * quantity).toLocaleString()}</span>
+                `;
+                orderItems.appendChild(itemElement);
+            } else {
+                itemElement.querySelector('.item-quantity').textContent = quantity;
+                itemElement.querySelector('.item-total').textContent = `Rp ${(price * quantity).toLocaleString()}`;
+            }
+        } else if (itemElement) {
+            itemElement.remove();
+        }
+
+        // Update total amount
+        let total = 0;
+        orderItems.querySelectorAll('.order-item').forEach(item => {
+            total += parseInt(item.querySelector('.item-total').textContent.replace(/[^0-9]/g, ''));
+        });
+        totalAmount.textContent = `Rp ${total.toLocaleString()}`;
+    }
+
+    function togglePaymentDetails() {
+        const paymentSelect = document.getElementById('paymentSelect');
+        const qrisDetails = document.getElementById('qrisDetails');
+        const cimbDetails = document.getElementById('cimbDetails');
+        const mandiriDetails = document.getElementById('mandiriDetails');
+
+        // Hide all payment details first
+        qrisDetails.style.display = 'none';
+        cimbDetails.style.display = 'none';
+        mandiriDetails.style.display = 'none';
+
+        // Show selected payment details
+        switch(paymentSelect.value) {
+            case 'qris':
+                qrisDetails.style.display = 'block';
+                break;
+            case 'cimb':
+                cimbDetails.style.display = 'block';
+                break;
+            case 'mandiri':
+                mandiriDetails.style.display = 'block';
+                break;
+        }
+    }
+    </script>
 </body>
 </html>

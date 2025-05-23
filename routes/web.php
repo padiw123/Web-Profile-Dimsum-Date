@@ -16,6 +16,9 @@ Route::post('/admin/login', [AdminAuthController::class, 'login'])->name('admin.
 Route::post('/send-reservation', [ReservationController::class, 'sendReservation'])->name('send.reservation');
 Route::post('/newsletter', [NewsletterController::class, 'subscribe'])->name('newsletter.subscribe');
 Route::get('/', [HomeController::class, 'index']);
-Route::get('/review', function () {
+Route::get('/testimoni/create', function () {
     return view('testimoni.review');
 })->name('review');
+Route::get('/testimoni/list', function () {
+    return view('testimoni.list');
+})->name('alltestimoni');
