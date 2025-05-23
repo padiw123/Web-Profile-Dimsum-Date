@@ -240,4 +240,64 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Start the slideshow
     startSlideShow();
+
+    const scrollToTopBtn = document.querySelector('.scroll-to-top');
+
+    window.addEventListener('scroll', () => {
+        if (window.pageYOffset > 300) {
+            scrollToTopBtn.classList.add('visible');
+        } else {
+            scrollToTopBtn.classList.remove('visible');
+        }
+    });
+
+    scrollToTopBtn.addEventListener('click', () => {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    });
+
+    const reservationForm = document.querySelector('.contact-form form[action*="send-reservation"]'); // Selector for your reservation form
+
+    if (reservationForm) {
+        reservationForm.addEventListener('submit', function(event) {
+            const orderItemsDiv = document.getElementById('orderItems'); // The div containing individual order items
+            const totalAmountSpan = document.getElementById('totalAmount'); // The span showing the total amount
+            const orderedItemsSummaryInput = document.getElementById('orderedItemsSummaryInput'); // Hidden input for items
+            const totalPaymentInput = document.getElementById('totalPaymentInput'); // Hidden input for total
+
+            // Basic check to ensure all necessary elements are present
+            if (!orderItemsDiv || !totalAmountSpan || !orderedItemsSummaryInput || !totalPaymentInput) {
+                console.error('Error: One or more order summary elements are missing from the DOM.');
+                // Optionally, you could prevent form submission here if critical elements are missing:
+                // event.preventDefault();
+                return;
+            }
+
+            let orderSummaryString = "";
+            const items = orderItemsDiv.querySelectorAll('.order-item'); // Get all individual order item divs
+
+            if (items.length > 0) {
+                items.forEach(item => {
+                    // Extracts "Item Name x Quantity" part
+                    const itemNameAndQuantityElement = item.querySelector('span:first-child');
+                    // Extracts "Rp X.XXX" part for that item
+                    const itemTotalElement = item.querySelector('span.item-total');
+
+                    if (itemNameAndQuantityElement && itemTotalElement) {
+                        const itemNameAndQuantity = itemNameAndQuantityElement.textContent.trim();
+                        const itemTotal = itemTotalElement.textContent.trim();
+                        orderSummaryString += `${itemNameAndQuantity} (${itemTotal})\n`; // Format: "Dimsum Ayam x 2 (Rp 30.000)"
+                    }
+                });
+            } else {
+                orderSummaryString = "No items selected";
+            }
+
+            // Populate the hidden input fields
+            orderedItemsSummaryInput.value = orderSummaryString.trim(); // Set the summarized string of items
+            totalPaymentInput.value = totalAmountSpan.textContent.trim(); // Set the total payment string
+        });
+    }
 });

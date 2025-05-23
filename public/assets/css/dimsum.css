@@ -537,6 +537,7 @@ section {
     border-radius: 10px;
     padding: 1.5rem;
     text-align: left;
+    transition: transform 0.3s ease;
 }
 
 .review-header {
@@ -554,15 +555,17 @@ section {
 
 .reviewer-info {
     flex: 1;
+    gap: 1rem;
 }
 
 .reviewer-name {
     font-weight: 500;
     margin-bottom: 0.25rem;
+    color: var(--secondary-color);
 }
 
 .review-date {
-    font-size: 0.875rem;
+    font-size: 0.9rem;
     color: #666;
 }
 
@@ -571,9 +574,11 @@ section {
     margin-bottom: 0.5rem;
 }
 
-.review-title {
+.review-text {
     font-weight: 500;
-    margin-bottom: 0.5rem;
+    margin-bottom: 1rem;
+    line-height: 1.6;
+    color: #555555;
 }
 
 .review-button {
@@ -584,15 +589,13 @@ section {
 .btn-review {
     background-color: var(--primary-color);
     color: var(--light-color);
-    padding: 0.8rem 2rem;
-    border-radius: 5px;
+    padding: 1rem 2rem;
+    border-radius: 15px;
     text-decoration: none;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s ease;
     display: inline-block;
-    -webkit-transition: background-color 0.3s;
-    -moz-transition: background-color 0.3s;
-    -ms-transition: background-color 0.3s;
-    -o-transition: background-color 0.3s;
+    width: fit-content;
+    margin: 1rem;
 }
 
 .btn-review:hover {
@@ -1176,4 +1179,172 @@ textarea {
     .form-row {
         grid-template-columns: 1fr;
     }
+}
+
+/* Scroll to Top Button */
+.scroll-to-top {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: var(--primary-color);
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 1000;
+    border: none;
+}
+
+.scroll-to-top.visible {
+    opacity: 1;
+    visibility: visible;
+}
+.scroll-to-top:hover {
+    background-color: #8B0000;
+    transform: translateY(-3px);
+}
+
+/* Back Button */
+.back-button {
+    position: fixed;
+    top: 6rem;
+    left: 20px;
+    background-color: var(--primary-color);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 25px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 1000;
+    text-decoration: none;
+}
+
+.back-button:hover {
+    background-color: #8B0000;
+    transform: translateX(-3px);
+    color: white;
+}
+
+@media (max-width: 768px) {
+    .back-button .back-text {
+        display: none;
+    }
+
+    .back-button {
+        padding: 10px; /* kecilkan padding */
+        border-radius: 50%; /* buat bulat jika perlu */
+        width: 45px;
+        height: 45px;
+        justify-content: center;
+    }
+}
+
+.quantity-control {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.quantity-btn {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.quantity-btn.minus {
+    background-color: #ffebee;
+    color: #B22222;
+}
+
+.quantity-btn.plus {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+}
+
+.quantity-btn:hover {
+    transform: scale(1.1);
+}
+
+.quantity-display {
+    width: 50px;
+    text-align: center;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 5px;
+    font-size: 14px;
+    background: white;
+}
+
+.order-summary {
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+}
+
+.order-items {
+    margin: 1rem 0;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.order-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #eee;
+}
+
+.order-total {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 2px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.payment-method {
+    margin-top: 2rem;
+}
+
+.payment-method select {
+    width: 100%;
+    padding: 0.8rem;
+    margin: 1rem 0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.payment-details {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: #f9f9f9;
+    border-radius: 5px;
+}
+
+.payment-qr {
+    width: 200px;
+    height: 200px;
+    display: block;
+    margin: 1rem auto;
 }
