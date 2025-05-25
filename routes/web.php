@@ -11,8 +11,8 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/admin/login', [AdminAuthController::class, 'showLoginForm'])->name('admin.login');
-Route::post('/admin/login', [AdminAuthController::class, 'login'])->name('admin.login.submit');
+Route::get('/login', [AdminAuthController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [AdminAuthController::class, 'login'])->name('login.submit');
 Route::post('/send-reservation', [ReservationController::class, 'sendReservation'])->name('send.reservation');
 Route::post('/newsletter', [NewsletterController::class, 'subscribe'])->name('newsletter.subscribe');
 Route::get('/', [HomeController::class, 'index']);
@@ -22,3 +22,17 @@ Route::get('/testimoni/create', function () {
 Route::get('/testimoni/list', function () {
     return view('testimoni.list');
 })->name('alltestimoni');
+
+// Profile routes
+Route::get('/profile', function () {
+    return view('user.profile');
+})->name('profile');
+
+Route::get('/profile/update', function () {
+    return view('user.update');
+})->name('profileupdate');
+
+Route::put('/profile', function () {
+    // Add profile update logic here
+    return redirect()->route('profile')->with('success', 'Profile updated successfully!');
+})->name('profileupdate');
