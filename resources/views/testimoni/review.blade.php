@@ -25,16 +25,6 @@
             background-color: #f5f5f5;
         }
 
-        .navbar {
-            background-color: #000;
-            padding: 1rem;
-        }
-
-        .navbar img {
-            height: 40px;
-            border-radius: 50%;
-        }
-
         .review-container {
             max-width: 600px;
             margin: 6rem auto 2rem;
@@ -52,6 +42,10 @@
 
         .form-group {
             margin-bottom: 1.5rem;
+        }
+
+        .form-group input {
+            border-radius: 10px;
         }
 
         input, textarea {

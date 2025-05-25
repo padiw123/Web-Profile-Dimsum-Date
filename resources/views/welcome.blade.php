@@ -29,9 +29,11 @@
                     <li class="nav-item"><a href="#promo" class="nav-link">Promo</a></li>
                     <li class="nav-item"><a href="#menu" class="nav-link">Menu</a></li>
                     <li class="nav-item"><a href="#about" class="nav-link">Edukasi</a></li>
-                    {{-- <li class="nav-item"><a href="#gallery" class="nav-link">Edukasi</a></li> --}}
                     <li class="nav-item"><a href="#testimoni" class="nav-link">Testimoni</a></li>
                     <li class="nav-item"><a href="#contact" class="nav-link">Kontak</a></li>
+                    <li class="nav-item nav-item-login">
+                        <a href="{{ route('login') }}" class="btn-secondary" style="padding: 0.5rem 1rem; border-radius: 10px;">Login</a>
+                    </li>
                 </ul>
             </div>
             <div class="navbar-toggle" id="navbarToggle">
@@ -194,40 +196,6 @@
                     <p>Each dimsum is meticulously prepared by our team of skilled chefs who have trained for years to perfect their craft. We source only the freshest ingredients daily to ensure exceptional quality and flavor in every bite.</p>
                     <p>Our restaurant combines traditional Chinese aesthetics with modern comfort, creating a warm and inviting atmosphere for an unforgettable dining experience.</p>
                     <a href="#contact" class="btn btn-secondary">Contact Us</a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Gallery Section -->
-    <section id="gallery" class="gallery">
-        <div class="container">
-            <div class="section-header">
-                <h2>Gallery</h2>
-                <p>Take a glimpse into our world of dimsum</p>
-            </div>
-
-            <div class="gallery-grid">
-                <div class="gallery-item">
-                    <img src="" alt="Dimsum Assortment">
-                </div>
-                <div class="gallery-item">
-                    <img src="" alt="Chef Preparing Dimsum">
-                </div>
-                <div class="gallery-item">
-                    <img src="" alt="Restaurant Interior">
-                </div>
-                <div class="gallery-item">
-                    <img src="" alt="Steaming Baskets">
-                </div>
-                <div class="gallery-item">
-                    <img src="" alt="Steaming Baskets">
-                </div>
-                <div class="gallery-item">
-                    <img src="" alt="Tea Service">
-                </div>
-                <div class="gallery-item">
-                    <img src="" alt="Dining Experience">
                 </div>
             </div>
         </div>

@@ -140,7 +140,7 @@
         </div>
         <div class="login-form">
             <h1>Login</h1>
-            <form action="{{ route('admin.login') }}" method="POST">
+            <form action="{{ route('login') }}" method="POST">
                 <center>
                     @csrf
                     <div class="form-group">
