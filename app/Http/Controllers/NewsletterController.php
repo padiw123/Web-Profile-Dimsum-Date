@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Newsletter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 
@@ -12,6 +13,8 @@ class NewsletterController extends Controller
         $request->validate([
             'email' => 'required|email'
         ]);
+
+        Newsletter::create(['email' => $request->email]);
 
         // Kirim email ke kamu (ganti alamat emailmu di bawah)
         Mail::raw('Ada subscriber baru: ' . $request->email, function ($message) use ($request) {

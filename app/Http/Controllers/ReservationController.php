@@ -16,7 +16,9 @@ class ReservationController extends Controller
             'date' => 'required|date',
             'time' => 'required',
             'guests' => 'required|string',
-            'message' => 'nullable|string'
+            'message' => 'nullable|string',
+            'ordered_items_summary' => 'nullable|string',
+            'total_payment' => 'nullable|string'
         ]);
 
         // Nomor WhatsApp restoran
@@ -31,7 +33,10 @@ class ReservationController extends Controller
             "*Date:* {$validated['date']}\n" .
             "*Time:* {$validated['time']}\n" .
             "*Guests:* {$validated['guests']}\n" .
-            "*Message:* " . ($validated['message'] ?? '-');
+            "*Message:* " . ($validated['message'] ?? '-'). "\n\n" .
+            "*Order Summary:*\n" .
+            ($validated['ordered_items_summary'] ?? 'No items selected') . "\n\n" .
+            "*Total Payment:* " . ($validated['total_payment'] ?? 'Rp 0');
 
         // Encode pesan untuk digunakan dalam URL
         $encoded_message = rawurlencode($whatsapp_message);
