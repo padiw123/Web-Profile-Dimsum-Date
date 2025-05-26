@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Write Review - Dimsum Date</title>
+    <title>Tulis Testimoni - Dimsum Date</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('./assets/css/dimsum.css') }}">
     <style>
@@ -25,16 +25,6 @@
             background-color: #f5f5f5;
         }
 
-        .navbar {
-            background-color: #000;
-            padding: 1rem;
-        }
-
-        .navbar img {
-            height: 40px;
-            border-radius: 50%;
-        }
-
         .review-container {
             max-width: 600px;
             margin: 6rem auto 2rem;
@@ -52,6 +42,10 @@
 
         .form-group {
             margin-bottom: 1.5rem;
+        }
+
+        .form-group input {
+            border-radius: 10px;
         }
 
         input, textarea {
@@ -79,6 +73,10 @@
             margin: 0 5px;
         }
 
+        .star-rating i.hovered {
+            color: #d8c996;
+        }
+
         .star-rating i.active {
             color: var(--secondary-color);
         }
@@ -104,29 +102,18 @@
     <nav class="navbar" id="navbar">
         <div class="container">
             <div class="navbar-brand">
-                <a href="./#home">
+                <a href="../#home">
                     <img src="/assets/img/logo-dimsum.svg" alt="Dimsum Date" class="logo-img">
                     <span>Dimsum Date</span>
                 </a>
             </div>
-            <div class="navbar-menu" id="navbarMenu">
-                <ul class="navbar-nav">
-                    <li class="nav-item"><a href="./#home" class="nav-link">Home</a></li>
-                    <li class="nav-item"><a href="./#promo" class="nav-link">Promo</a></li>
-                    <li class="nav-item"><a href="./#menu" class="nav-link">Menu</a></li>
-                    <li class="nav-item"><a href="./#about" class="nav-link">About</a></li>
-                    <li class="nav-item"><a href="./#gallery" class="nav-link">Gallery</a></li>
-                    <li class="nav-item"><a href="./#testimoni" class="nav-link active">Testimoni</a></li>
-                    <li class="nav-item"><a href="./#contact" class="nav-link">Contact</a></li>
-                </ul>
-            </div>
-            <div class="navbar-toggle" id="navbarToggle">
-                <span class="bar"></span>
-                <span class="bar"></span>
-                <span class="bar"></span>
-            </div>
         </div>
     </nav>
+
+    <a href="javascript:history.back()" class="back-button">
+        <i class="fas fa-arrow-left"></i>
+        <span class="back-text">Kembali</span>
+    </a>
 
     <div class="review-container">
         <h2 class="review-title">Beri Ulasan</h2>
@@ -156,11 +143,31 @@
     </div>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <script>
-        document.querySelectorAll('.star-rating i').forEach(star => {
-            star.addEventListener('click', function() {
+        const stars = document.querySelectorAll('.star-rating i');
+
+        stars.forEach((star, idx) => {
+            star.addEventListener('mouseover', () => {
+                stars.forEach((s, i) => {
+                    if (i <= idx) {
+                        s.classList.add('hovered');
+                    } else {
+                        s.classList.remove('hovered');
+                    }
+                });
+            });
+
+            star.addEventListener('mouseout', () => {
+                stars.forEach(s => s.classList.remove('hovered'));
+            });
+        });
+
+        // Script klik aktif tetap dipakai:
+        stars.forEach(star => {
+            star.addEventListener('click', function () {
                 const rating = this.dataset.rating;
-                document.querySelectorAll('.star-rating i').forEach(s => {
+                stars.forEach(s => {
                     s.classList.remove('active');
                     if (s.dataset.rating <= rating) {
                         s.classList.add('active');
