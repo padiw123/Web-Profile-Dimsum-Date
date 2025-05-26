@@ -15,7 +15,7 @@ return new class extends Migration
         $table->id();
         $table->string('name');
         $table->string('category'); // steamed, fried, buns, desserts
-        $table->decimal('price', 6, 2);
+        $table->integer('price');
         $table->text('description');
         $table->string('image_url');
         $table->timestamps();
