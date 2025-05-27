@@ -1,3 +1,7 @@
+@php
+    use Illuminate\Support\Str;
+@endphp
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,18 +19,21 @@
         <div class="container">
             <div class="navbar-brand">
                 <a href="#home">
-                    <img src="/assets/img/logo-dimsum.jpg" alt="Dimsum Date" class="logo-img">
+                    <img src="/assets/img/logo-dimsum.svg" alt="Dimsum Date" class="logo-img">
                     <span>Dimsum Date</span>
                 </a>
             </div>
             <div class="navbar-menu" id="navbarMenu">
                 <ul class="navbar-nav">
-                    <li class="nav-item"><a href="#home" class="nav-link">Home</a></li>
+                    <li class="nav-item"><a href="#home" class="nav-link">Beranda</a></li>
                     <li class="nav-item"><a href="#promo" class="nav-link">Promo</a></li>
                     <li class="nav-item"><a href="#menu" class="nav-link">Menu</a></li>
-                    <li class="nav-item"><a href="#about" class="nav-link">About</a></li>
-                    <li class="nav-item"><a href="#gallery" class="nav-link">Gallery</a></li>
-                    <li class="nav-item"><a href="#contact" class="nav-link">Contact</a></li>
+                    <li class="nav-item"><a href="#about" class="nav-link">Edukasi</a></li>
+                    <li class="nav-item"><a href="#testimoni" class="nav-link">Testimoni</a></li>
+                    <li class="nav-item"><a href="#contact" class="nav-link">Kontak</a></li>
+                    <li class="nav-item nav-item-login">
+                        <a href="{{ route('login') }}" class="btn-secondary" style="padding: 0.5rem 1rem; border-radius: 10px;">Login</a>
+                    </li>
                 </ul>
             </div>
             <div class="navbar-toggle" id="navbarToggle">
@@ -48,6 +55,10 @@
             </div>
         </div>
     </section>
+
+    <button class="scroll-to-top" title="Scroll to top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
 
     <!-- Featured Section -->
     <section class="featured">
@@ -76,46 +87,48 @@
     <section id="promo" class="promotions">
         <div class="container">
             <div class="section-header">
-                <h2>Special Offers</h2>
+                <h2>Promo Tersedia</h2>
                 <p>Exclusive deals for an extraordinary dining experience</p>
             </div>
 
-            <div class="promo-grid">
-                <div class="promo-card">
-                    <h3>Weekday Lunch Special</h3>
-                    <div class="price">$24.99 <span>per person</span></div>
-                    <ul>
-                        <li>6 pieces of Premium Dimsum</li>
-                        <li>Chinese Tea Selection</li>
-                        <li>Dessert of the Day</li>
-                        <li>Valid Mon-Fri, 11AM-3PM</li>
-                    </ul>
-                    <a href="#contact" class="btn btn-secondary">Book Now</a>
+            <div class="promo-slider">
+                <div class="promo-arrow prev">
+                    <i class="fas fa-chevron-left"></i>
                 </div>
 
-                <div class="promo-card">
-                    <h3>Family Feast</h3>
-                    <div class="price">$89.99 <span>for 4 people</span></div>
-                    <ul>
-                        <li>20 pieces of Signature Dimsum</li>
-                        <li>4 Bowl of Special Soup</li>
-                        <li>4 Desserts</li>
-                        <li>Valid All Week</li>
-                    </ul>
-                    <a href="#contact" class="btn btn-secondary">Book Now</a>
+                <div class="promo-container">
+                    @foreach($promos as $promo)
+                        <div class="promo-slide">
+                            <div class="promo-card">
+                                <h3>{{ $promo->title }}</h3>
+                                <div class="description">
+                                    <p>{{ $promo->description }}</p>
+                                    @if($promo->price)
+                                        <p class="price">${{ number_format($promo->price, 2) }} <span>{{ $promo->price_note }}</span></p>
+                                    @endif
+                                    @if($promo->features)
+                                        <ul>
+                                            @foreach(json_decode($promo->features) as $feature)
+                                                <li>{{ $feature }}</li>
+                                            @endforeach
+                                        </ul>
+                                    @endif
+                                </div>
+                                <a href="{{ $promo->cta_link ?? '#contact' }}" class="btn btn-secondary">Book Now</a>
+                            </div>
+                        </div>
+                        @endforeach
                 </div>
 
-                <div class="promo-card">
-                    <h3>Weekend All-You-Can-Eat</h3>
-                    <div class="price">$39.99 <span>per person</span></div>
-                    <ul>
-                        <li>Unlimited Dimsum Selection</li>
-                        <li>Free Flow Chinese Tea</li>
-                        <li>Signature Dessert Buffet</li>
-                        <li>Valid Sat-Sun, 2-Hour Seating</li>
-                    </ul>
-                    <a href="#contact" class="btn btn-secondary">Book Now</a>
+                <div class="promo-arrow next">
+                    <i class="fas fa-chevron-right"></i>
                 </div>
+            </div>
+
+            <div class="promo-navigation">
+                @foreach($promos as $index => $promo)
+                    <div class="promo-dot {{ $index === 0 ? 'active' : '' }}" data-index="{{ $index }}"></div>
+                @endforeach
             </div>
         </div>
     </section>
@@ -124,18 +137,18 @@
     <section id="menu" class="menu">
         <div class="container">
             <div class="section-header">
-                <h2>Our Menu</h2>
+                <h2>Menu Kami</h2>
                 <p>Discover our handcrafted selection of authentic dimsum</p>
             </div>
 
             <div class="menu-categories">
                 <button class="menu-category active" data-category="all">Semua</button>
-                <button class="menu-category" data-category="Dimsum Ayam">Dimsum Ayam</button>
-                <button class="menu-category" data-category="Dimsum Ayam Udang">Dimsum Ayam Udang</button>
-                <button class="menu-category" data-category="Mie">Mie</button>
-                <button class="menu-category" data-category="Camilan">Camilan</button>
-                <button class="menu-category" data-category="Paket Hemat">Paket Hemat</button>
-                <button class="menu-category" data-category="Minuman">Minuman</button>
+                <button class="menu-category" data-category="dimsum ayam">Dimsum Ayam</button>
+                <button class="menu-category" data-category="dimsum ayam udang">Dimsum Ayam Udang</button>
+                <button class="menu-category" data-category="mie">Mie</button>
+                <button class="menu-category" data-category="camilan">Camilan</button>
+                <button class="menu-category" data-category="paket hemat">Paket Hemat</button>
+                <button class="menu-category" data-category="minuman">Minuman</button>
             </div>
 
             <div class="menu-grid">
@@ -145,8 +158,18 @@
                             <img src="{{ $menu->image_url }}" alt="{{ $menu->name }}">
                         </div>
                         <div class="menu-content">
-                            <h3>{{ $menu->name }} <span class="price">${{ number_format($menu->price, 2) }}</span></h3>
+                            <h3>{{ $menu->name }}</h3>
+                            <span class="price">Rp {{ number_format($menu->price, 0, ',', '.') }}</span>
                             <p>{{ $menu->description }}</p>
+                            <div class="quantity-control">
+                                <button class="quantity-btn minus" onclick="updateQuantity(this, -1)">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <div class="quantity-display">0</div>
+                                <button class="quantity-btn plus" onclick="updateQuantity(this, 1)">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 @endforeach
@@ -163,7 +186,7 @@
         <div class="container">
             <div class="about-content">
                 <div class="about-image">
-                    <img src="https://images.pexels.com/photos/2098134/pexels-photo-2098134.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="About Dimsum Date">
+                    <img src="" alt="About Dimsum Date">
                 </div>
                 <div class="about-text">
                     <div class="section-header">
@@ -178,104 +201,36 @@
         </div>
     </section>
 
-    <!-- Gallery Section -->
-    <section id="gallery" class="gallery">
-        <div class="container">
-            <div class="section-header">
-                <h2>Gallery</h2>
-                <p>Take a glimpse into our world of dimsum</p>
-            </div>
-
-            <div class="gallery-grid">
-                <div class="gallery-item">
-                    <img src="" alt="Dimsum Assortment">
-                </div>
-                <div class="gallery-item">
-                    <img src="" alt="Chef Preparing Dimsum">
-                </div>
-                <div class="gallery-item">
-                    <img src="" alt="Restaurant Interior">
-                </div>
-                <div class="gallery-item">
-                    <img src="" alt="Steaming Baskets">
-                </div>
-                <div class="gallery-item">
-                    <img src="" alt="Steaming Baskets">
-                </div>
-                <div class="gallery-item">
-                    <img src="" alt="Tea Service">
-                </div>
-                <div class="gallery-item">
-                    <img src="" alt="Dining Experience">
-                </div>
-            </div>
-        </div>
-    </section>
-
     <!-- Testimonials Section -->
-    <section class="testimonials">
+    <section id="testimoni" class="testimonials">
         <div class="container">
             <div class="section-header">
-                <h2>What Our Customers Say</h2>
+                <h2 style="color:#B22222;">Apa Sih yang Dibicarain Pelanggan?</h2>
             </div>
 
-            <div class="testimonial-slider">
-                <div class="testimonial-slide">
-                    <div class="testimonial-content">
-                        <div class="stars">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
+            <div class="review-container">
+                <div class="review-grid">
+                    @for ($i = 0; $i < 8; $i++)
+                    <div class="review-card">
+                        <div class="review-stars">
+                            @for ($star = 0; $star < 5; $star++)
+                                <i class="fas fa-star"></i>
+                            @endfor
                         </div>
-                        <p>"The best dimsum I've had outside of Hong Kong. Authentic flavors and impeccable service!"</p>
-                        <div class="testimonial-author">
-                            <h4>Sarah Chen</h4>
-                            <p>Food Critic</p>
-                        </div>
+                        <h4 class="review-text">{{ Str::words('Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quasi ex perferendis minima quibusdam, pariatur et animi voluptates accusantium harum ipsa atque repellendus qui totam nam, voluptate sit iusto impedit dignissimos.', 15, '...') }}</h4>
+                            {{-- <img src="" alt="Reviewer" class="reviewer-image"> --}}
+                            <div class="reviewer-info">
+                                <div class="reviewer-name">Reviewer Name</div>
+                                <div class="review-date">2 days ago</div>
+                            </div>
                     </div>
-                </div>
-
-                <div class="testimonial-slide">
-                    <div class="testimonial-content">
-                        <div class="stars">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                        </div>
-                        <p>"Dimsum Date has been our family's go-to for dimsum for years. Their har gow is simply unmatched!"</p>
-                        <div class="testimonial-author">
-                            <h4>Michael Wong</h4>
-                            <p>Regular Customer</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="testimonial-slide">
-                    <div class="testimonial-content">
-                        <div class="stars">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star-half-alt"></i>
-                        </div>
-                        <p>"A hidden gem with the most delicious dimsum and a wonderful atmosphere. Perfect for family gatherings!"</p>
-                        <div class="testimonial-author">
-                            <h4>Emily Johnson</h4>
-                            <p>Food Blogger</p>
-                        </div>
-                    </div>
+                    @endfor
                 </div>
             </div>
 
-            <div class="testimonial-dots">
-                <span class="dot active"></span>
-                <span class="dot"></span>
-                <span class="dot"></span>
+            <div class="review-button">
+                <a href="{{ route('review') }}" class="btn-review">Tulis Testimoni</a>
+                <a href="{{ route('alltestimoni') }}" class="btn-review">Semua Testimoni</a>
             </div>
         </div>
     </section>
@@ -289,6 +244,84 @@
             </div>
 
             <div class="contact-content">
+                <div class="contact-info">
+                    <!-- Order Summary -->
+                    <div class="order-summary">
+                        <h3>Rincian Pesanan</h3>
+                        <div id="orderItems" class="order-items">
+                            <!-- Order items will be dynamically added here -->
+                        </div>
+                        <div class="order-total">
+                            <h4>Total Pembayaran</h4>
+                            <span id="totalAmount">Rp 0</span>
+                        </div>
+
+                        <div class="payment-method">
+                            <h4>Metode Pembayaran</h4>
+                            <select id="paymentSelect" onchange="togglePaymentDetails()">
+                                <option value="">Pilih metode pembayaran</option>
+                                <option value="qris">QRIS</option>
+                                <option value="cimb">Transfer Bank - CIMB Niaga</option>
+                                <option value="mandiri">Transfer Bank - Mandiri</option>
+                            </select>
+
+                            <div id="qrisDetails" class="payment-details" style="display: none;">
+                                <img src="path/to/qris-code.png" alt="QRIS Code" class="payment-qr">
+                            </div>
+
+                            <div id="cimbDetails" class="payment-details" style="display: none;">
+                                <p>Bank: CIMB Niaga</p>
+                                <p>No. Rekening: 123456789</p>
+                                <p>Atas Nama: Dimsum Date</p>
+                            </div>
+
+                            <div id="mandiriDetails" class="payment-details" style="display: none;">
+                                <p>Bank: Mandiri</p>
+                                <p>No. Rekening: 987654321</p>
+                                <p>Atas Nama: Dimsum Date</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="contact-form">
+                        <h3>Detail Pemesanan</h3>
+                        <form action="{{ route('send.reservation') }}" method="POST" target="_blank">
+                            @csrf
+                            <div class="form-group">
+                                <input type="text" name="name" placeholder="Nama Lengkap" value="{{ old('name') }}" required>
+                            </div>
+                            <div class="form-group">
+                                <input type="email" name="email" placeholder="E-Mail" value="{{ old('email') }}" required>
+                            </div>
+                            <div class="form-group">
+                                <input type="tel" name="phone" placeholder="Nomor Telepon" value="{{ old('phone') }}" required>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <input type="date" name="date" value="{{ old('date') }}" required>
+                                </div>
+                                <div class="form-group">
+                                    <input type="time" name="time" value="{{ old('time') }}" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <select name="guests" required>
+                                    <option value="" disabled {{ old('guests') ? '' : 'selected' }}>Jumlah Orang</option>
+                                    @foreach (['1' => '1 Orang', '2' => '2 Orang', '3' => '3 Orang', '4' => '4 Orang', '5' => '5 Orang', '6+' => '6+ Orang'] as $value => $label)
+                                        <option value="{{ $value }}" {{ old('guests') == $value ? 'selected' : '' }}>{{ $label }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <textarea name="message" placeholder="Catatan Khusus">{{ old('message') }}</textarea>
+                            </div>
+                            <input type="hidden" name="ordered_items_summary" id="orderedItemsSummaryInput">
+                            <input type="hidden" name="total_payment" id="totalPaymentInput">
+                            <button type="submit" class="btn btn-primary">Checkout</button>
+                        </form>
+                    </div>
+                </div>
+
                 <div class="contact-info">
                     <div class="contact-item">
                         <i class="fas fa-map-marker-alt"></i>
@@ -304,9 +337,8 @@
                                     allowfullscreen
                                     loading="lazy"
                                     referrerpolicy="no-referrer-when-downgrade"
-                                        src="https://maps.google.com/maps?q=-6.116312383077391, 106.15421359101309&z=15&output=embed">
-                                      </iframe>
-                                </a>
+                                    src="https://maps.google.com/maps?q=-6.116312383077391, 106.15421359101309&z=15&output=embed">
+                                </iframe>
                             </div>
                             <p>Ruko R5 Ramayana, Kotabaru, Kec. Serang,<br> Kota Serang, Banten 42112</p>
                         </div>
@@ -330,46 +362,10 @@
                     </div>
 
                     <div class="social-links">
-                        <a href="https://tiktok.com/@dimsum_date" class="social-link" target="_blank"><i class="fab fa-tiktok"></i></a>
                         <a href="https://linktr.ee/dimsumdate?utm_source=linktree_profile_share&ltsid=c76934ad-601e-47db-ae8c-73a3d4287aa4" class="social-link" target="_blank"><img src="/assets/img/Linktree.png" alt="Linktree" style="color: #FFFFFF; width: 16px;"></a>
+                        <a href="https://tiktok.com/@dimsum_date" class="social-link" target="_blank"><i class="fab fa-tiktok"></i></a>
                         <a href="https://www.instagram.com/dimsum_date?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" class="social-link" target="_blank"><i class="fab fa-instagram"></i></a>
                     </div>
-                </div>
-
-                <div class="contact-form">
-                    <h3>Make a Reservation</h3>
-                    <form action="{{ route('send.reservation') }}" method="POST" target="_blank">
-                        @csrf
-                        <div class="form-group">
-                            <input type="text" name="name" placeholder="Your Name" value="{{ old('name') }}" required>
-                        </div>
-                        <div class="form-group">
-                            <input type="email" name="email" placeholder="Your Email" value="{{ old('email') }}" required>
-                        </div>
-                        <div class="form-group">
-                            <input type="tel" name="phone" placeholder="Phone Number" value="{{ old('phone') }}" required>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <input type="date" name="date" value="{{ old('date') }}" required>
-                            </div>
-                            <div class="form-group">
-                                <input type="time" name="time" value="{{ old('time') }}" required>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <select name="guests" required>
-                                <option value="" disabled {{ old('guests') ? '' : 'selected' }}>Number of Guests</option>
-                                @foreach (['1' => '1 Person', '2' => '2 People', '3' => '3 People', '4' => '4 People', '5' => '5 People', '6+' => '6+ People'] as $value => $label)
-                                    <option value="{{ $value }}" {{ old('guests') == $value ? 'selected' : '' }}>{{ $label }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <textarea name="message" placeholder="Special Requests">{{ old('message') }}</textarea>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Reserve Table</button>
-                    </form>
                 </div>
             </div>
         </div>
@@ -390,8 +386,8 @@
                         <li><a href="#home">Home</a></li>
                         <li><a href="#promo">Promo</a></li>
                         <li><a href="#menu">Menu</a></li>
-                        <li><a href="#about">About</a></li>
-                        <li><a href="#gallery">Gallery</a></li>
+                        <li><a href="#about">Edukasi</a></li>
+                        <li><a href="#testimoni">Testimoni</a></li>
                         <li><a href="#contact">Contact</a></li>
                     </ul>
                 </div>
@@ -416,5 +412,77 @@
     </footer>
 
     <script src="{{ asset('./assets/js/dimsum.js') }}"></script>
+    <script>
+    function updateQuantity(button, change) {
+        const display = button.parentElement.querySelector('.quantity-display');
+        const currentValue = parseInt(display.textContent);
+        const newValue = Math.max(0, currentValue + change);
+        display.textContent = newValue;
+
+        // Get menu item details
+        const menuItem = button.closest('.menu-item');
+        const name = menuItem.querySelector('h3').textContent;
+        const price = parseInt(menuItem.querySelector('.price').textContent.replace(/[^0-9]/g, ''));
+
+        updateOrderSummary(name, newValue, price);
+    }
+
+    function updateOrderSummary(itemName, quantity, price) {
+        const orderItems = document.getElementById('orderItems');
+        const totalAmount = document.getElementById('totalAmount');
+
+        // Update or add item to order summary
+        let itemElement = orderItems.querySelector(`[data-item="${itemName}"]`);
+        if (quantity > 0) {
+            if (!itemElement) {
+                itemElement = document.createElement('div');
+                itemElement.className = 'order-item';
+                itemElement.setAttribute('data-item', itemName);
+                itemElement.innerHTML = `
+                    <span>${itemName} x <span class="item-quantity">${quantity}</span></span>
+                    <span class="item-total">Rp ${(price * quantity).toLocaleString()}</span>
+                `;
+                orderItems.appendChild(itemElement);
+            } else {
+                itemElement.querySelector('.item-quantity').textContent = quantity;
+                itemElement.querySelector('.item-total').textContent = `Rp ${(price * quantity).toLocaleString()}`;
+            }
+        } else if (itemElement) {
+            itemElement.remove();
+        }
+
+        // Update total amount
+        let total = 0;
+        orderItems.querySelectorAll('.order-item').forEach(item => {
+            total += parseInt(item.querySelector('.item-total').textContent.replace(/[^0-9]/g, ''));
+        });
+        totalAmount.textContent = `Rp ${total.toLocaleString()}`;
+    }
+
+    function togglePaymentDetails() {
+        const paymentSelect = document.getElementById('paymentSelect');
+        const qrisDetails = document.getElementById('qrisDetails');
+        const cimbDetails = document.getElementById('cimbDetails');
+        const mandiriDetails = document.getElementById('mandiriDetails');
+
+        // Hide all payment details first
+        qrisDetails.style.display = 'none';
+        cimbDetails.style.display = 'none';
+        mandiriDetails.style.display = 'none';
+
+        // Show selected payment details
+        switch(paymentSelect.value) {
+            case 'qris':
+                qrisDetails.style.display = 'block';
+                break;
+            case 'cimb':
+                cimbDetails.style.display = 'block';
+                break;
+            case 'mandiri':
+                mandiriDetails.style.display = 'block';
+                break;
+        }
+    }
+    </script>
 </body>
 </html>

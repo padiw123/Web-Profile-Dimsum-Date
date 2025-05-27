@@ -32,78 +32,72 @@ document.addEventListener('DOMContentLoaded', function() {
     // Menu filtering
     const menuCategories = document.querySelectorAll('.menu-category');
     const menuItems = document.querySelectorAll('.menu-item');
+    const toggleBtn = document.getElementById('toggleMenuBtn');
+    let isExpanded = false;
 
-    menuCategories.forEach(function(category) {
-        category.addEventListener('click', function() {
-            // Remove active class from all categories
-            menuCategories.forEach(function(cat) {
-                cat.classList.remove('active');
-            });
+    // Menu Filtering
+    menuCategories.forEach(function(categoryBtn) {
+        categoryBtn.addEventListener('click', function() {
+            // Reset active class
+            menuCategories.forEach(btn => btn.classList.remove('active'));
+            categoryBtn.classList.add('active');
 
-            // Add active class to clicked category
-            this.classList.add('active');
+            const selectedCategory = categoryBtn.getAttribute('data-category');
+            let visibleCount = 0;
 
-            const filter = this.getAttribute('data-category');
+            // Reset state
+            isExpanded = false;
+            toggleBtn.textContent = 'View Full Menu';
 
-            // Show or hide menu items based on category
-            menuItems.forEach(function(item) {
-                if (filter === 'all' || item.getAttribute('data-category') === filter) {
-                    item.style.display = 'block';
-                } else {
-                    item.style.display = 'none';
+            // Loop semua item
+            menuItems.forEach(item => {
+                const itemCategory = item.getAttribute('data-category');
+
+                // Reset semua item
+                item.classList.add('hidden');
+                item.classList.remove('extra-menu');
+
+                const isMatch = selectedCategory === 'all' || itemCategory === selectedCategory;
+
+                if (isMatch) {
+                    if (visibleCount < 6) {
+                        item.classList.remove('hidden');
+                    } else {
+                        item.classList.add('extra-menu'); // Akan dikendalikan oleh tombol
+                        if (isExpanded) {
+                            item.classList.remove('hidden');
+                        }
+                    }
+                    visibleCount++;
                 }
             });
         });
     });
 
-    // Testimonial slider
-    const testimonialSlides = document.querySelectorAll('.testimonial-slide');
-    const dots = document.querySelectorAll('.dot');
-    let currentSlide = 0;
+    // Toggle Full Menu
+    toggleBtn.addEventListener('click', () => {
+        const activeCategory = document.querySelector('.menu-category.active').getAttribute('data-category');
+        isExpanded = !isExpanded;
 
-    function showSlide(n) {
-        // Hide all slides
-        testimonialSlides.forEach(function(slide) {
-            slide.style.display = 'none';
+        let visibleCount = 0;
+
+        menuItems.forEach(item => {
+            const itemCategory = item.getAttribute('data-category');
+            const isMatch = activeCategory === 'all' || itemCategory === activeCategory;
+
+            if (isMatch) {
+                if (visibleCount >= 6) {
+                    item.classList.toggle('hidden', !isExpanded);
+                }
+                visibleCount++;
+            }
         });
 
-        // Remove active class from all dots
-        dots.forEach(function(dot) {
-            dot.classList.remove('active');
-        });
-
-        // Show current slide and activate corresponding dot
-        testimonialSlides[n].style.display = 'block';
-        dots[n].classList.add('active');
-    }
-
-    // Initialize slider
-    showSlide(currentSlide);
-
-    // Add click event to dots
-    dots.forEach(function(dot, index) {
-        dot.addEventListener('click', function() {
-            showSlide(index);
-            currentSlide = index;
-            resetTimer();
-        });
+        toggleBtn.textContent = isExpanded ? 'Show Less' : 'View Full Menu';
     });
 
-    // Auto slide
-    let slideTimer = setInterval(nextSlide, 5000);
-
-    function nextSlide() {
-        currentSlide = (currentSlide + 1) % testimonialSlides.length;
-        showSlide(currentSlide);
-    }
-
-    function resetTimer() {
-        clearInterval(slideTimer);
-        slideTimer = setInterval(nextSlide, 5000);
-    }
-
     // Reveal animations on scroll
-    const revealElements = document.querySelectorAll('.section-header, .featured-item, .menu-item, .about-content, .gallery-item, .testimonial-slider, .contact-content');
+    const revealElements = document.querySelectorAll('.section-header, .featured-item, .menu-item, .about-content, .gallery-item, .contact-content');
 
     function revealOnScroll() {
         let windowHeight = window.innerHeight;
@@ -174,16 +168,136 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    const toggleBtn = document.getElementById('toggleMenuBtn');
-    const extraMenus = document.querySelectorAll('.extra-menu');
-    let isExpanded = false;
+    // Promotions Slider
+    const promoContainer = document.querySelector('.promo-container');
+    const promoSlides = document.querySelectorAll('.promo-slide');
+    const prevButton = document.querySelector('.promo-arrow.prev');
+    const nextButton = document.querySelector('.promo-arrow.next');
+    const dots1 = document.querySelectorAll('.promo-dot');
+    let currentSlide1 = 0;
+    let slideInterval;
 
-    toggleBtn.addEventListener('click', () => {
-        extraMenus.forEach(item => {
-            item.classList.toggle('hidden');
+    function updateSlidePosition() {
+        promoContainer.style.transform = `translateX(-${currentSlide1 * 100}%)`;
+
+        // Update dots1
+        dots1.forEach(dot => dot.classList.remove('active'));
+        dots1[currentSlide1].classList.add('active');
+
+        // Update cards
+        promoSlides.forEach((slide, index) => {
+            const card = slide.querySelector('.promo-card');
+            if (index === currentSlide1) {
+                card.classList.add('active');
+            } else {
+                card.classList.remove('active');
+            }
         });
+    }
 
-        isExpanded = !isExpanded;
-        toggleBtn.textContent = isExpanded ? 'Show Less' : 'View Full Menu';
+    function nextSlide() {
+        currentSlide1 = (currentSlide1 + 1) % promoSlides.length;
+        updateSlidePosition();
+    }
+
+    function prevSlide() {
+        currentSlide1 = (currentSlide1 - 1 + promoSlides.length) % promoSlides.length;
+        updateSlidePosition();
+    }
+
+    function startSlideShow() {
+        slideInterval = setInterval(nextSlide, 5000);
+    }
+
+    function stopSlideShow() {
+        clearInterval(slideInterval);
+    }
+
+    // Event Listeners
+    prevButton.addEventListener('click', () => {
+        prevSlide();
+        stopSlideShow();
+        startSlideShow();
     });
+
+    nextButton.addEventListener('click', () => {
+        nextSlide();
+        stopSlideShow();
+        startSlideShow();
+    });
+
+    dots1.forEach((dot, index) => {
+        dot.addEventListener('click', () => {
+            currentSlide1 = index;
+            updateSlidePosition();
+            stopSlideShow();
+            startSlideShow();
+        });
+    });
+
+    promoContainer.addEventListener('mouseenter', stopSlideShow);
+    promoContainer.addEventListener('mouseleave', startSlideShow);
+
+    // Start the slideshow
+    startSlideShow();
+
+    const scrollToTopBtn = document.querySelector('.scroll-to-top');
+
+    window.addEventListener('scroll', () => {
+        if (window.pageYOffset > 300) {
+            scrollToTopBtn.classList.add('visible');
+        } else {
+            scrollToTopBtn.classList.remove('visible');
+        }
+    });
+
+    scrollToTopBtn.addEventListener('click', () => {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    });
+
+    const reservationForm = document.querySelector('.contact-form form[action*="send-reservation"]'); // Selector for your reservation form
+
+    if (reservationForm) {
+        reservationForm.addEventListener('submit', function(event) {
+            const orderItemsDiv = document.getElementById('orderItems'); // The div containing individual order items
+            const totalAmountSpan = document.getElementById('totalAmount'); // The span showing the total amount
+            const orderedItemsSummaryInput = document.getElementById('orderedItemsSummaryInput'); // Hidden input for items
+            const totalPaymentInput = document.getElementById('totalPaymentInput'); // Hidden input for total
+
+            // Basic check to ensure all necessary elements are present
+            if (!orderItemsDiv || !totalAmountSpan || !orderedItemsSummaryInput || !totalPaymentInput) {
+                console.error('Error: One or more order summary elements are missing from the DOM.');
+                // Optionally, you could prevent form submission here if critical elements are missing:
+                // event.preventDefault();
+                return;
+            }
+
+            let orderSummaryString = "";
+            const items = orderItemsDiv.querySelectorAll('.order-item'); // Get all individual order item divs
+
+            if (items.length > 0) {
+                items.forEach(item => {
+                    // Extracts "Item Name x Quantity" part
+                    const itemNameAndQuantityElement = item.querySelector('span:first-child');
+                    // Extracts "Rp X.XXX" part for that item
+                    const itemTotalElement = item.querySelector('span.item-total');
+
+                    if (itemNameAndQuantityElement && itemTotalElement) {
+                        const itemNameAndQuantity = itemNameAndQuantityElement.textContent.trim();
+                        const itemTotal = itemTotalElement.textContent.trim();
+                        orderSummaryString += `${itemNameAndQuantity} (${itemTotal})\n`; // Format: "Dimsum Ayam x 2 (Rp 30.000)"
+                    }
+                });
+            } else {
+                orderSummaryString = "No items selected";
+            }
+
+            // Populate the hidden input fields
+            orderedItemsSummaryInput.value = orderSummaryString.trim(); // Set the summarized string of items
+            totalPaymentInput.value = totalAmountSpan.textContent.trim(); // Set the total payment string
+        });
+    }
 });
