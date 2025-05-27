@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Admin</title>
+    <title>Register Admin</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -56,7 +56,6 @@
         }
 
         .login-form {
-            border-color: ;
             flex: 1;
             padding: 50px;
             display: flex;
@@ -139,24 +138,29 @@
             <img src="/assets/img/logo-dimsum.png" alt="Dimsum Logo">
         </div>
         <div class="login-form">
-            <h1>Login</h1>
-            <form action="{{ route('login') }}" method="POST">
+            <h1>Register</h1>
+            <form action="{{ route('register') }}" method="POST">
                 <center>
                     @csrf
                     <div class="form-group">
                         <i class="fas fa-user"></i>
-                        <input type="email" name="email" placeholder="E-mail" required>
+                        <input type="text" name="name" placeholder="Nama" required>
                     </div>
                     <div class="form-group">
-                        <i class="fas fa-lock"></i>
-                        <input type="password" name="password" placeholder="Password" required>
+                        <i class="fas fa-map-marker-alt"></i>
+                        <input type="text" name="address" placeholder="Alamat" required>
                     </div>
-                    <p style="margin-top: 10px; font-size: 0.9rem;">
-                        Belum punya akun? <a href="{{ route('register') }}" style="color: #980300; text-decoration: none;">Register</a>
-                    </p>
-                    <button type="submit" class="login-btn">Login</button>
-                </form>
-            </center>
+                    <div class="form-group">
+                        <i class="fas fa-phone"></i>
+                        <input type="text" name="phone" placeholder="No. HP" required>
+                    </div>
+                    <div class="form-group">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" name="email" placeholder="Email" required>
+                    </div>
+                    <button type="submit" class="login-btn">Register</button>
+                </center>
+            </form>
         </div>
     </div>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">

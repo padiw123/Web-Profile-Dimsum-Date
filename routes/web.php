@@ -36,3 +36,13 @@ Route::put('/profile', function () {
     // Add profile update logic here
     return redirect()->route('profile')->with('success', 'Profile updated successfully!');
 })->name('profileupdate');
+
+// Register routes
+Route::get('/register', function () {
+    return view('Register');
+})->name('register');
+
+Route::post('/register', function () {
+    // Tambahkan logic simpan user di sini nanti
+    return redirect()->route('login')->with('success', 'Register berhasil!');
+})->name('register.submit');
