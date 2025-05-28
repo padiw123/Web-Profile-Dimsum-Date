@@ -2,7 +2,9 @@
 
 use App\Models\Menu;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\ReservationController;
@@ -12,7 +14,7 @@ Route::get('/', function () {
 });
 
 Route::get('/login', [AdminAuthController::class, 'showLoginForm'])->name('login');
-Route::post('/login', [AdminAuthController::class, 'login'])->name('login.submit');
+Route::post('/login', [AdminAuthController::class, 'login']);
 Route::post('/send-reservation', [ReservationController::class, 'sendReservation'])->name('send.reservation');
 Route::post('/newsletter', [NewsletterController::class, 'subscribe'])->name('newsletter.subscribe');
 Route::get('/', [HomeController::class, 'index']);
@@ -24,25 +26,12 @@ Route::get('/testimoni/list', function () {
 })->name('alltestimoni');
 
 // Profile routes
-Route::get('/profile', function () {
-    return view('user.profile');
-})->name('profile');
-
-Route::get('/profile/update', function () {
-    return view('user.update');
-})->name('profileupdate');
-
-Route::put('/profile', function () {
-    // Add profile update logic here
-    return redirect()->route('profile')->with('success', 'Profile updated successfully!');
-})->name('profileupdate');
+Route::middleware(['auth'])->group(function () {
+    Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
+    Route::get('/profile/update', [ProfileController::class, 'edit'])->name('profileupdate');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profileupdate.put');
+});
 
 // Register routes
-Route::get('/register', function () {
-    return view('Register');
-})->name('register');
-
-Route::post('/register', function () {
-    // Tambahkan logic simpan user di sini nanti
-    return redirect()->route('login')->with('success', 'Register berhasil!');
-})->name('register.submit');
+Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
+Route::post('/register', [AuthController::class, 'register'])->name('register.submit');

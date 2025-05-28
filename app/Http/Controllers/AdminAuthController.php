@@ -19,9 +19,15 @@ class AdminAuthController extends Controller
             'password' => ['required'],
         ]);
 
-        if (Auth::guard('web')->attempt($credentials)) {
+        if (Auth::guard('admin')->attempt($credentials)) {
             $request->session()->regenerate();
             return redirect()->intended('/admin');
+        }
+
+        // Coba login sebagai user biasa
+        if (Auth::guard('web')->attempt($credentials)) {
+            $request->session()->regenerate();
+            return redirect()->intended('/');
         }
 
         return back()->withErrors([

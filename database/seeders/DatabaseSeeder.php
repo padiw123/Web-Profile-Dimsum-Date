@@ -23,13 +23,12 @@ class DatabaseSeeder extends Seeder
             'name' => 'Test User',
             'email' => 'test@example.com',
             'password' => bcrypt('12345678'),
-            'is_admin' => true
         ]);
 
         Admin::create([
             'name' => 'Admin Dimsum',
-            'email' => 'admin@dimsum.test',
-            'password' => bcrypt('password'), // ganti jika ingin password lebih kuat
+            'email' => 'dimsumdate@gmail.com',
+            'password' => bcrypt('12345678'), // ganti jika ingin password lebih kuat
         ]);
 
         Promo::create([
