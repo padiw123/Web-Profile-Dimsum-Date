@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
@@ -32,5 +33,22 @@ class AuthController extends Controller
         ]);
 
         return redirect()->route('login')->with('success', 'Register berhasil!');
+    }
+
+    public function login(Request $request)
+    {
+        $credentials = $request->validate([
+            'email' => ['required', 'email'],
+            'password' => ['required'],
+        ]);
+
+        // Coba login menggunakan guard 'web' (atau guard default)
+        if (Auth::guard('web')->attempt($credentials)) { // Pastikan guard 'web' atau sesuai
+            $request->session()->regenerate();
+            // Redirect ke halaman user
+            return redirect()->intended('/'); // atau halaman user lainnya
+        }
+
+        // ... handle kegagalan login ...
     }
 }
