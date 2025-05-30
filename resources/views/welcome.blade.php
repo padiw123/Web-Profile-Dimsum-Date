@@ -32,7 +32,30 @@
                     <li class="nav-item"><a href="#testimoni" class="nav-link">Testimoni</a></li>
                     <li class="nav-item"><a href="#contact" class="nav-link">Kontak</a></li>
                     <li class="nav-item nav-item-login">
-                        <a href="{{ route('login') }}" class="btn-secondary" style="padding: 0.5rem 1rem; border-radius: 10px;">Login</a>
+                        @guest
+                            <a href="{{ route('login') }}" class="btn-secondary" style="padding: 0.5rem 1rem; border-radius: 10px;">Login</a>
+                        @endguest
+
+                        @auth
+                            <div class="dropdown profile-dropdown">
+                                <button class="dropdown-toggle" type="button" id="userDropdown">
+                                    <img src="{{ asset('./assets/img/logo-dimsum.jpg') }}" alt="Profile" class="profile-img">
+                                    <span>{{ auth()->user()->name }}</span>
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a href="{{ route('profile') }}" class="dropdown-item">Profile</a></li>
+                                    <li><a href="{{ route('listhistory') }}" class="dropdown-item">History</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <form method="POST" action="{{ route('logout') }}">
+                                            @csrf
+                                            <button type="submit" class="dropdown-item-btn" >Logout</button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </div>
+                        @endauth
                     </li>
                 </ul>
             </div>
@@ -59,29 +82,6 @@
     <button class="scroll-to-top" title="Scroll to top">
         <i class="fas fa-arrow-up"></i>
     </button>
-
-    <!-- Featured Section -->
-    <section class="featured">
-        <div class="container">
-            <div class="featured-grid">
-                <div class="featured-item">
-                    <i class="fas fa-utensils"></i>
-                    <h3>Fresh Ingredients</h3>
-                    <p>Sourced daily from local markets</p>
-                </div>
-                <div class="featured-item">
-                    <i class="fas fa-clock"></i>
-                    <h3>Traditional Recipe</h3>
-                    <p>Passed down through generations</p>
-                </div>
-                <div class="featured-item">
-                    <i class="fas fa-award"></i>
-                    <h3>Master Chefs</h3>
-                    <p>With decades of experience</p>
-                </div>
-            </div>
-        </div>
-    </section>
 
     <!-- Promotions Section -->
     <section id="promo" class="promotions">
@@ -412,6 +412,28 @@
     </footer>
 
     <script src="{{ asset('./assets/js/dimsum.js') }}"></script>
+    @auth
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const dropdownToggle = document.getElementById("userDropdown");
+                const profileDropdown = document.querySelector(".profile-dropdown");
+
+                if (dropdownToggle && profileDropdown) {
+                    dropdownToggle.addEventListener("click", function (e) {
+                        e.stopPropagation();
+                        profileDropdown.classList.toggle("show");
+                    });
+
+                    document.addEventListener("click", function (e) {
+                        if (!profileDropdown.contains(e.target)) {
+                            profileDropdown.classList.remove("show");
+                        }
+                    });
+                }
+            });
+        </script>
+        @endauth
+
     <script>
     function updateQuantity(button, change) {
         const display = button.parentElement.querySelector('.quantity-display');

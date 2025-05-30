@@ -139,7 +139,7 @@
         </div>
         <div class="login-form">
             <h1>Register</h1>
-            <form action="{{ route('register') }}" method="POST">
+            <form action="{{ route('register.submit') }}" method="POST">
                 <center>
                     @csrf
                     <div class="form-group">
@@ -158,9 +158,29 @@
                         <i class="fas fa-envelope"></i>
                         <input type="email" name="email" placeholder="Email" required>
                     </div>
+                    <div class="form-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" name="password" placeholder="Password" required>
+                    </div>
                     <button type="submit" class="login-btn">Register</button>
                 </center>
             </form>
+            @if ($errors->any())
+                <div style="color: red;">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
+            @if (session('success'))
+                <div style="color: green;">
+                    {{ session('success') }}
+                </div>
+            @endif
+
         </div>
     </div>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">

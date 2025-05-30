@@ -13,10 +13,6 @@ class User extends Authenticatable
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
-    public function canAccessPanel(Panel $panel): bool {
-        return auth()->user()?->is_admin === true; // atau role === 'admin'
-    }
-
     /**
      * The attributes that are mass assignable.
      *
@@ -26,6 +22,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'address',
+        'phone',
     ];
 
     /**
