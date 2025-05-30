@@ -15,7 +15,6 @@ class AuthController extends Controller
 
     public function register(Request $request)
     {
-        // Validasi input
         $request->validate([
             'name' => 'required|string|max:255',
             'address' => 'required|string',
@@ -24,13 +23,12 @@ class AuthController extends Controller
             'password' => 'required|string|min:8',
         ]);
 
-        // Simpan ke database
         User::create([
             'name' => $request->name,
             'address' => $request->address,
             'phone' => $request->phone,
             'email' => $request->email,
-            'password' => Hash::make($request->password), // Nanti bisa diganti input password
+            'password' => Hash::make($request->password),
         ]);
 
         return redirect()->route('login')->with('success', 'Register berhasil!');
