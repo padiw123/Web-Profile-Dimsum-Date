@@ -28,7 +28,7 @@ class DatabaseSeeder extends Seeder
         Admin::create([
             'name' => 'Admin Dimsum',
             'email' => 'dimsumdate@gmail.com',
-            'password' => bcrypt('12345678'), // ganti jika ingin password lebih kuat
+            'password' => bcrypt('12345678'),
         ]);
 
         Promo::create([
