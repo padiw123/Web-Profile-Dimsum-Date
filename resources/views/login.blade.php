@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"> {{-- Cukup satu kali di head --}}
     <style>
         :root {
             --primary-color: #980300;
@@ -33,7 +34,7 @@
         .login-container {
             width: 100%;
             max-width: 900px;
-            height: 500px;
+            min-height: 500px; /* Gunakan min-height agar bisa menyesuaikan jika konten lebih tinggi */
             background: var(--light-color);
             border-radius: 20px;
             box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
@@ -43,7 +44,7 @@
 
         .login-image {
             flex: 1;
-            background: #f5f5f5;
+            background: #f5f5f5; /* Warna bisa disesuaikan */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -55,21 +56,24 @@
             height: auto;
         }
 
-        .login-form {
-            border-color: ;
+        .login-form-container { /* Mengganti .login-form untuk menghindari konflik nama class jika ada */
             flex: 1;
-            padding: 50px;
+            padding: 40px 50px; /* Sedikit penyesuaian padding */
             display: flex;
             flex-direction: column;
             justify-content: center;
         }
 
-        .login-form h1 {
+        .login-form-container h1 {
             text-align: center;
             font-family: 'Poppins', sans-serif;
-            font-size: 2.5rem;
-            margin-bottom: 30px;
+            font-size: 2.2rem; /* Sedikit penyesuaian ukuran font */
+            margin-bottom: 25px;
             color: var(--dark-color);
+        }
+
+        .login-form-container form {
+            width: 100%;
         }
 
         .form-group {
@@ -79,10 +83,10 @@
 
         .form-group input {
             width: 100%;
-            padding: 12px 40px;
+            padding: 12px 12px 12px 40px; /* Padding disesuaikan untuk ikon */
             border: 1px solid var(--primary-color);
             border-radius: 15px;
-            font-size: 1rem;
+            font-size: 0.95rem; /* Sedikit penyesuaian ukuran font */
             transition: border-color 0.3s ease;
         }
 
@@ -91,44 +95,75 @@
             border-color: var(--accent-color);
         }
 
-        .form-group i {
+        .form-group i.fas { /* Lebih spesifik untuk ikon Font Awesome */
             position: absolute;
             left: 15px;
             top: 50%;
             transform: translateY(-50%);
-            color: #666;
+            color: #888; /* Warna ikon sedikit lebih gelap */
+        }
+        .form-actions { /* Wrapper untuk tombol dan link register */
+            text-align: center; /* Untuk centering konten di dalamnya */
+            margin-top: 20px;
         }
 
         .login-btn {
             background-color: var(--primary-color);
             color: var(--light-color);
-            padding: 15px;
-            width: 150px;
+            padding: 12px; /* Sedikit penyesuaian padding */
+            width: 180px; /* Lebar bisa disesuaikan */
             border: none;
             border-radius: 25px;
             font-size: 1rem;
             cursor: pointer;
             transition: background-color 0.3s ease;
-            margin-top: 10px;
+            display: block; /* Agar margin auto bekerja */
+            margin: 0 auto 15px auto; /* Margin atas, auto kiri-kanan, bawah */
         }
 
         .login-btn:hover {
             background-color: var(--accent-color);
         }
 
+        .register-link {
+             font-size: 0.9rem;
+        }
+        .register-link a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .register-link a:hover {
+            text-decoration: underline;
+        }
+
+
         @media (max-width: 768px) {
             .login-container {
                 flex-direction: column;
                 height: auto;
-                margin: 20px;
+                margin: 20px; /* Margin agar tidak terlalu mepet di mobile */
+                min-height: 0; /* Reset min-height untuk mobile */
             }
 
             .login-image {
-                padding: 20px;
+                padding: 30px 20px; /* Padding disesuaikan */
+                max-height: 200px; /* Batasi tinggi gambar di mobile */
+            }
+            .login-image img {
+                max-width: 60%;
             }
 
-            .login-form {
+            .login-form-container {
                 padding: 30px;
+            }
+            .login-form-container h1 {
+                font-size: 2rem;
+                margin-bottom: 20px;
+            }
+            .login-btn {
+                width: 100%; /* Tombol full width di mobile */
+                padding: 14px;
             }
         }
     </style>
@@ -138,27 +173,39 @@
         <div class="login-image">
             <img src="/assets/img/logo-dimsum.png" alt="Dimsum Logo">
         </div>
-        <div class="login-form">
+        <div class="login-form-container">
             <h1>Login</h1>
             <form action="{{ route('login') }}" method="POST">
-                <center>
-                    @csrf
-                    <div class="form-group">
-                        <i class="fas fa-user"></i>
-                        <input type="email" name="email" placeholder="E-mail" required>
-                    </div>
-                    <div class="form-group">
-                        <i class="fas fa-lock"></i>
-                        <input type="password" name="password" placeholder="Password" required>
-                    </div>
-                    <p style="margin-top: 10px; font-size: 0.9rem;">
-                        Belum punya akun? <a href="{{ route('register') }}" style="color: #980300; text-decoration: none;">Register</a>
-                    </p>
+                @csrf
+                <div class="form-group">
+                    <i class="fas fa-user"></i>
+                    {{-- Perubahan di sini: type="text" dan placeholder --}}
+                    <input type="text" name="email" placeholder="E-mail atau Nomor Telepon" value="{{ old('email') }}" required autofocus>
+                </div>
+                <div class="form-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" name="password" placeholder="Password" required>
+                </div>
+
+                {{-- Menampilkan error validasi --}}
+                @if ($errors->has('email'))
+                    <p style="color: var(--error-color); font-size: 0.85rem; text-align: center; margin-bottom: 10px;">{{ $errors->first('email') }}</p>
+                @elseif ($errors->has('phone'))
+                     <p style="color: var(--error-color); font-size: 0.85rem; text-align: center; margin-bottom: 10px;">{{ $errors->first('phone') }}</p>
+                @endif
+                 @if ($errors->has('password'))
+                    <p style="color: var(--error-color); font-size: 0.85rem; text-align: center; margin-bottom: 10px;">{{ $errors->first('password') }}</p>
+                @endif
+
+
+                <div class="form-actions">
                     <button type="submit" class="login-btn">Login</button>
-                </form>
-            </center>
+                    <p class="register-link">
+                        Belum punya akun? <a href="{{ route('register') }}">Register</a>
+                    </p>
+                </div>
+            </form>
         </div>
     </div>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </body>
 </html>
