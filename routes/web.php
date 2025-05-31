@@ -1,12 +1,10 @@
 <?php
 
-use App\Models\Menu;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\ReservationController;
 
@@ -19,8 +17,8 @@ Route::get('/', function () {
 });
 Route::get('/', [HomeController::class, 'index'])->name('dashboard');
 
-Route::get('/login', [AdminAuthController::class, 'showLoginForm'])->name('login');
-Route::post('/login', [AdminAuthController::class, 'login']);
+Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', function () {
     Auth::logout();
     return redirect()->route('dashboard')->with('success', 'Logout berhasil!');

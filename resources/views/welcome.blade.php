@@ -393,13 +393,10 @@
 
                 <div class="footer-newsletter">
                     <h3>Newsletter</h3>
-                    @if(session('success'))
-                        <p style="color: green;">{{ session('success') }}</p>
-                    @endif
 
                     <form action="{{ route('newsletter.subscribe') }}" method="POST" class="newsletter-form">
                         @csrf
-                        <input type="email" name="email" placeholder="Your Email" required>
+                        <input type="email" name="email" placeholder="Your Email" value="{{ old('email', optional(auth()->user())->email) }}" required>
                         <button type="submit"><i class="fas fa-paper-plane"></i></button>
                     </form>
                 </div>
