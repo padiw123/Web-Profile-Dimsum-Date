@@ -288,13 +288,13 @@
                         <form action="{{ route('send.reservation') }}" method="POST" target="_blank">
                             @csrf
                             <div class="form-group">
-                                <input type="text" name="name" placeholder="Nama Lengkap" value="{{ old('name') }}" required>
+                                <input type="text" name="name" placeholder="Nama Lengkap" value="{{ old('name', optional(auth()->user())->name) }}" required>
                             </div>
                             <div class="form-group">
-                                <input type="email" name="email" placeholder="E-Mail" value="{{ old('email') }}" required>
+                                <input type="email" name="email" placeholder="E-Mail" value="{{ old('email', optional(auth()->user())->email) }}" required>
                             </div>
                             <div class="form-group">
-                                <input type="tel" name="phone" placeholder="Nomor Telepon" value="{{ old('phone') }}" required>
+                                <input type="tel" name="phone" placeholder="Nomor Telepon" value="{{ old('phone', optional(auth()->user())->phone) }}" required>
                             </div>
                             <div class="form-row">
                                 <div class="form-group">
@@ -377,7 +377,6 @@
             <div class="footer-content">
                 <div class="footer-logo">
                     <h2>Dimsum Date</h2>
-                    <p>Authentic Dimsum Since 1985</p>
                 </div>
 
                 <div class="footer-links">
@@ -393,13 +392,11 @@
                 </div>
 
                 <div class="footer-newsletter">
-                    @if(session('success'))
-                        <p style="color: green;">{{ session('success') }}</p>
-                    @endif
+                    <h3>Newsletter</h3>
 
                     <form action="{{ route('newsletter.subscribe') }}" method="POST" class="newsletter-form">
                         @csrf
-                        <input type="email" name="email" placeholder="Your Email" required>
+                        <input type="email" name="email" placeholder="Your Email" value="{{ old('email', optional(auth()->user())->email) }}" required>
                         <button type="submit"><i class="fas fa-paper-plane"></i></button>
                     </form>
                 </div>
@@ -411,100 +408,207 @@
         </div>
     </footer>
 
+    <div id="loginPromptModal" class="auth-modal" style="display: none;">
+        <div class="auth-modal-content">
+            <span class="auth-modal-close-btn">&times;</span>
+            <h3>Login Diperlukan</h3>
+            <p>Anda harus login terlebih dahulu untuk melakukan tindakan ini.</p>
+            <div class="auth-modal-actions">
+                <a href="{{ route('login') }}" class="btn btn-primary">Login</a>
+                <button type="button" class="btn btn-secondary" id="cancelLoginBtnModal">Batal</button>
+            </div>
+        </div>
+    </div>
+
     <script src="{{ asset('./assets/js/dimsum.js') }}"></script>
-    @auth
-        <script>
-            document.addEventListener("DOMContentLoaded", function () {
-                const dropdownToggle = document.getElementById("userDropdown");
-                const profileDropdown = document.querySelector(".profile-dropdown");
-
-                if (dropdownToggle && profileDropdown) {
-                    dropdownToggle.addEventListener("click", function (e) {
-                        e.stopPropagation();
-                        profileDropdown.classList.toggle("show");
-                    });
-
-                    document.addEventListener("click", function (e) {
-                        if (!profileDropdown.contains(e.target)) {
-                            profileDropdown.classList.remove("show");
-                        }
-                    });
-                }
-            });
-        </script>
-        @endauth
 
     <script>
-    function updateQuantity(button, change) {
-        const display = button.parentElement.querySelector('.quantity-display');
-        const currentValue = parseInt(display.textContent);
-        const newValue = Math.max(0, currentValue + change);
-        display.textContent = newValue;
+        // --- Global Variables and Helper Functions ---
+        const isAuthenticated = {{ auth()->check() ? 'true' : 'false' }};
+        const loginUrl = "{{ route('login') }}";
+        let loginPromptModal = null; // Will be assigned in DOMContentLoaded
 
-        // Get menu item details
-        const menuItem = button.closest('.menu-item');
-        const name = menuItem.querySelector('h3').textContent;
-        const price = parseInt(menuItem.querySelector('.price').textContent.replace(/[^0-9]/g, ''));
-
-        updateOrderSummary(name, newValue, price);
-    }
-
-    function updateOrderSummary(itemName, quantity, price) {
-        const orderItems = document.getElementById('orderItems');
-        const totalAmount = document.getElementById('totalAmount');
-
-        // Update or add item to order summary
-        let itemElement = orderItems.querySelector(`[data-item="${itemName}"]`);
-        if (quantity > 0) {
-            if (!itemElement) {
-                itemElement = document.createElement('div');
-                itemElement.className = 'order-item';
-                itemElement.setAttribute('data-item', itemName);
-                itemElement.innerHTML = `
-                    <span>${itemName} x <span class="item-quantity">${quantity}</span></span>
-                    <span class="item-total">Rp ${(price * quantity).toLocaleString()}</span>
-                `;
-                orderItems.appendChild(itemElement);
-            } else {
-                itemElement.querySelector('.item-quantity').textContent = quantity;
-                itemElement.querySelector('.item-total').textContent = `Rp ${(price * quantity).toLocaleString()}`;
+        function showLoginPrompt() {
+            if (loginPromptModal) {
+                loginPromptModal.style.display = 'flex';
             }
-        } else if (itemElement) {
-            itemElement.remove();
         }
 
-        // Update total amount
-        let total = 0;
-        orderItems.querySelectorAll('.order-item').forEach(item => {
-            total += parseInt(item.querySelector('.item-total').textContent.replace(/[^0-9]/g, ''));
+        function hideLoginPrompt() {
+            if (loginPromptModal) {
+                loginPromptModal.style.display = 'none';
+            }
+        }
+
+        // --- Functions for Inline Event Handlers (must be global) ---
+
+        window.updateQuantity = function(button, change) {
+            if (!isAuthenticated) {
+                showLoginPrompt();
+                return;
+            }
+
+            const display = button.parentElement.querySelector('.quantity-display');
+            const currentValue = parseInt(display.textContent);
+            const newValue = Math.max(0, currentValue + change);
+            display.textContent = newValue;
+
+            const menuItem = button.closest('.menu-item');
+            const name = menuItem.querySelector('h3').textContent;
+            const priceText = menuItem.querySelector('.price').textContent;
+            const price = parseInt(priceText.replace(/[^0-9]/g, ''));
+
+            updateOrderSummary(name, newValue, price); // Calls the global updateOrderSummary
+        }
+
+        window.updateOrderSummary = function(itemName, quantity, price) {
+            const orderItems = document.getElementById('orderItems');
+            const totalAmountDisplay = document.getElementById('totalAmount');
+
+            if (!orderItems || !totalAmountDisplay) return; // Guard clause
+
+            let itemElement = orderItems.querySelector(`[data-item="${itemName}"]`);
+            if (quantity > 0) {
+                if (!itemElement) {
+                    itemElement = document.createElement('div');
+                    itemElement.className = 'order-item';
+                    itemElement.setAttribute('data-item', itemName);
+                    itemElement.setAttribute('data-price', price);
+                    itemElement.innerHTML = `
+                        <span>${itemName} x <span class="item-quantity">${quantity}</span></span>
+                        <span class="item-total">Rp ${(price * quantity).toLocaleString('id-ID')}</span>
+                    `;
+                    orderItems.appendChild(itemElement);
+                } else {
+                    itemElement.querySelector('.item-quantity').textContent = quantity;
+                    itemElement.querySelector('.item-total').textContent = `Rp ${(price * quantity).toLocaleString('id-ID')}`;
+                }
+            } else if (itemElement) {
+                itemElement.remove();
+            }
+
+            let total = 0;
+            orderItems.querySelectorAll('.order-item').forEach(item => {
+                const itemPrice = parseInt(item.getAttribute('data-price'));
+                const itemQuantity = parseInt(item.querySelector('.item-quantity').textContent);
+                total += itemPrice * itemQuantity;
+            });
+            totalAmountDisplay.textContent = `Rp ${total.toLocaleString('id-ID')}`;
+        }
+
+        window.togglePaymentDetails = function() {
+            const paymentSelect = document.getElementById('paymentSelect');
+            const qrisDetails = document.getElementById('qrisDetails');
+            const cimbDetails = document.getElementById('cimbDetails');
+            const mandiriDetails = document.getElementById('mandiriDetails');
+
+            if(qrisDetails) qrisDetails.style.display = 'none';
+            if(cimbDetails) cimbDetails.style.display = 'none';
+            if(mandiriDetails) mandiriDetails.style.display = 'none';
+
+            if(paymentSelect){
+                switch(paymentSelect.value) {
+                    case 'qris':
+                        if(qrisDetails) qrisDetails.style.display = 'block';
+                        break;
+                    case 'cimb':
+                        if(cimbDetails) cimbDetails.style.display = 'block';
+                        break;
+                    case 'mandiri':
+                        if(mandiriDetails) mandiriDetails.style.display = 'block';
+                        break;
+                }
+            }
+        }
+
+        // --- DOMContentLoaded Event Listener for other initializations ---
+        document.addEventListener("DOMContentLoaded", function () {
+            // Initialize Modal Elements
+            loginPromptModal = document.getElementById('loginPromptModal');
+            const cancelLoginBtnModal = document.getElementById('cancelLoginBtnModal');
+            const closeModalIcon = loginPromptModal ? loginPromptModal.querySelector('.auth-modal-close-btn') : null;
+
+            if (cancelLoginBtnModal) {
+                cancelLoginBtnModal.addEventListener('click', hideLoginPrompt);
+            }
+            if (closeModalIcon) {
+                closeModalIcon.addEventListener('click', hideLoginPrompt);
+            }
+            window.addEventListener('click', function(event) {
+                if (event.target === loginPromptModal) {
+                    hideLoginPrompt();
+                }
+            });
+
+            // Reservation Form Interaction Logic
+            const reservationForm = document.querySelector('.contact-form form');
+            if (reservationForm) {
+                const formElements = reservationForm.querySelectorAll('input, select, textarea');
+                formElements.forEach(element => {
+                    element.addEventListener('focus', function(event) {
+                        if (!isAuthenticated) {
+                            event.preventDefault();
+                            element.blur();
+                            showLoginPrompt();
+                        }
+                    });
+                });
+
+                reservationForm.addEventListener('submit', function(event) {
+                    if (!isAuthenticated) {
+                        event.preventDefault();
+                        showLoginPrompt();
+                    } else {
+                        const orderItemsDiv = document.getElementById('orderItems');
+                        let summary = "";
+                        if (orderItemsDiv) {
+                            orderItemsDiv.querySelectorAll('.order-item').forEach(item => {
+                                const itemName = item.getAttribute('data-item');
+                                const quantity = item.querySelector('.item-quantity').textContent;
+                                const itemTotal = item.querySelector('.item-total').textContent;
+                                summary += `${itemName} x ${quantity} (${itemTotal})\n`;
+                            });
+                        }
+                        const orderedItemsSummaryInput = document.getElementById('orderedItemsSummaryInput');
+                        const totalPaymentInput = document.getElementById('totalPaymentInput');
+                        const totalAmount = document.getElementById('totalAmount');
+
+                        if(orderedItemsSummaryInput) orderedItemsSummaryInput.value = summary.trim();
+                        if(totalPaymentInput && totalAmount) totalPaymentInput.value = totalAmount.textContent;
+                    }
+                });
+            }
+
+            // "Tulis Testimoni" Button Validation
+            const tulisTestimoniBtn = document.querySelector('a.btn-review[href="{{ route('review') }}"]');
+            if (tulisTestimoniBtn) {
+                tulisTestimoniBtn.addEventListener('click', function(event) {
+                    if (!isAuthenticated) {
+                        event.preventDefault();
+                        showLoginPrompt();
+                    }
+                });
+            }
+
+            // Profile Dropdown Logic (only if elements exist - user is authenticated)
+            const dropdownToggle = document.getElementById("userDropdown");
+            const profileDropdown = document.querySelector(".profile-dropdown");
+
+            if (dropdownToggle && profileDropdown) {
+                dropdownToggle.addEventListener("click", function (e) {
+                    e.stopPropagation();
+                    profileDropdown.classList.toggle("show");
+                });
+
+                document.addEventListener("click", function (e) {
+                    if (profileDropdown.classList.contains('show') &&
+                        !profileDropdown.contains(e.target) &&
+                        !dropdownToggle.contains(e.target)) {
+                        profileDropdown.classList.remove("show");
+                    }
+                });
+            }
         });
-        totalAmount.textContent = `Rp ${total.toLocaleString()}`;
-    }
-
-    function togglePaymentDetails() {
-        const paymentSelect = document.getElementById('paymentSelect');
-        const qrisDetails = document.getElementById('qrisDetails');
-        const cimbDetails = document.getElementById('cimbDetails');
-        const mandiriDetails = document.getElementById('mandiriDetails');
-
-        // Hide all payment details first
-        qrisDetails.style.display = 'none';
-        cimbDetails.style.display = 'none';
-        mandiriDetails.style.display = 'none';
-
-        // Show selected payment details
-        switch(paymentSelect.value) {
-            case 'qris':
-                qrisDetails.style.display = 'block';
-                break;
-            case 'cimb':
-                cimbDetails.style.display = 'block';
-                break;
-            case 'mandiri':
-                mandiriDetails.style.display = 'block';
-                break;
-        }
-    }
     </script>
 </body>
 </html>

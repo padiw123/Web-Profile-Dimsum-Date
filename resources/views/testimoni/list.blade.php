@@ -106,6 +106,18 @@
         <span class="back-text">Kembali</span>
     </a>
 
+    <div id="loginPromptModal" class="auth-modal" style="display: none;">
+        <div class="auth-modal-content">
+            <span class="auth-modal-close-btn">&times;</span>
+            <h3>Login Diperlukan</h3>
+            <p>Anda harus login terlebih dahulu untuk melakukan tindakan ini.</p>
+            <div class="auth-modal-actions">
+                <a href="{{ route('login') }}" class="btn btn-primary">Login</a>
+                <button type="button" class="btn btn-secondary" id="cancelLoginBtnModal">Batal</button>
+            </div>
+        </div>
+    </div>
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
         // Scroll to Top functionality
@@ -124,6 +136,56 @@
                 top: 0,
                 behavior: 'smooth'
             });
+        });
+    </script>
+
+    <script>
+        // --- Global Variables and Helper Functions ---
+        const isAuthenticated = {{ auth()->check() ? 'true' : 'false' }};
+        const loginUrl = "{{ route('login') }}";
+        let loginPromptModal = null; // Will be assigned in DOMContentLoaded
+
+        function showLoginPrompt() {
+            if (loginPromptModal) {
+                loginPromptModal.style.display = 'flex';
+            }
+        }
+
+        function hideLoginPrompt() {
+            if (loginPromptModal) {
+                loginPromptModal.style.display = 'none';
+            }
+        }
+
+        // --- DOMContentLoaded Event Listener for other initializations ---
+        document.addEventListener("DOMContentLoaded", function () {
+            // Initialize Modal Elements
+            loginPromptModal = document.getElementById('loginPromptModal');
+            const cancelLoginBtnModal = document.getElementById('cancelLoginBtnModal');
+            const closeModalIcon = loginPromptModal ? loginPromptModal.querySelector('.auth-modal-close-btn') : null;
+
+            if (cancelLoginBtnModal) {
+                cancelLoginBtnModal.addEventListener('click', hideLoginPrompt);
+            }
+            if (closeModalIcon) {
+                closeModalIcon.addEventListener('click', hideLoginPrompt);
+            }
+            window.addEventListener('click', function(event) {
+                if (event.target === loginPromptModal) {
+                    hideLoginPrompt();
+                }
+            });
+
+            // "Tulis Testimoni" Button Validation
+            const tulisTestimoniBtn = document.querySelector('a.btn-review[href="{{ route('review') }}"]');
+            if (tulisTestimoniBtn) {
+                tulisTestimoniBtn.addEventListener('click', function(event) {
+                    if (!isAuthenticated) {
+                        event.preventDefault();
+                        showLoginPrompt();
+                    }
+                });
+            }
         });
     </script>
 </body>

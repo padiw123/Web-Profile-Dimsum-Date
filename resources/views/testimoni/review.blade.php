@@ -120,13 +120,13 @@
         <form action="/submit-review" method="POST">
             @csrf
             <div class="form-group">
-                <input type="text" placeholder="Masukkan Nama" required>
+                <input type="text" placeholder="Masukkan Nama" value="{{ old('name', optional(auth()->user())->name) }}" required>
             </div>
             <div class="form-group">
-                <input type="email" placeholder="Masukkan Email" required>
+                <input type="email" placeholder="Masukkan Email" value="{{ old('email', optional(auth()->user())->email) }}" required>
             </div>
             <div class="form-group">
-                <input type="tel" placeholder="Masukkan No Telp" required>
+                <input type="tel" placeholder="Masukkan No Telp" value="{{ old('phone', optional(auth()->user())->phone) }}" required>
             </div>
             <div class="star-rating">
                 <i class="fas fa-star" data-rating="1"></i>
