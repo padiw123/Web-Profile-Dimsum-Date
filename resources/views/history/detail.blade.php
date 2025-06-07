@@ -3,10 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Order Detail - Dimsum Date</title>
+    <title>Detail Pesanan #{{ $order->id }} - Dimsum Date</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset("../assets/css/dimsum.css") }}">
+    {{-- Path CSS disesuaikan untuk helper `asset()` Laravel --}}
+    <link rel="stylesheet" href="{{ asset("assets/css/dimsum.css") }}">
     <style>
+        /* CSS yang Anda berikan diintegrasikan di sini */
         :root {
             --primary-color: #B22222;
             --secondary-color: #D4AF37;
@@ -68,14 +70,23 @@
             font-weight: 500;
             margin-top: 1rem;
         }
+
+        .history-title {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+        }
     </style>
 </head>
 <body>
     <nav class="navbar" id="navbar">
         <div class="container">
             <div class="navbar-brand">
-                <a href="../#home">
-                    <img src="/assets/img/logo-dimsum.svg" alt="Dimsum Date" class="logo-img">
+                {{-- Link ke halaman utama --}}
+                <a href="{{ url('/') }}">
+                    {{-- Path logo disesuaikan untuk helper `asset()` Laravel --}}
+                    <img src="{{ asset('assets/img/logo-dimsum.svg') }}" alt="Dimsum Date" class="logo-img">
                     <span>Dimsum Date</span>
                 </a>
             </div>
@@ -92,35 +103,37 @@
 
         <div class="order-detail-card">
             <div class="order-items">
+                @forelse($order->menus as $menu)
                 <div class="order-item">
-                    <span>Dimsum Ayam</span>
+                    <span>{{ $menu->name }}</span>
                     <div>
-                        <span>x1</span>
-                        <span style="margin-left: 2rem">Rp.xx.xx.x</span>
+                        <span>x{{ $menu->pivot->quantity }}</span>
+                        <span style="margin-left: 2rem">Rp {{ number_format($menu->pivot->price * $menu->pivot->quantity, 0, ',', '.') }}</span>
                     </div>
                 </div>
-                <div class="order-item">
-                    <span>Dimsum Ayam</span>
-                    <div>
-                        <span>x2</span>
-                        <span style="margin-left: 2rem">Rp.xx.xx.x</span>
+                @empty
+                    <div class="order-item">
+                        <span>Tidak ada detail item menu untuk pesanan ini.</span>
                     </div>
-                </div>
+                @endforelse
+                {{-- Akhir Perulangan --}}
+
             </div>
 
             <div class="order-info">
                 <div class="order-info-row">
-                    <span>01/04/2025</span>
+                    <span>{{ $order->created_at->format('d/m/Y') }}</span>
                     <span style="font-size:1.2rem; font-weight: 500; color: black; margin-right: 1.5rem;">Total</span>
-                </div><hr width="100%" color="black">
+                </div><hr width="100%" color="black" style="opacity: 0.2;">
                 <div class="order-info-row total-row">
-                    <span>Pembayaran : QRIS</span>
-                    <span>Rp.xx.xx.x</span>
+                    <span>Pembayaran : {{ strtoupper($order->payment_method) }}</span>
+                    <span>Rp {{ number_format($order->total_price, 0, ',', '.') }}</span>
                 </div>
             </div>
         </div>
     </div>
 
+    {{-- Menambahkan Font Awesome untuk ikon --}}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </body>
 </html>
