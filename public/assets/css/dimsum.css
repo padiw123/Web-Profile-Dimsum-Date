@@ -1227,14 +1227,10 @@ textarea {
     align-items: center;
 }
 
-.payment-method {
-    margin-top: 2rem;
-}
 
 .payment-method select {
     width: 100%;
     padding: 0.8rem;
-    margin: 1rem 0;
     border: 1px solid #ddd;
     border-radius: 5px;
 }
