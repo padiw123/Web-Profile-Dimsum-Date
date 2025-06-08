@@ -16,7 +16,7 @@ Route::post('/register', [AuthController::class, 'register'])->name('register.su
 Route::get('/', function () {
     return view('welcome');
 });
-Route::get('/', [HomeController::class, 'index'])->name('dashboard');
+Route::get('/', [HomeController::class, 'index'])->name('dashboard')->middleware('track.visitors');
 
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
