@@ -35,6 +35,8 @@ return [
 
     'auth_guard' => 'admin',
 
+    'user_model' => \App\Models\Admin::class,
+
     /*
     |--------------------------------------------------------------------------
     | Default Filesystem Disk

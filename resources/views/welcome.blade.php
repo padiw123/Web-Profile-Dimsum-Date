@@ -32,7 +32,30 @@
                     <li class="nav-item"><a href="#testimoni" class="nav-link">Testimoni</a></li>
                     <li class="nav-item"><a href="#contact" class="nav-link">Kontak</a></li>
                     <li class="nav-item nav-item-login">
-                        <a href="{{ route('login') }}" class="btn-secondary" style="padding: 0.5rem 1rem; border-radius: 10px;">Login</a>
+                        @guest
+                            <a href="{{ route('login') }}" class="btn-secondary" style="padding: 0.5rem 1rem; border-radius: 10px;">Login</a>
+                        @endguest
+
+                        @auth
+                            <div class="dropdown profile-dropdown">
+                                <button class="dropdown-toggle" type="button" id="userDropdown">
+                                    <img src="{{ asset('./assets/img/logo-dimsum.jpg') }}" alt="Profile" class="profile-img">
+                                    <span>{{ auth()->user()->name }}</span>
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a href="{{ route('profile') }}" class="dropdown-item">Profile</a></li>
+                                    <li><a href="{{ route('listhistory') }}" class="dropdown-item">History</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <form method="POST" action="{{ route('logout') }}">
+                                            @csrf
+                                            <button type="submit" class="dropdown-item-btn" >Logout</button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </div>
+                        @endauth
                     </li>
                 </ul>
             </div>
@@ -59,29 +82,6 @@
     <button class="scroll-to-top" title="Scroll to top">
         <i class="fas fa-arrow-up"></i>
     </button>
-
-    <!-- Featured Section -->
-    <section class="featured">
-        <div class="container">
-            <div class="featured-grid">
-                <div class="featured-item">
-                    <i class="fas fa-utensils"></i>
-                    <h3>Fresh Ingredients</h3>
-                    <p>Sourced daily from local markets</p>
-                </div>
-                <div class="featured-item">
-                    <i class="fas fa-clock"></i>
-                    <h3>Traditional Recipe</h3>
-                    <p>Passed down through generations</p>
-                </div>
-                <div class="featured-item">
-                    <i class="fas fa-award"></i>
-                    <h3>Master Chefs</h3>
-                    <p>With decades of experience</p>
-                </div>
-            </div>
-        </div>
-    </section>
 
     <!-- Promotions Section -->
     <section id="promo" class="promotions">
@@ -153,7 +153,7 @@
 
             <div class="menu-grid">
                 @foreach ($menus as $index => $menu)
-                    <div class="menu-item {{ $index >= 6 ? 'hidden extra-menu' : '' }}" data-category="{{ $menu->category }}">
+                    <div class="menu-item {{ $index >= 6 ? 'hidden extra-menu' : '' }}" data-category="{{ $menu->category }}" data-id="{{ $menu->id }}">
                         <div class="menu-image">
                             <img src="{{ $menu->image_url }}" alt="{{ $menu->name }}">
                         </div>
@@ -256,45 +256,20 @@
                             <span id="totalAmount">Rp 0</span>
                         </div>
 
-                        <div class="payment-method">
-                            <h4>Metode Pembayaran</h4>
-                            <select id="paymentSelect" onchange="togglePaymentDetails()">
-                                <option value="">Pilih metode pembayaran</option>
-                                <option value="qris">QRIS</option>
-                                <option value="cimb">Transfer Bank - CIMB Niaga</option>
-                                <option value="mandiri">Transfer Bank - Mandiri</option>
-                            </select>
-
-                            <div id="qrisDetails" class="payment-details" style="display: none;">
-                                <img src="path/to/qris-code.png" alt="QRIS Code" class="payment-qr">
-                            </div>
-
-                            <div id="cimbDetails" class="payment-details" style="display: none;">
-                                <p>Bank: CIMB Niaga</p>
-                                <p>No. Rekening: 123456789</p>
-                                <p>Atas Nama: Dimsum Date</p>
-                            </div>
-
-                            <div id="mandiriDetails" class="payment-details" style="display: none;">
-                                <p>Bank: Mandiri</p>
-                                <p>No. Rekening: 987654321</p>
-                                <p>Atas Nama: Dimsum Date</p>
-                            </div>
-                        </div>
                     </div>
 
                     <div class="contact-form">
                         <h3>Detail Pemesanan</h3>
-                        <form action="{{ route('send.reservation') }}" method="POST" target="_blank">
+                        <form action="{{ route('reserve') }}" method="POST">
                             @csrf
                             <div class="form-group">
-                                <input type="text" name="name" placeholder="Nama Lengkap" value="{{ old('name') }}" required>
+                                <input type="text" name="name" placeholder="Nama Lengkap" value="{{ old('name', optional(auth()->user())->name) }}" required>
                             </div>
                             <div class="form-group">
-                                <input type="email" name="email" placeholder="E-Mail" value="{{ old('email') }}" required>
+                                <input type="email" name="email" placeholder="E-Mail" value="{{ old('email', optional(auth()->user())->email) }}" required>
                             </div>
                             <div class="form-group">
-                                <input type="tel" name="phone" placeholder="Nomor Telepon" value="{{ old('phone') }}" required>
+                                <input type="tel" name="phone" placeholder="Nomor Telepon" value="{{ old('phone', optional(auth()->user())->phone) }}" required>
                             </div>
                             <div class="form-row">
                                 <div class="form-group">
@@ -312,11 +287,42 @@
                                     @endforeach
                                 </select>
                             </div>
+
+                            <div class="payment-method" style="margin-bottom: 1.5rem;">
+                                <select id="paymentSelect" name="payment_method" onchange="togglePaymentDetails()" required>
+                                    <option value="">Pilih metode pembayaran</option>
+                                    <option value="cash">Tunai di tempat</option>
+                                    <option value="qris">QRIS</option>
+                                    <option value="cimb">Transfer Bank - CIMB Niaga</option>
+                                    <option value="mandiri">Transfer Bank - Mandiri</option>
+                                </select>
+
+                                <div id="qrisDetails" class="payment-details" style="display: none;">
+                                    <img src="path/to/qris-code.png" alt="QRIS Code" class="payment-qr">
+                                    <p style="color: red"><em>Setelah dibayar silahkan kirim buktinya lewat WhatsApp.</em></p>
+                                </div>
+
+                                <div id="cimbDetails" class="payment-details" style="display: none;">
+                                    <p>Bank: CIMB Niaga</p>
+                                    <p>No. Rekening: 123456789</p>
+                                    <p>Atas Nama: Dimsum Date</p>
+                                    <p style="color: red"><em>Setelah dibayar silahkan kirim buktinya lewat WhatsApp.</em></p>
+                                </div>
+
+                                <div id="mandiriDetails" class="payment-details" style="display: none;">
+                                    <p>Bank: Mandiri</p>
+                                    <p>No. Rekening: 987654321</p>
+                                    <p>Atas Nama: Dimsum Date</p>
+                                    <p style="color: red"><em>Setelah dibayar silahkan kirim buktinya lewat WhatsApp.</em></p>
+                                </div>
+                            </div>
+
                             <div class="form-group">
                                 <textarea name="message" placeholder="Catatan Khusus">{{ old('message') }}</textarea>
                             </div>
                             <input type="hidden" name="ordered_items_summary" id="orderedItemsSummaryInput">
                             <input type="hidden" name="total_payment" id="totalPaymentInput">
+                            <input type="hidden" name="order_items" id="orderItemsInput">
                             <button type="submit" class="btn btn-primary">Checkout</button>
                         </form>
                     </div>
@@ -377,7 +383,6 @@
             <div class="footer-content">
                 <div class="footer-logo">
                     <h2>Dimsum Date</h2>
-                    <p>Authentic Dimsum Since 1985</p>
                 </div>
 
                 <div class="footer-links">
@@ -393,13 +398,11 @@
                 </div>
 
                 <div class="footer-newsletter">
-                    @if(session('success'))
-                        <p style="color: green;">{{ session('success') }}</p>
-                    @endif
+                    <h3>Newsletter</h3>
 
                     <form action="{{ route('newsletter.subscribe') }}" method="POST" class="newsletter-form">
                         @csrf
-                        <input type="email" name="email" placeholder="Your Email" required>
+                        <input type="email" name="email" placeholder="Your Email" value="{{ old('email', optional(auth()->user())->email) }}" required>
                         <button type="submit"><i class="fas fa-paper-plane"></i></button>
                     </form>
                 </div>
@@ -411,78 +414,199 @@
         </div>
     </footer>
 
+    <div id="loginPromptModal" class="auth-modal" style="display: none;">
+        <div class="auth-modal-content">
+            <span class="auth-modal-close-btn">&times;</span>
+            <h3>Login Diperlukan</h3>
+            <p>Anda harus login terlebih dahulu untuk melakukan tindakan ini.</p>
+            <div class="auth-modal-actions">
+                <a href="{{ route('login') }}" class="btn btn-primary">Login</a>
+                <button type="button" class="btn btn-secondary" id="cancelLoginBtnModal">Batal</button>
+            </div>
+        </div>
+    </div>
+
     <script src="{{ asset('./assets/js/dimsum.js') }}"></script>
+
     <script>
-    function updateQuantity(button, change) {
-        const display = button.parentElement.querySelector('.quantity-display');
-        const currentValue = parseInt(display.textContent);
-        const newValue = Math.max(0, currentValue + change);
-        display.textContent = newValue;
+        // --- Global Variables and Helper Functions ---
+        const isAuthenticated = {{ auth()->check() ? 'true' : 'false' }};
+        const loginUrl = "{{ route('login') }}";
+        let loginPromptModal = null; // Will be assigned in DOMContentLoaded
 
-        // Get menu item details
-        const menuItem = button.closest('.menu-item');
-        const name = menuItem.querySelector('h3').textContent;
-        const price = parseInt(menuItem.querySelector('.price').textContent.replace(/[^0-9]/g, ''));
+        function showLoginPrompt() {
+            if (loginPromptModal) {
+                loginPromptModal.style.display = 'flex';
+            }
+        }
 
-        updateOrderSummary(name, newValue, price);
-    }
+        function hideLoginPrompt() {
+            if (loginPromptModal) {
+                loginPromptModal.style.display = 'none';
+            }
+        }
 
-    function updateOrderSummary(itemName, quantity, price) {
-        const orderItems = document.getElementById('orderItems');
-        const totalAmount = document.getElementById('totalAmount');
+        // --- Functions for Inline Event Handlers (must be global) ---
 
-        // Update or add item to order summary
-        let itemElement = orderItems.querySelector(`[data-item="${itemName}"]`);
-        if (quantity > 0) {
-            if (!itemElement) {
-                itemElement = document.createElement('div');
-                itemElement.className = 'order-item';
-                itemElement.setAttribute('data-item', itemName);
+        window.updateQuantity = function(button, change) {
+            if (!isAuthenticated) {
+                showLoginPrompt();
+                return;
+            }
+
+            const display = button.parentElement.querySelector('.quantity-display');
+            const currentValue = parseInt(display.textContent);
+            const newValue = Math.max(0, currentValue + change);
+            display.textContent = newValue;
+
+            const menuItem = button.closest('.menu-item');
+            const menuId = menuItem.getAttribute('data-id'); // Ambil ID menu
+            const name = menuItem.querySelector('h3').textContent;
+            const priceText = menuItem.querySelector('.price').textContent;
+            const price = parseInt(priceText.replace(/[^0-9]/g, ''));
+
+            updateOrderSummary(name, newValue, price, menuId); // Kirim menuId
+        }
+
+        window.updateOrderSummary = function(itemName, quantity, price, menuId) {
+            const orderItems = document.getElementById('orderItems');
+            const totalAmountDisplay = document.getElementById('totalAmount');
+            if (!orderItems || !totalAmountDisplay) return;
+
+            // Cari item di ringkasan pesanan berdasarkan data-id
+            let itemElement = orderItems.querySelector(`[data-id="${menuId}"]`);
+
+            if (quantity > 0) {
+                if (!itemElement) {
+                    itemElement = document.createElement('div');
+                    itemElement.className = 'order-item';
+                    itemElement.setAttribute('data-item', itemName);
+                    itemElement.setAttribute('data-price', price);
+                    itemElement.setAttribute('data-id', menuId); // Set data-id di sini
+                    orderItems.appendChild(itemElement);
+                }
                 itemElement.innerHTML = `
                     <span>${itemName} x <span class="item-quantity">${quantity}</span></span>
-                    <span class="item-total">Rp ${(price * quantity).toLocaleString()}</span>
+                    <span class="item-total">Rp ${(price * quantity).toLocaleString('id-ID')}</span>
                 `;
-                orderItems.appendChild(itemElement);
-            } else {
-                itemElement.querySelector('.item-quantity').textContent = quantity;
-                itemElement.querySelector('.item-total').textContent = `Rp ${(price * quantity).toLocaleString()}`;
+            } else if (itemElement) {
+                itemElement.remove();
             }
-        } else if (itemElement) {
-            itemElement.remove();
+
+            let total = 0;
+            orderItems.querySelectorAll('.order-item').forEach(item => {
+                const itemPrice = parseInt(item.getAttribute('data-price'));
+                const itemQuantity = parseInt(item.querySelector('.item-quantity').textContent);
+                total += itemPrice * itemQuantity;
+            });
+            totalAmountDisplay.textContent = `Rp ${total.toLocaleString('id-ID')}`;
         }
 
-        // Update total amount
-        let total = 0;
-        orderItems.querySelectorAll('.order-item').forEach(item => {
-            total += parseInt(item.querySelector('.item-total').textContent.replace(/[^0-9]/g, ''));
+        window.togglePaymentDetails = function() {
+            const paymentSelect = document.getElementById('paymentSelect');
+            const qrisDetails = document.getElementById('qrisDetails');
+            const cimbDetails = document.getElementById('cimbDetails');
+            const mandiriDetails = document.getElementById('mandiriDetails');
+
+            if(qrisDetails) qrisDetails.style.display = 'none';
+            if(cimbDetails) cimbDetails.style.display = 'none';
+            if(mandiriDetails) mandiriDetails.style.display = 'none';
+
+            if(paymentSelect){
+                switch(paymentSelect.value) {
+                    case 'qris':
+                        if(qrisDetails) qrisDetails.style.display = 'block';
+                        break;
+                    case 'cimb':
+                        if(cimbDetails) cimbDetails.style.display = 'block';
+                        break;
+                    case 'mandiri':
+                        if(mandiriDetails) mandiriDetails.style.display = 'block';
+                        break;
+                }
+            }
+        }
+
+        // --- DOMContentLoaded Event Listener for other initializations ---
+        document.addEventListener("DOMContentLoaded", function () {
+            // Initialize Modal Elements
+            loginPromptModal = document.getElementById('loginPromptModal');
+            const cancelLoginBtnModal = document.getElementById('cancelLoginBtnModal');
+            const closeModalIcon = loginPromptModal ? loginPromptModal.querySelector('.auth-modal-close-btn') : null;
+
+            if (cancelLoginBtnModal) {
+                cancelLoginBtnModal.addEventListener('click', hideLoginPrompt);
+            }
+            if (closeModalIcon) {
+                closeModalIcon.addEventListener('click', hideLoginPrompt);
+            }
+            window.addEventListener('click', function(event) {
+                if (event.target === loginPromptModal) {
+                    hideLoginPrompt();
+                }
+            });
+
+            const reservationForm = document.querySelector('.contact-form form');
+            if (reservationForm) {
+                reservationForm.addEventListener('submit', function(event) {
+                    if (!isAuthenticated) {
+                        event.preventDefault();
+                        showLoginPrompt();
+                    } else {
+                        const orderItemsDiv = document.getElementById('orderItems');
+                        
+                        // Isi input untuk summary teks (untuk pesan WA)
+                        const summaryText = Array.from(orderItemsDiv.querySelectorAll('.order-item'))
+                            .map(item => item.innerText.replace('\t', ' '))
+                            .join('\n');
+                        document.getElementById('orderedItemsSummaryInput').value = summaryText.trim();
+                        
+                        // Isi input untuk total pembayaran
+                        document.getElementById('totalPaymentInput').value = document.getElementById('totalAmount').textContent;
+                        
+                        // Isi input BARU untuk data JSON (untuk disimpan ke database)
+                        const structuredItems = [];
+                        orderItemsDiv.querySelectorAll('.order-item').forEach(item => {
+                            structuredItems.push({
+                                menu_id: item.getAttribute('data-id'),
+                                quantity: parseInt(item.querySelector('.item-quantity').textContent)
+                            });
+                        });
+                        document.getElementById('orderItemsInput').value = JSON.stringify(structuredItems);
+                    }
+                });
+            }
+
+            // "Tulis Testimoni" Button Validation
+            const tulisTestimoniBtn = document.querySelector('a.btn-review[href="{{ route('review') }}"]');
+            if (tulisTestimoniBtn) {
+                tulisTestimoniBtn.addEventListener('click', function(event) {
+                    if (!isAuthenticated) {
+                        event.preventDefault();
+                        showLoginPrompt();
+                    }
+                });
+            }
+
+            // Profile Dropdown Logic (only if elements exist - user is authenticated)
+            const dropdownToggle = document.getElementById("userDropdown");
+            const profileDropdown = document.querySelector(".profile-dropdown");
+
+            if (dropdownToggle && profileDropdown) {
+                dropdownToggle.addEventListener("click", function (e) {
+                    e.stopPropagation();
+                    profileDropdown.classList.toggle("show");
+                });
+
+                document.addEventListener("click", function (e) {
+                    if (profileDropdown.classList.contains('show') &&
+                        !profileDropdown.contains(e.target) &&
+                        !dropdownToggle.contains(e.target)) {
+                        profileDropdown.classList.remove("show");
+                    }
+                });
+            }
         });
-        totalAmount.textContent = `Rp ${total.toLocaleString()}`;
-    }
-
-    function togglePaymentDetails() {
-        const paymentSelect = document.getElementById('paymentSelect');
-        const qrisDetails = document.getElementById('qrisDetails');
-        const cimbDetails = document.getElementById('cimbDetails');
-        const mandiriDetails = document.getElementById('mandiriDetails');
-
-        // Hide all payment details first
-        qrisDetails.style.display = 'none';
-        cimbDetails.style.display = 'none';
-        mandiriDetails.style.display = 'none';
-
-        // Show selected payment details
-        switch(paymentSelect.value) {
-            case 'qris':
-                qrisDetails.style.display = 'block';
-                break;
-            case 'cimb':
-                cimbDetails.style.display = 'block';
-                break;
-            case 'mandiri':
-                mandiriDetails.style.display = 'block';
-                break;
-        }
-    }
     </script>
 </body>
 </html>

@@ -151,19 +151,19 @@
                 <div class="profile-info">
                     <div class="info-group">
                         <div class="info-label">Nama</div>
-                        <div class="info-value">Nicho Prasetyo</div>
+                        <div class="info-value">{{ $user->name }}</div>
                     </div>
                     <div class="info-group">
                         <div class="info-label">Alamat</div>
-                        <div class="info-value">Prambanan</div>
+                        <div class="info-value">{{ $user->address }}</div>
                     </div>
                     <div class="info-group">
                         <div class="info-label">No. Hp</div>
-                        <div class="info-value">087654321</div>
+                        <div class="info-value">{{ $user->phone }}</div>
                     </div>
                     <div class="info-group">
                         <div class="info-label">Email</div>
-                        <div class="info-value">Nicho@gmail.com</div>
+                        <div class="info-value">{{ $user->email }}</div>
                     </div>
                 </div>
             </div>

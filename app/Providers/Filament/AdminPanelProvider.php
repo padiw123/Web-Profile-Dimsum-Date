@@ -4,12 +4,12 @@ namespace App\Providers\Filament;
 
 use Filament\Pages;
 use Filament\Panel;
-use Filament\Widgets;
+use Widgets\AccountWidget;
 use Filament\PanelProvider;
-use App\Http\Middleware\AdminAuth;
+use Widgets\FilamentInfoWidget;
 use Filament\Support\Colors\Color;
-use App\Http\Middleware\RedirectAdmin;
 use Filament\Http\Middleware\Authenticate;
+use App\Filament\Admin\Pages\Auth\AdminLogin;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -25,6 +25,8 @@ class AdminPanelProvider extends PanelProvider
     public function panel(Panel $panel): Panel
     {
         return $panel
+            ->authGuard('admin')
+            ->login(AdminLogin::class)
             ->brandName('Dimsum Date')
             ->id('admin')
             ->path('admin')
@@ -39,10 +41,6 @@ class AdminPanelProvider extends PanelProvider
                 Pages\Dashboard::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Admin/Widgets'), for: 'App\\Filament\\Admin\\Widgets')
-            ->widgets([
-                Widgets\AccountWidget::class,
-                Widgets\FilamentInfoWidget::class,
-            ])
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,

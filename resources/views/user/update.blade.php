@@ -239,22 +239,22 @@
                     <div class="profile-form-section">
                         <div class="form-group">
                                 <label class="form-label" for="name">Nama</label>
-                                <input type="text" class="form-input" id="name" name="name" value="Nicho Prasetyo" required>
+                                <input type="text" class="form-input" id="name" name="name" value="{{ $user->name }}" required>
                             </div>
 
                             <div class="form-group">
                                 <label class="form-label" for="address">Alamat</label>
-                                <input type="text" class="form-input" id="address" name="address" value="Prambanan" required>
+                                <input type="text" class="form-input" id="address" name="address" value="{{ $user->address }}" required>
                             </div>
 
                             <div class="form-group">
                                 <label class="form-label" for="phone">No. Hp</label>
-                                <input type="tel" class="form-input" id="phone" name="phone" value="087654321" required>
+                                <input type="tel" class="form-input" id="phone" name="phone" value="{{ $user->phone }}" required>
                             </div>
 
                             <div class="form-group">
                                 <label class="form-label" for="email">Email</label>
-                                <input type="email" class="form-input" id="email" name="email" value="Nicho@gmail.com" required>
+                                <input type="email" class="form-input" id="email" name="email" value="{{ $user->email }}" required>
                             </div>
                         </div>
                 </form>
