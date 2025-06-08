@@ -9,7 +9,11 @@ use Filament\PanelProvider;
 use Widgets\FilamentInfoWidget;
 use Filament\Support\Colors\Color;
 use Filament\Http\Middleware\Authenticate;
+use App\Filament\Admin\Widgets\OrdersChart;
+use App\Filament\Admin\Widgets\LatestOrders;
 use App\Filament\Admin\Pages\Auth\AdminLogin;
+use App\Filament\Admin\Widgets\StatsOverview;
+use App\Filament\Admin\Widgets\VisitorsChart;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -54,6 +58,12 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
+            ])
+            ->widgets([
+                StatsOverview::class,
+                VisitorsChart::class,
+                OrdersChart::class,
+                LatestOrders::class,
             ]);
     }
 }
