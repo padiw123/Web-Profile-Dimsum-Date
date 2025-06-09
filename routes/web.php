@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
@@ -11,6 +12,7 @@ use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 
 // Register routes
 Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
@@ -41,6 +43,25 @@ Route::get('/testimoni', [TestimoniController::class, 'index'])->name('testimoni
 
 // Profile routes
 Route::middleware(['auth'])->group(function () {
+    // Routes untuk proses verifikasi email
+    Route::get('/email/verify', function () {
+        return view('auth.verify-email');
+    })->name('verification.notice');
+
+    Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+        $request->fulfill();
+        return redirect('/'); // Arahkan ke beranda setelah sukses verifikasi
+    })->middleware('signed')->name('verification.verify');
+
+    Route::post('/email/verification-notification', function (Request $request) {
+        $request->user()->sendEmailVerificationNotification();
+        return back()->with('message', 'Link verifikasi baru telah dikirim ke email Anda!');
+    })->middleware('throttle:6,1')->name('verification.send');
+
+});
+
+Route::middleware(['auth', 'verified'])->group(function () {
+    //Profile routes
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
     Route::get('/profile/update', [ProfileController::class, 'edit'])->name('profileupdate');
     Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -54,4 +75,3 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/testimoni/submit-review', [TestimoniController::class, 'store'])->name('testimonial.store');
     Route::get('/testimoni/history', [TestimoniController::class, 'history'])->name('testimonial.history');
 });
-
