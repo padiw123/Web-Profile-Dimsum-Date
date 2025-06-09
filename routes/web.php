@@ -38,7 +38,7 @@ Route::get('/testimoni/list', function () {
 Route::middleware(['auth'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
     Route::get('/profile/update', [ProfileController::class, 'edit'])->name('profileupdate');
-    Route::put('/profile', [ProfileController::class, 'update'])->name('profileupdate.put');
+    Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
 
     Route::get('/history', [HistoryController::class, 'index'])->name('listhistory');
     Route::get('/history/{order}', [HistoryController::class, 'show'])->name('detailhistory');

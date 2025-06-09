@@ -34,7 +34,7 @@
         .login-container {
             width: 100%;
             max-width: 900px;
-            min-height: 500px; /* Gunakan min-height agar bisa menyesuaikan jika konten lebih tinggi */
+            min-height: 500px;
             background: var(--light-color);
             border-radius: 20px;
             box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
@@ -44,7 +44,7 @@
 
         .login-image {
             flex: 1;
-            background: #f5f5f5; /* Warna bisa disesuaikan */
+            background: #f5f5f5;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -56,9 +56,9 @@
             height: auto;
         }
 
-        .login-form-container { /* Mengganti .login-form untuk menghindari konflik nama class jika ada */
+        .login-form-container {
             flex: 1;
-            padding: 40px 50px; /* Sedikit penyesuaian padding */
+            padding: 40px 50px;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -67,7 +67,7 @@
         .login-form-container h1 {
             text-align: center;
             font-family: 'Poppins', sans-serif;
-            font-size: 2.2rem; /* Sedikit penyesuaian ukuran font */
+            font-size: 2.2rem;
             margin-bottom: 25px;
             color: var(--dark-color);
         }
@@ -83,10 +83,10 @@
 
         .form-group input {
             width: 100%;
-            padding: 12px 12px 12px 40px; /* Padding disesuaikan untuk ikon */
+            padding: 12px 12px 12px 40px;
             border: 1px solid var(--primary-color);
             border-radius: 15px;
-            font-size: 0.95rem; /* Sedikit penyesuaian ukuran font */
+            font-size: 0.95rem;
             transition: border-color 0.3s ease;
         }
 
@@ -95,30 +95,30 @@
             border-color: var(--accent-color);
         }
 
-        .form-group i.fas { /* Lebih spesifik untuk ikon Font Awesome */
+        .form-group i.fas {
             position: absolute;
             left: 15px;
             top: 50%;
             transform: translateY(-50%);
-            color: #888; /* Warna ikon sedikit lebih gelap */
+            color: #888;
         }
-        .form-actions { /* Wrapper untuk tombol dan link register */
-            text-align: center; /* Untuk centering konten di dalamnya */
+        .form-actions {
+            text-align: center;
             margin-top: 20px;
         }
 
         .login-btn {
             background-color: var(--primary-color);
             color: var(--light-color);
-            padding: 12px; /* Sedikit penyesuaian padding */
-            width: 180px; /* Lebar bisa disesuaikan */
+            padding: 12px;
+            width: 180px;
             border: none;
             border-radius: 25px;
             font-size: 1rem;
             cursor: pointer;
             transition: background-color 0.3s ease;
-            display: block; /* Agar margin auto bekerja */
-            margin: 0 auto 15px auto; /* Margin atas, auto kiri-kanan, bawah */
+            display: block;
+            margin: 0 auto 15px auto;
         }
 
         .login-btn:hover {
@@ -142,13 +142,13 @@
             .login-container {
                 flex-direction: column;
                 height: auto;
-                margin: 20px; /* Margin agar tidak terlalu mepet di mobile */
-                min-height: 0; /* Reset min-height untuk mobile */
+                margin: 20px;
+                min-height: 0;
             }
 
             .login-image {
-                padding: 30px 20px; /* Padding disesuaikan */
-                max-height: 200px; /* Batasi tinggi gambar di mobile */
+                padding: 30px 20px;
+                max-height: 200px;
             }
             .login-image img {
                 max-width: 60%;
@@ -179,7 +179,6 @@
                 @csrf
                 <div class="form-group">
                     <i class="fas fa-user"></i>
-                    {{-- Perubahan di sini: type="text" dan placeholder --}}
                     <input type="text" name="email" placeholder="E-mail atau Nomor Telepon" value="{{ old('email') }}" required autofocus>
                 </div>
                 <div class="form-group">
@@ -187,7 +186,6 @@
                     <input type="password" name="password" placeholder="Password" required>
                 </div>
 
-                {{-- Menampilkan error validasi --}}
                 @if ($errors->has('email'))
                     <p style="color: var(--error-color); font-size: 0.85rem; text-align: center; margin-bottom: 10px;">{{ $errors->first('email') }}</p>
                 @elseif ($errors->has('phone'))
