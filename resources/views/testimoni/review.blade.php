@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tulis Testimoni - Dimsum Date</title>
+    <link rel="icon" href="/assets/img/logo-dimsum.svg" type="image/svg">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('./assets/css/dimsum.css') }}">
     <style>
@@ -117,8 +118,10 @@
 
     <div class="review-container">
         <h2 class="review-title">Beri Ulasan</h2>
-        <form action="/submit-review" method="POST">
+        <form action="{{ route('testimonial.store') }}" method="POST">
             @csrf
+            <input type="hidden" name="rating" id="rating" value="{{ old('rating', 0) }}">
+
             <div class="form-group">
                 <input type="text" placeholder="Masukkan Nama" value="{{ old('name', optional(auth()->user())->name) }}" required>
             </div>
@@ -136,7 +139,7 @@
                 <i class="fas fa-star" data-rating="5"></i>
             </div>
             <div class="form-group">
-                <textarea placeholder="Tulis disini..." required></textarea>
+                <textarea name="comment" placeholder="Tulis disini..." required></textarea>
             </div>
             <button type="submit" class="submit-btn">Send</button>
         </form>
@@ -146,8 +149,15 @@
 
     <script>
         const stars = document.querySelectorAll('.star-rating i');
+        const ratingInput = document.getElementById('rating');
 
         stars.forEach((star, idx) => {
+            star.addEventListener('click', function () {
+                const ratingValue = this.dataset.rating;
+                ratingInput.value = ratingValue; // Set nilai input tersembunyi
+                setActiveStars(ratingValue);
+            });
+
             star.addEventListener('mouseover', () => {
                 stars.forEach((s, i) => {
                     if (i <= idx) {
@@ -163,18 +173,14 @@
             });
         });
 
-        // Script klik aktif tetap dipakai:
-        stars.forEach(star => {
-            star.addEventListener('click', function () {
-                const rating = this.dataset.rating;
-                stars.forEach(s => {
-                    s.classList.remove('active');
-                    if (s.dataset.rating <= rating) {
-                        s.classList.add('active');
-                    }
-                });
+        function setActiveStars(rating) {
+            stars.forEach(s => {
+                s.classList.remove('active');
+                if (s.dataset.rating <= rating) {
+                    s.classList.add('active');
+                }
             });
-        });
+        }
     </script>
 
     <script src="{{ asset('./assets/js/dimsum.js') }}"></script>

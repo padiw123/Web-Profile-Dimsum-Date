@@ -31,7 +31,7 @@
                     <li class="nav-item"><a href="#about" class="nav-link">Edukasi</a></li>
                     <li class="nav-item"><a href="#testimoni" class="nav-link">Testimoni</a></li>
                     <li class="nav-item"><a href="#contact" class="nav-link">Kontak</a></li>
-                    <li class="nav-item nav-item-login">
+                    <li class="nav-item">
                         @guest
                             <a href="{{ route('login') }}" class="btn-secondary" style="padding: 0.5rem 1rem; border-radius: 10px;">Login</a>
                         @endguest
@@ -45,7 +45,8 @@
                                 </button>
                                 <ul class="dropdown-menu">
                                     <li><a href="{{ route('profile') }}" class="dropdown-item">Profile</a></li>
-                                    <li><a href="{{ route('listhistory') }}" class="dropdown-item">History</a></li>
+                                    <li><a href="{{ route('testimonial.history') }}" class="dropdown-item">Riwayat Testimoni</a></li>
+                                    <li><a href="{{ route('listhistory') }}" class="dropdown-item">Riwayat Pembelian</a></li>
                                     <li><hr class="dropdown-divider"></li>
                                     <li>
                                         <form method="POST" action="{{ route('logout') }}">
@@ -210,27 +211,28 @@
 
             <div class="review-container">
                 <div class="review-grid">
-                    @for ($i = 0; $i < 8; $i++)
+                    @forelse ($testimonials as $testimonial)
                     <div class="review-card">
                         <div class="review-stars">
-                            @for ($star = 0; $star < 5; $star++)
+                            @for ($star = 0; $star < $testimonial->rating; $star++)
                                 <i class="fas fa-star"></i>
                             @endfor
                         </div>
-                        <h4 class="review-text">{{ Str::words('Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quasi ex perferendis minima quibusdam, pariatur et animi voluptates accusantium harum ipsa atque repellendus qui totam nam, voluptate sit iusto impedit dignissimos.', 15, '...') }}</h4>
-                            {{-- <img src="" alt="Reviewer" class="reviewer-image"> --}}
-                            <div class="reviewer-info">
-                                <div class="reviewer-name">Reviewer Name</div>
-                                <div class="review-date">2 days ago</div>
-                            </div>
+                        <h4 class="review-text">{{ Str::words($testimonial->comment, 15, '...') }}</h4>
+                        <div class="reviewer-info">
+                            <div class="reviewer-name">{{ $testimonial->user->name }}</div>
+                            <div class="review-date">{{ $testimonial->created_at->diffForHumans() }}</div>
+                        </div>
                     </div>
-                    @endfor
+                    @empty
+                    <p>Belum ada testimoni.</p>
+                    @endforelse
                 </div>
             </div>
 
             <div class="review-button">
-                <a href="{{ route('review') }}" class="btn-review">Tulis Testimoni</a>
-                <a href="{{ route('alltestimoni') }}" class="btn-review">Semua Testimoni</a>
+                <a href="{{ route('testimonial.create') }}" class="btn-review">Tulis Testimoni</a>
+                <a href="{{ route('testimonial.index') }}" class="btn-review">Semua Testimoni</a>
             </div>
         </div>
     </section>
@@ -578,7 +580,7 @@
             }
 
             // "Tulis Testimoni" Button Validation
-            const tulisTestimoniBtn = document.querySelector('a.btn-review[href="{{ route('review') }}"]');
+            const tulisTestimoniBtn = document.querySelector('a.btn-review[href="{{ route('testimonial.index') }}"]');
             if (tulisTestimoniBtn) {
                 tulisTestimoniBtn.addEventListener('click', function(event) {
                     if (!isAuthenticated) {
