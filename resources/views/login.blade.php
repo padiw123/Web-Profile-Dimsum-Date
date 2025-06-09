@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
+    <link rel="icon" href="/assets/img/logo-dimsum.svg" type="image/svg">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"> {{-- Cukup satu kali di head --}}
     <style>
@@ -183,7 +184,8 @@
                 </div>
                 <div class="form-group">
                     <i class="fas fa-lock"></i>
-                    <input type="password" name="password" placeholder="Password" required>
+                    <input type="password" name="password" id="password" placeholder="Password" required>
+                    <i class="fas fa-eye" id="togglePassword" style="right: 15px; left: auto; cursor: pointer;"></i>
                 </div>
                 <div class="register-link" style="text-align: right">
                     <a href="{{ route('password.request') }}">
@@ -209,5 +211,31 @@
             </form>
         </div>
     </div>
+
+    <script>
+        const togglePassword = document.querySelector('#togglePassword');
+        const password = document.querySelector('#password');
+
+        // Set ikon awal menjadi mata tercoret karena password disamarkan
+        togglePassword.classList.remove('fa-eye');
+        togglePassword.classList.add('fa-eye-slash');
+
+        togglePassword.addEventListener('click', function (e) {
+            // Ubah tipe input password menjadi teks atau sebaliknya
+            const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+            password.setAttribute('type', type);
+
+            // Ganti ikon berdasarkan kondisi
+            if (type === 'password') {
+                // Jika password disamarkan, ikonnya mata tercoret
+                this.classList.remove('fa-eye');
+                this.classList.add('fa-eye-slash');
+            } else {
+                // Jika password terlihat, ikonnya mata terbuka
+                this.classList.remove('fa-eye-slash');
+                this.classList.add('fa-eye');
+            }
+        });
+    </script>
 </body>
 </html>
