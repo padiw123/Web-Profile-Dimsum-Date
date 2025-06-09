@@ -2,16 +2,17 @@
 
 namespace App\Filament\Admin\Resources;
 
-use App\Filament\Admin\Resources\MenuResource\Pages;
-use App\Filament\Admin\Resources\MenuResource\RelationManagers;
-use App\Models\Menu;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
+use App\Models\Menu;
 use Filament\Tables;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Filament\Resources\Resource;
+use Filament\Tables\Columns\ImageColumn;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Admin\Resources\MenuResource\Pages;
+use App\Filament\Admin\Resources\MenuResource\RelationManagers;
 
 class MenuResource extends Resource
 {
@@ -41,6 +42,10 @@ class MenuResource extends Resource
     {
         return $table
             ->columns([
+                ImageColumn::make('image_url')
+                    ->label('Image')
+                    ->disk('public')
+                    ->circular(),
                 Tables\Columns\TextColumn::make('name')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('category')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('price')->money('IDR'),
