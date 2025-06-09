@@ -185,6 +185,11 @@
                     <i class="fas fa-lock"></i>
                     <input type="password" name="password" placeholder="Password" required>
                 </div>
+                <div class="register-link" style="text-align: right">
+                    <a href="{{ route('password.request') }}">
+                        Lupa Password Anda?
+                    </a>
+                </div>
 
                 @if ($errors->has('email'))
                     <p style="color: var(--error-color); font-size: 0.85rem; text-align: center; margin-bottom: 10px;">{{ $errors->first('email') }}</p>
@@ -194,7 +199,6 @@
                  @if ($errors->has('password'))
                     <p style="color: var(--error-color); font-size: 0.85rem; text-align: center; margin-bottom: 10px;">{{ $errors->first('password') }}</p>
                 @endif
-
 
                 <div class="form-actions">
                     <button type="submit" class="login-btn">Login</button>
