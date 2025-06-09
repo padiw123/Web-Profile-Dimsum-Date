@@ -155,7 +155,7 @@
                 @foreach ($menus as $index => $menu)
                     <div class="menu-item {{ $index >= 6 ? 'hidden extra-menu' : '' }}" data-category="{{ $menu->category }}" data-id="{{ $menu->id }}">
                         <div class="menu-image">
-                            <img src="{{ $menu->image_url }}" alt="{{ $menu->name }}">
+                            <img src="{{ asset('storage/' . $menu->image_url) }}" alt="{{ $menu->name }}">
                         </div>
                         <div class="menu-content">
                             <h3>{{ $menu->name }}</h3>
@@ -554,16 +554,16 @@
                         showLoginPrompt();
                     } else {
                         const orderItemsDiv = document.getElementById('orderItems');
-                        
+
                         // Isi input untuk summary teks (untuk pesan WA)
                         const summaryText = Array.from(orderItemsDiv.querySelectorAll('.order-item'))
                             .map(item => item.innerText.replace('\t', ' '))
                             .join('\n');
                         document.getElementById('orderedItemsSummaryInput').value = summaryText.trim();
-                        
+
                         // Isi input untuk total pembayaran
                         document.getElementById('totalPaymentInput').value = document.getElementById('totalAmount').textContent;
-                        
+
                         // Isi input BARU untuk data JSON (untuk disimpan ke database)
                         const structuredItems = [];
                         orderItemsDiv.querySelectorAll('.order-item').forEach(item => {
