@@ -4,6 +4,9 @@
     "providers": ["php"],
     "php": {
       "version": "8.3"
-    }
+    },
+    "pkgs": [
+      "php83Packages.swoole"
+    ]
   }
 }
