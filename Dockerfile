@@ -21,19 +21,18 @@ RUN apt-get update && apt-get install -y \
     libonig-dev \
     libicu-dev \
     libpq-dev \
+    nodejs \
+    npm \
     && docker-php-ext-install -j$(nproc) bcmath pdo pdo_pgsql zip intl sockets \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-WORKDIR /app
-
-COPY database/ database/
-COPY composer.json composer.lock ./
-
-RUN composer install --no-interaction --no-dev --optimize-autoloader
+WORKDIR /var/www/html
 
 COPY . .
+
+RUN composer install --no-interaction --no-dev --optimize-autoloader
 
 RUN npm install --legacy-peer-deps && npm run build
 
