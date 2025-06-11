@@ -182,7 +182,8 @@
         </div>
     </section>
 
-   <!-- Edukasi Section -->
+ 
+      <!-- Edukasi Section -->
 <section id="edukasi" class="info-section" style="padding: 4rem 2rem; background-color: #f9f9f9;">
     <div class="container" style="max-width: 1140px; margin: 0 auto;">
         <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 2rem;">
