@@ -14,18 +14,28 @@ RUN npm run build
 FROM php:8.3-cli
 
 RUN apt-get update && apt-get install -y \
+    git \
+    curl \
     unzip \
     libzip-dev \
+    libonig-dev \
     libicu-dev \
     libpq-dev \
-    && docker-php-ext-install -j$(nproc) intl sockets pdo_pgsql zip \
+    && docker-php-ext-install -j$(nproc) bcmath pdo pdo_pgsql zip intl sockets \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-WORKDIR /var/www/html
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+WORKDIR /app
+
+COPY database/ database/
+COPY composer.json composer.lock ./
+
+RUN composer install --no-interaction --no-dev --optimize-autoloader
 
 COPY . .
-COPY --from=composer_stage /app/vendor/ ./vendor/
-COPY --from=node_stage /app/public/build/ ./public/build/
+
+RUN npm install --legacy-peer-deps && npm run build
 
 RUN chown -R www-data:www-data storage bootstrap/cache \
     && chmod -R 775 storage bootstrap/cache
@@ -34,5 +44,6 @@ RUN php artisan config:cache
 RUN php artisan route:cache
 RUN php artisan view:cache
 
-EXPOSE 80
-CMD ["php", "artisan", "octane:start", "--host=0.0.0.0", "--port=80"]
+EXPOSE 8000
+
+CMD ["php", "artisan", "octane:start", "--host=0.0.0.0", "--port=8000"]
