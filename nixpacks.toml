@@ -1,5 +1,5 @@
 [phases.setup]
-nixPkgs = ["apacheHttpd", "php"]
+nixPkgs = ["php", "composer", "apacheHttpd"]
 
 [start]
 command = "vendor/bin/heroku-php-apache2 public/"
