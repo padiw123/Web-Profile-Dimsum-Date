@@ -182,31 +182,30 @@
         </div>
     </section>
 
-     <!-- Edukasi Section -->
-<section id="edukasi" class="info-section" style="padding: 4rem 2rem; background-color: #f9f9f9;">
-    <div class="container" style="max-width: 1140px; margin: 0 auto;">
-        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 2rem;">
-            <div style="flex: 1; min-width: 300px;">
-                <img src="/assets/img/dimsum-education.jpg" alt="Apa Itu Dimsum" style="width: 100%; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
-            </div>
-            <div style="flex: 1; min-width: 300px;">
-                <h2 style="color: #B22222; font-size: 2rem; margin-bottom: 1rem;">Apa Itu Dimsum?</h2>
-                <p style="font-size: 1rem; line-height: 1.6;">
-                    Dimsum adalah makanan tradisional khas Tiongkok yang disajikan dalam porsi kecil dan biasanya dikukus atau digoreng ringan.
-                    Hidangan ini populer karena keberagamannya dan cara penyajiannya yang sering menjadi bagian dari budaya minum teh bersama.
-                </p>
-                <h2 style="color: #B22222; font-size: 2rem; margin-top: 3rem;">Tentang Dimsum</h2>
-            <p style="max-width: 800px; margin: 1rem auto 0; font-size: 1rem;">
-                Dimsum bukan hanya makanan tradisional yang lezat, tetapi juga memiliki berbagai manfaat kesehatan. Karena umumnya dimasak dengan cara dikukus, dimsum mengandung lebih sedikit minyak dan lemak dibandingkan makanan cepat saji yang digoreng.
-        </p>
-            <p style="max-width: 800px; margin: 1rem auto 0; font-size: 1rem;">
-                Selain itu, dimsum sering kali berisi bahan-bahan bergizi seperti ayam tanpa lemak, udang kaya protein, serta sayuran yang mengandung serat. Ini membuatnya menjadi pilihan makanan yang lebih seimbang dan mendukung gaya hidup sehat.
-    </p>
-        <p style="max-width: 800px; margin: 1rem auto 0; font-size: 1rem;">
-             Karena disajikan dalam porsi kecil, dimsum juga mendorong pola makan yang moderat dan momen kebersamaan saat berbagi hidangan bersama orang lain, menjadikannya bukan hanya bermanfaat untuk tubuh, tetapi juga mempererat hubungan sosial.
-    </p>
-
-                </ul>
+    <!-- Edukasi Section -->
+    <section id="edukasi" class="info-section" style="padding: 4rem 2rem; background-color: #f9f9f9;">
+        <div class="container" style="max-width: 1140px; margin: 0 auto;">
+            <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 2rem;">
+                <div style="flex: 1; min-width: 300px;">
+                    <img src="/assets/img/dimsum-education.jpg" alt="Apa Itu Dimsum" style="width: 100%; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                </div>
+                <div style="flex: 1; min-width: 300px;">
+                    <h2 style="color: #B22222; font-size: 2rem; margin-bottom: 1rem;">Apa Itu Dimsum?</h2>
+                    <p style="font-size: 1rem; line-height: 1.6;">
+                        Dimsum adalah makanan tradisional khas Tiongkok yang disajikan dalam porsi kecil dan biasanya dikukus atau digoreng ringan.
+                        Hidangan ini populer karena keberagamannya dan cara penyajiannya yang sering menjadi bagian dari budaya minum teh bersama.
+                    </p>
+                    <h2 style="color: #B22222; font-size: 2rem; margin-top: 3rem;">Tentang Dimsum</h2>
+                    <p style="max-width: 800px; margin: 1rem auto 0; font-size: 1rem;">
+                        Dimsum bukan hanya makanan tradisional yang lezat, tetapi juga memiliki berbagai manfaat kesehatan. Karena umumnya dimasak dengan cara dikukus, dimsum mengandung lebih sedikit minyak dan lemak dibandingkan makanan cepat saji yang digoreng.
+                    </p>
+                    <p style="max-width: 800px; margin: 1rem auto 0; font-size: 1rem;">
+                        Selain itu, dimsum sering kali berisi bahan-bahan bergizi seperti ayam tanpa lemak, udang kaya protein, serta sayuran yang mengandung serat. Ini membuatnya menjadi pilihan makanan yang lebih seimbang dan mendukung gaya hidup sehat.
+                    </p>
+                    <p style="max-width: 800px; margin: 1rem auto 0; font-size: 1rem;">
+                        Karena disajikan dalam porsi kecil, dimsum juga mendorong pola makan yang moderat dan momen kebersamaan saat berbagi hidangan bersama orang lain, menjadikannya bukan hanya bermanfaat untuk tubuh, tetapi juga mempererat hubungan sosial.
+                    </p>
+                </div>
             </div>
         </div>
     </div>
