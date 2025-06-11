@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+use Filament\Panel;
+use Illuminate\Notifications\Notifiable;
+use Filament\Models\Contracts\FilamentUser;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
 
-class Admin extends Authenticatable
+class Admin extends Authenticatable implements FilamentUser
 {
     use HasFactory, Notifiable;
 
@@ -19,4 +21,22 @@ class Admin extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'email_verified_at' => 'datetime',
+            'password' => 'hashed',
+        ];
+    }
+
+    /**
+     * Grant access to Filament panel.
+     */
+    public function canAccessPanel(Panel $panel): bool
+    {
+        // Izinkan semua pengguna Admin untuk mengakses panel.
+        // Anda bisa menambahkan logika kustom di sini jika perlu.
+        return true;
+    }
 }
