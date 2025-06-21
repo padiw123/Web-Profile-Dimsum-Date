@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lupa Password - Dimsum Date</title>
-    {{-- Menggunakan style yang sama dengan halaman login/register --}}
+    <link rel="icon" href="/assets/img/logo-dimsum.svg" type="image/svg">
     <link rel="stylesheet" href="{{ asset('./assets/css/dimsum.css') }}">
     <style>
         body {
@@ -12,7 +12,7 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background-color: #f9f5eb;
+            background-color: #f5f5f5;
         }
         .auth-container {
             background-color: white;

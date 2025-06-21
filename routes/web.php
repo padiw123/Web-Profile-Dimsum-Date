@@ -18,9 +18,6 @@ use Illuminate\Foundation\Auth\EmailVerificationRequest;
 Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
 Route::post('/register', [AuthController::class, 'register'])->name('register.submit');
 
-Route::get('/', function () {
-    return view('welcome');
-});
 Route::get('/', [HomeController::class, 'index'])->name('dashboard')->middleware('track.visitors');
 
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');

@@ -2,8 +2,6 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Filament\Panel;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -26,6 +24,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'password',
         'address',
         'phone',
+        'profile_photo_path',
     ];
 
     /**

@@ -147,10 +147,8 @@
             <div class="profile-content">
                 <div class="profile-image">
                     @if ($user->profile_photo_path)
-                        <!-- Tampilkan gambar profil jika ada -->
                         <img src="{{ asset('storage/' . $user->profile_photo_path) }}" alt="Profile Picture">
                     @else
-                        <!-- Tampilkan ikon placeholder jika tidak ada gambar -->
                         <i class="fas fa-user placeholder-icon"></i>
                     @endif
                 </div>
