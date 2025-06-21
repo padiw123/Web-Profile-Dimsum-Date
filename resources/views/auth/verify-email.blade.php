@@ -4,9 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Verifikasi Email - Dimsum Date</title>
+    <link rel="icon" href="/assets/img/logo-dimsum.svg" type="image/svg">
     <link rel="stylesheet" href="{{ asset('./assets/css/dimsum.css') }}">
     <style>
-        body { display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #f9f5eb; text-align: center; font-family: 'Poppins', sans-serif; }
+        body { display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #f5f5f5; text-align: center; font-family: 'Poppins', sans-serif; }
         .notice-container { background-color: white; padding: 2.5rem; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); width: 100%; max-width: 550px; }
         .notice-title { color: var(--primary-color); margin-bottom: 1rem; }
         .notice-message { margin-bottom: 1.5rem; line-height: 1.6; color: #555; }

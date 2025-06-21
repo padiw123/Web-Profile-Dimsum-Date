@@ -8,16 +8,16 @@ use Filament\Tables;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
+use Illuminate\Database\Eloquent\Model;
 use Filament\Tables\Columns\ImageColumn;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Infolists\Components\TextEntry;
 use App\Filament\Admin\Resources\MenuResource\Pages;
-use App\Filament\Admin\Resources\MenuResource\RelationManagers;
 
 class MenuResource extends Resource
 {
     protected static ?string $model = Menu::class;
-
+    protected static ?string $navigationGroup = 'Manajemen Website';
+    protected static ?string $recordTitleAttribute = 'name';
     protected static ?string $navigationIcon = 'heroicon-m-book-open';
     protected static ?string $navigationLabel = 'Menu';
     protected static ?string $pluralModelLabel = 'Menus';
@@ -31,7 +31,7 @@ class MenuResource extends Resource
                 Forms\Components\Textarea::make('description')->required(),
                 Forms\Components\FileUpload::make('image_url') ->label('Image')
                 ->image()
-                ->directory('menus') // folder penyimpanan di storage/app/public/menus
+                ->directory('menus')
                 ->visibility('public')
                 ->required(),
                 Forms\Components\TextInput::make('price')->numeric()->required(),
@@ -42,9 +42,8 @@ class MenuResource extends Resource
     {
         return $table
             ->columns([
-                ImageColumn::make('image_url')
+                ImageColumn::make('display_image_url')
                     ->label('Image')
-                    ->disk('public')
                     ->circular(),
                 Tables\Columns\TextColumn::make('name')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('category')->sortable()->searchable(),
@@ -65,5 +64,18 @@ class MenuResource extends Resource
             'create' => Pages\CreateMenu::route('/create'),
             'edit' => Pages\EditMenu::route('/{record}/edit'),
         ];
+    }
+
+    public static function getGlobalSearchResultDetails(Model $record): array
+    {
+        return [
+            TextEntry::make('category')->label('Kategori')->state($record->category),
+            TextEntry::make('price')->label('Harga')->state('Rp ' . number_format($record->price, 0, ',', '.')),
+        ];
+    }
+
+    public static function getGlobalSearchResultAvatar(Model $record): ?string
+    {
+        return $record->display_image_url;
     }
 }

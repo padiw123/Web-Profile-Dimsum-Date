@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reset Password - Dimsum Date</title>
-    {{-- Menggunakan style yang sama dengan halaman login/register --}}
+    <link rel="icon" href="/assets/img/logo-dimsum.svg" type="image/svg">
     <link rel="stylesheet" href="{{ asset('./assets/css/dimsum.css') }}">
     <style>
         /* Anda bisa menggunakan style yang sama persis dengan email.blade.php */
-        body { display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #f9f5eb; }
+        body { display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #f5f5f5; }
         .auth-container { background-color: white; padding: 2.5rem; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
         .auth-title { text-align: center; color: var(--primary-color); margin-bottom: 1.5rem; }
         .form-group { margin-bottom: 1rem; }

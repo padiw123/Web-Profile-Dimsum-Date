@@ -2,33 +2,32 @@
 
 namespace App\Filament\Admin\Resources;
 
-use App\Filament\Admin\Resources\TestimonialResource\Pages;
-use App\Models\Testimonial;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Models\Testimonial;
+use Filament\Resources\Resource;
+use Illuminate\Database\Eloquent\Model;
+use Filament\Infolists\Components\TextEntry;
+use App\Filament\Admin\Resources\TestimonialResource\Pages;
 
 class TestimonialResource extends Resource
 {
     protected static ?string $model = Testimonial::class;
-
+    protected static ?string $navigationGroup = 'Manajemen User';
     protected static ?string $navigationIcon = 'heroicon-o-star';
+    protected static ?string $recordTitleAttribute = 'user.name';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                // Input untuk memilih User, menampilkan nama user
                 Forms\Components\Select::make('user_id')
                     ->relationship('user', 'name')
                     ->searchable()
                     ->preload()
                     ->required(),
-                // Input untuk rating dengan pilihan 1-5
                 Forms\Components\Select::make('rating')
                     ->options([
                         1 => '1 Bintang',
@@ -38,9 +37,9 @@ class TestimonialResource extends Resource
                         5 => '5 Bintang',
                     ])
                     ->required(),
-                // Input untuk komentar dalam bentuk textarea
                 Forms\Components\Textarea::make('comment')
                     ->required()
+                    ->searchable()
                     ->columnSpanFull(),
             ]);
     }
@@ -49,28 +48,23 @@ class TestimonialResource extends Resource
     {
         return $table
             ->columns([
-                // Kolom untuk nama user, bisa di-sort dan dicari
                 Tables\Columns\TextColumn::make('user.name')
                     ->label('Pengguna')
                     ->searchable()
                     ->sortable(),
-                // Kolom untuk rating, menampilkan ikon bintang
                 Tables\Columns\TextColumn::make('rating')
                     ->sortable()
                     ->formatStateUsing(function (string $state) {
                         return str_repeat('★', $state) . str_repeat('☆', 5 - $state);
                     }),
-                // Kolom untuk komentar, dengan batasan teks agar tidak terlalu panjang
                 Tables\Columns\TextColumn::make('comment')
                     ->searchable()
                     ->limit(50)
                     ->tooltip('Klik untuk melihat selengkapnya'),
-                // Kolom untuk tanggal dibuat
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                // Kolom untuk tanggal diperbarui
                 Tables\Columns\TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
@@ -103,6 +97,14 @@ class TestimonialResource extends Resource
             'index' => Pages\ListTestimonials::route('/'),
             'create' => Pages\CreateTestimonial::route('/create'),
             'edit' => Pages\EditTestimonial::route('/{record}/edit'),
+        ];
+    }
+    public static function getGlobalSearchResultDetails(Model $record): array
+    {
+        return [
+            TextEntry::make('user.name')->label('Pengguna')->state($record->user->name),
+            TextEntry::make('rating')->label('Rating')->state(str_repeat('★', $record->rating) . str_repeat('☆', 5 - $record->rating)),
+            TextEntry::make('comment')->label('Komentar')->state($record->comment),
         ];
     }
 }

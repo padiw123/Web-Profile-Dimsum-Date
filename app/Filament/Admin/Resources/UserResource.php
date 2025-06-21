@@ -2,22 +2,25 @@
 
 namespace App\Filament\Admin\Resources;
 
-use App\Filament\Admin\Resources\UserResource\Pages;
-use App\Models\User;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
+use App\Models\User;
 use Filament\Tables;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Filament\Resources\Resource;
 use Illuminate\Support\Facades\Hash;
-use Filament\Forms\Components\FileUpload;
+use Illuminate\Database\Eloquent\Model;
 use Filament\Tables\Columns\ImageColumn;
+use Filament\Forms\Components\FileUpload;
+use Filament\Infolists\Components\TextEntry;
+use App\Filament\Admin\Resources\UserResource\Pages;
 
 class UserResource extends Resource
 {
     protected static ?string $model = User::class;
-
+    protected static ?string $navigationGroup = 'Manajemen User';
     protected static ?string $navigationIcon = 'heroicon-o-users';
+    protected static ?string $recordTitleAttribute = 'name';
 
     public static function form(Form $form): Form
     {
@@ -29,13 +32,13 @@ class UserResource extends Resource
                 Forms\Components\TextInput::make('email')
                     ->email()
                     ->required()
-                    ->unique(ignoreRecord: true) // Validasi email unik
+                    ->unique(ignoreRecord: true)
                     ->maxLength(255),
 
                 Forms\Components\TextInput::make('phone')
                     ->label('No. Telepon')
                     ->tel()
-                    ->unique(ignoreRecord: true) // Validasi nomor telepon unik
+                    ->unique(ignoreRecord: true)
                     ->maxLength(15),
 
                 Forms\Components\Textarea::make('address')
@@ -115,5 +118,16 @@ class UserResource extends Resource
             'create' => Pages\CreateUser::route('/create'),
             'edit' => Pages\EditUser::route('/{record}/edit'),
         ];
+    }
+    public static function getGlobalSearchResultDetails(Model $record): array
+    {
+        return [
+            TextEntry::make('email')->label('Email')->state($record->email),
+            TextEntry::make('phone')->label('No. Telepon')->state($record->phone),
+        ];
+    }
+    public static function getGlobalSearchResultAvatar(Model $record): ?string
+    {
+        return $record->profile_photo_path ? $record->profile_photo_path : null;
     }
 }
