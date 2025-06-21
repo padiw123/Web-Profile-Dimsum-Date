@@ -7,16 +7,17 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Auth\Events\Registered;
 
 class AuthController extends Controller
 {
     public function showLoginForm()
     {
-        return view('login'); // buat view ini nanti
+        return view('auth.login'); // buat view ini nanti
     }
     public function showRegisterForm()
     {
-        return view('Register');
+        return view('auth.Register');
     }
 
     public function register(Request $request)
@@ -29,7 +30,7 @@ class AuthController extends Controller
             'password' => 'required|string|min:8',
         ]);
 
-        User::create([
+        $user = User::create([
             'name' => $request->name,
             'address' => $request->address,
             'phone' => $request->phone,
@@ -37,64 +38,64 @@ class AuthController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        return redirect()->route('login')->with('success', 'Register berhasil!');
+        event(new Registered($user));
+
+    // Langsung loginkan user yang baru mendaftar
+        Auth::login($user);
+
+        // Alihkan ke halaman pemberitahuan verifikasi, bukan ke halaman login lagi
+        return redirect()->route('verification.notice');
     }
 
-    public function login(Request $request)
+        public function login(Request $request)
     {
-        // 1. UBAH VALIDASI DI SINI:
+        // 1. Validasi input tetap sama
         $request->validate([
-            'email' => 'required|string', // Diubah dari ['required', 'email'] menjadi 'required|string'
+            'email' => 'required|string',
             'password' => 'required|string',
         ]);
 
-        $loginInput = $request->input('email'); // Ini bisa email atau nomor telepon dari form
+        $loginInput = $request->input('email');
         $password = $request->input('password');
-
-        $isEmail = filter_var($loginInput, FILTER_VALIDATE_EMAIL);
         $remember = $request->filled('remember');
-        $credentials = [];
 
-        if ($isEmail) {
-            $credentials = [
-                'email' => $loginInput,
-                'password' => $password,
-            ];
-            Log::info('[LoginAttempt] (Custom Controller) Mencoba login dengan EMAIL: ' . $loginInput);
-        } else {
-            // Asumsikan nomor telepon, lakukan normalisasi
-            // Pastikan method normalizePhone() ada di controller ini
-            $normalizedPhone = $this->normalizePhone($loginInput);
+        // 2. Tentukan field yang akan dicari (email atau phone)
+        $isEmail = filter_var($loginInput, FILTER_VALIDATE_EMAIL);
+        $field = $isEmail ? 'email' : 'phone';
+        $value = $isEmail ? $loginInput : $this->normalizePhone($loginInput);
 
-            // GANTI 'phone' dengan nama kolom di DB Anda jika berbeda
-            $credentials = [
-                'phone' => $normalizedPhone,
-                'password' => $password,
-            ];
-            Log::info('[LoginAttempt] (Custom Controller) Mencoba login dengan PHONE (setelah normalisasi): ' . $normalizedPhone . ' (input asli: ' . $loginInput . ')');
+        // 3. Cari user berdasarkan email atau nomor telepon
+        $user = User::where($field, $value)->first();
+
+        // 4. Cek jika user tidak ada ATAU password salah
+        if (!$user || !Hash::check($password, $user->password)) {
+            Log::warning('[LoginAttempt] Login GAGAL (Kredensial Salah) untuk input: ' . $loginInput);
+            return back()->withErrors([
+                'email' => 'E-mail atau nomor telepon tidak ditemukan atau password salah.',
+            ])->withInput($request->only('email', 'remember'));
         }
 
-        // Coba login menggunakan guard 'web' (atau guard default Anda)
-        if (Auth::guard('web')->attempt($credentials, $remember)) {
-            $request->session()->regenerate();
-            Log::info('[LoginAttempt] (Custom Controller) Login BERHASIL untuk: ' . ($isEmail ? $loginInput : $normalizedPhone ?? $loginInput));
-            return redirect()->intended('/'); // atau ke dashboard Anda
+        // 5. PENERAPAN: Cek apakah user sudah verifikasi email
+        if (!$user->hasVerifiedEmail()) {
+            Log::warning('[LoginAttempt] Login GAGAL (Belum Verifikasi) untuk user: ' . $user->email);
+            // Kirim ulang email verifikasi agar pengguna bisa mencoba lagi
+            $user->sendEmailVerificationNotification();
+
+            return back()->withErrors([
+                'email' => 'Akun Anda belum terverifikasi. Kami telah mengirim ulang link verifikasi ke email Anda, silakan periksa.',
+            ])->withInput($request->only('email', 'remember'));
         }
 
-        // Jika login gagal
-        Log::warning('[LoginAttempt] (Custom Controller) Login GAGAL untuk input: ' . $loginInput);
-        return back()->withErrors([
-            // Pesan error akan ditampilkan di bawah field input 'email' di form Anda
-            'email' => 'E-mail atau nomor telepon tidak ditemukan atau password salah.',
-        ])->withInput($request->only('email', 'remember')); // Mengembalikan input 'email' dan 'remember'
+        // 6. Jika semua pengecekan lolos, loginkan user
+        Auth::login($user, $remember);
+        $request->session()->regenerate();
+        Log::info('[LoginAttempt] Login BERHASIL untuk: ' . $user->email);
+
+        return redirect()->intended('/');
     }
 
-    // Pastikan Anda memiliki method normalizePhone seperti ini juga:
     private function normalizePhone($phone)
     {
-        // 1. Hapus semua karakter selain digit
-        $normalized = preg_replace('/\D/', '', $phone);
-
-        return $normalized;
+        return preg_replace('/\D/', '', $phone);
     }
 }

@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
+    <link rel="icon" href="/assets/img/logo-dimsum.svg" type="image/svg">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"> {{-- Cukup satu kali di head --}}
     <style>
@@ -34,7 +35,7 @@
         .login-container {
             width: 100%;
             max-width: 900px;
-            min-height: 500px; /* Gunakan min-height agar bisa menyesuaikan jika konten lebih tinggi */
+            min-height: 500px;
             background: var(--light-color);
             border-radius: 20px;
             box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
@@ -44,7 +45,7 @@
 
         .login-image {
             flex: 1;
-            background: #f5f5f5; /* Warna bisa disesuaikan */
+            background: #f5f5f5;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -56,9 +57,9 @@
             height: auto;
         }
 
-        .login-form-container { /* Mengganti .login-form untuk menghindari konflik nama class jika ada */
+        .login-form-container {
             flex: 1;
-            padding: 40px 50px; /* Sedikit penyesuaian padding */
+            padding: 40px 50px;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -67,7 +68,7 @@
         .login-form-container h1 {
             text-align: center;
             font-family: 'Poppins', sans-serif;
-            font-size: 2.2rem; /* Sedikit penyesuaian ukuran font */
+            font-size: 2.2rem;
             margin-bottom: 25px;
             color: var(--dark-color);
         }
@@ -83,10 +84,10 @@
 
         .form-group input {
             width: 100%;
-            padding: 12px 12px 12px 40px; /* Padding disesuaikan untuk ikon */
+            padding: 12px 12px 12px 40px;
             border: 1px solid var(--primary-color);
             border-radius: 15px;
-            font-size: 0.95rem; /* Sedikit penyesuaian ukuran font */
+            font-size: 0.95rem;
             transition: border-color 0.3s ease;
         }
 
@@ -95,30 +96,30 @@
             border-color: var(--accent-color);
         }
 
-        .form-group i.fas { /* Lebih spesifik untuk ikon Font Awesome */
+        .form-group i.fas {
             position: absolute;
             left: 15px;
             top: 50%;
             transform: translateY(-50%);
-            color: #888; /* Warna ikon sedikit lebih gelap */
+            color: #888;
         }
-        .form-actions { /* Wrapper untuk tombol dan link register */
-            text-align: center; /* Untuk centering konten di dalamnya */
+        .form-actions {
+            text-align: center;
             margin-top: 20px;
         }
 
         .login-btn {
             background-color: var(--primary-color);
             color: var(--light-color);
-            padding: 12px; /* Sedikit penyesuaian padding */
-            width: 180px; /* Lebar bisa disesuaikan */
+            padding: 12px;
+            width: 180px;
             border: none;
             border-radius: 25px;
             font-size: 1rem;
             cursor: pointer;
             transition: background-color 0.3s ease;
-            display: block; /* Agar margin auto bekerja */
-            margin: 0 auto 15px auto; /* Margin atas, auto kiri-kanan, bawah */
+            display: block;
+            margin: 0 auto 15px auto;
         }
 
         .login-btn:hover {
@@ -142,13 +143,13 @@
             .login-container {
                 flex-direction: column;
                 height: auto;
-                margin: 20px; /* Margin agar tidak terlalu mepet di mobile */
-                min-height: 0; /* Reset min-height untuk mobile */
+                margin: 20px;
+                min-height: 0;
             }
 
             .login-image {
-                padding: 30px 20px; /* Padding disesuaikan */
-                max-height: 200px; /* Batasi tinggi gambar di mobile */
+                padding: 30px 20px;
+                max-height: 200px;
             }
             .login-image img {
                 max-width: 60%;
@@ -179,15 +180,19 @@
                 @csrf
                 <div class="form-group">
                     <i class="fas fa-user"></i>
-                    {{-- Perubahan di sini: type="text" dan placeholder --}}
                     <input type="text" name="email" placeholder="E-mail atau Nomor Telepon" value="{{ old('email') }}" required autofocus>
                 </div>
                 <div class="form-group">
                     <i class="fas fa-lock"></i>
-                    <input type="password" name="password" placeholder="Password" required>
+                    <input type="password" name="password" id="password" placeholder="Password" required>
+                    <i class="fas fa-eye" id="togglePassword" style="right: 15px; left: auto; cursor: pointer;"></i>
+                </div>
+                <div class="register-link" style="text-align: right">
+                    <a href="{{ route('password.request') }}">
+                        Lupa Password Anda?
+                    </a>
                 </div>
 
-                {{-- Menampilkan error validasi --}}
                 @if ($errors->has('email'))
                     <p style="color: var(--error-color); font-size: 0.85rem; text-align: center; margin-bottom: 10px;">{{ $errors->first('email') }}</p>
                 @elseif ($errors->has('phone'))
@@ -196,7 +201,6 @@
                  @if ($errors->has('password'))
                     <p style="color: var(--error-color); font-size: 0.85rem; text-align: center; margin-bottom: 10px;">{{ $errors->first('password') }}</p>
                 @endif
-
 
                 <div class="form-actions">
                     <button type="submit" class="login-btn">Login</button>
@@ -207,5 +211,31 @@
             </form>
         </div>
     </div>
+
+    <script>
+        const togglePassword = document.querySelector('#togglePassword');
+        const password = document.querySelector('#password');
+
+        // Set ikon awal menjadi mata tercoret karena password disamarkan
+        togglePassword.classList.remove('fa-eye');
+        togglePassword.classList.add('fa-eye-slash');
+
+        togglePassword.addEventListener('click', function (e) {
+            // Ubah tipe input password menjadi teks atau sebaliknya
+            const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+            password.setAttribute('type', type);
+
+            // Ganti ikon berdasarkan kondisi
+            if (type === 'password') {
+                // Jika password disamarkan, ikonnya mata tercoret
+                this.classList.remove('fa-eye');
+                this.classList.add('fa-eye-slash');
+            } else {
+                // Jika password terlihat, ikonnya mata terbuka
+                this.classList.remove('fa-eye-slash');
+                this.classList.add('fa-eye');
+            }
+        });
+    </script>
 </body>
 </html>

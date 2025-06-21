@@ -28,10 +28,10 @@
                     <li class="nav-item"><a href="#home" class="nav-link">Beranda</a></li>
                     <li class="nav-item"><a href="#promo" class="nav-link">Promo</a></li>
                     <li class="nav-item"><a href="#menu" class="nav-link">Menu</a></li>
-                    <li class="nav-item"><a href="#about" class="nav-link">Edukasi</a></li>
+                    <li class="nav-item"><a href="#edukasi" class="nav-link">Edukasi</a></li>
                     <li class="nav-item"><a href="#testimoni" class="nav-link">Testimoni</a></li>
                     <li class="nav-item"><a href="#contact" class="nav-link">Kontak</a></li>
-                    <li class="nav-item nav-item-login">
+                    <li class="nav-item">
                         @guest
                             <a href="{{ route('login') }}" class="btn-secondary" style="padding: 0.5rem 1rem; border-radius: 10px;">Login</a>
                         @endguest
@@ -39,13 +39,18 @@
                         @auth
                             <div class="dropdown profile-dropdown">
                                 <button class="dropdown-toggle" type="button" id="userDropdown">
-                                    <img src="{{ asset('./assets/img/logo-dimsum.jpg') }}" alt="Profile" class="profile-img">
+                                    @if (auth()->user()->profile_photo_path)
+                                        <img src="{{ asset('storage/' . auth()->user()->profile_photo_path) }}" alt="Profile Picture" class="profile-img">
+                                    @else
+                                        <i class="fas fa-user placeholder-icon" class="profile-img"></i>
+                                    @endif
                                     <span>{{ auth()->user()->name }}</span>
                                     <i class="fas fa-chevron-down"></i>
                                 </button>
                                 <ul class="dropdown-menu">
                                     <li><a href="{{ route('profile') }}" class="dropdown-item">Profile</a></li>
-                                    <li><a href="{{ route('listhistory') }}" class="dropdown-item">History</a></li>
+                                    <li><a href="{{ route('testimonial.history') }}" class="dropdown-item">Riwayat Testimoni</a></li>
+                                    <li><a href="{{ route('listhistory') }}" class="dropdown-item">Riwayat Pembelian</a></li>
                                     <li><hr class="dropdown-divider"></li>
                                     <li>
                                         <form method="POST" action="{{ route('logout') }}">
@@ -155,7 +160,13 @@
                 @foreach ($menus as $index => $menu)
                     <div class="menu-item {{ $index >= 6 ? 'hidden extra-menu' : '' }}" data-category="{{ $menu->category }}" data-id="{{ $menu->id }}">
                         <div class="menu-image">
-                            <img src="{{ $menu->image_url }}" alt="{{ $menu->name }}">
+                            @if ($menu->image_url && file_exists(public_path('assets/img/menu/' . $menu->image_url)))
+                                <img src="{{ asset('assets/img/menu/' . $menu->image_url) }}" alt="{{ $menu->name }}">
+
+                            @elseif ($menu->image_url && file_exists(storage_path('app/public/menus/' . $menu->image_url)))
+                                <img src="{{ asset('storage/menus/' . $menu->image_url) }}" alt="{{ $menu->name }}">
+
+                            @endif
                         </div>
                         <div class="menu-content">
                             <h3>{{ $menu->name }}</h3>
@@ -181,21 +192,32 @@
         </div>
     </section>
 
-    <!-- About Section -->
-    <section id="about" class="about">
-        <div class="container">
-            <div class="about-content">
-                <div class="about-image">
-                    <img src="" alt="About Dimsum Date">
+    <!-- Edukasi Section -->
+    <section id="edukasi" class="info-section" style="padding: 4rem 2rem; background-color: #f9f9f9;">
+        <div class="container" style="max-width: 1140px; margin: 0 auto;">
+            <div class="section-header">
+                <h2>Edukasi</h2>
+            </div>
+            <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 2rem;">
+                <div style="flex: 1; min-width: 300px;">
+                    <img src="/assets/img/menu/ekkado2.png" alt="Apa Itu Dimsum" style="width: 100%; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
                 </div>
-                <div class="about-text">
-                    <div class="section-header">
-                        <h2>Our Story</h2>
-                    </div>
-                    <p>Founded in 1985 by Master Chef Liu, Dimsum Date has been serving authentic dimsum for over three decades. Our recipes have been passed down through generations, preserving the art and tradition of handcrafted dimsum.</p>
-                    <p>Each dimsum is meticulously prepared by our team of skilled chefs who have trained for years to perfect their craft. We source only the freshest ingredients daily to ensure exceptional quality and flavor in every bite.</p>
-                    <p>Our restaurant combines traditional Chinese aesthetics with modern comfort, creating a warm and inviting atmosphere for an unforgettable dining experience.</p>
-                    <a href="#contact" class="btn btn-secondary">Contact Us</a>
+                <div style="flex: 1; min-width: 300px;">
+                    <h2 style="color: #B22222; font-size: 2rem; margin-bottom: 1rem;">Apa Itu Dimsum?</h2>
+                    <p style="font-size: 1rem; line-height: 1.6;">
+                        Dimsum adalah makanan tradisional khas Tiongkok yang disajikan dalam porsi kecil dan biasanya dikukus atau digoreng ringan.
+                        Hidangan ini populer karena keberagamannya dan cara penyajiannya yang sering menjadi bagian dari budaya minum teh bersama.
+                    </p>
+                    <h2 style="color: #B22222; font-size: 2rem; margin-top: 3rem;">Tentang Dimsum</h2>
+                    <p style="max-width: 800px; margin: 1rem auto 0; font-size: 1rem;">
+                        Dimsum bukan hanya makanan tradisional yang lezat, tetapi juga memiliki berbagai manfaat kesehatan. Karena umumnya dimasak dengan cara dikukus, dimsum mengandung lebih sedikit minyak dan lemak dibandingkan makanan cepat saji yang digoreng.
+                    </p>
+                    <p style="max-width: 800px; margin: 1rem auto 0; font-size: 1rem;">
+                        Selain itu, dimsum sering kali berisi bahan-bahan bergizi seperti ayam tanpa lemak, udang kaya protein, serta sayuran yang mengandung serat. Ini membuatnya menjadi pilihan makanan yang lebih seimbang dan mendukung gaya hidup sehat.
+                    </p>
+                    <p style="max-width: 800px; margin: 1rem auto 0; font-size: 1rem;">
+                        Karena disajikan dalam porsi kecil, dimsum juga mendorong pola makan yang moderat dan momen kebersamaan saat berbagi hidangan bersama orang lain, menjadikannya bukan hanya bermanfaat untuk tubuh, tetapi juga mempererat hubungan sosial.
+                    </p>
                 </div>
             </div>
         </div>
@@ -210,27 +232,28 @@
 
             <div class="review-container">
                 <div class="review-grid">
-                    @for ($i = 0; $i < 8; $i++)
+                    @forelse ($testimonials as $testimonial)
                     <div class="review-card">
                         <div class="review-stars">
-                            @for ($star = 0; $star < 5; $star++)
+                            @for ($star = 0; $star < $testimonial->rating; $star++)
                                 <i class="fas fa-star"></i>
                             @endfor
                         </div>
-                        <h4 class="review-text">{{ Str::words('Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quasi ex perferendis minima quibusdam, pariatur et animi voluptates accusantium harum ipsa atque repellendus qui totam nam, voluptate sit iusto impedit dignissimos.', 15, '...') }}</h4>
-                            {{-- <img src="" alt="Reviewer" class="reviewer-image"> --}}
-                            <div class="reviewer-info">
-                                <div class="reviewer-name">Reviewer Name</div>
-                                <div class="review-date">2 days ago</div>
-                            </div>
+                        <h4 class="review-text">{{ Str::words($testimonial->comment, 15, '...') }}</h4>
+                        <div class="reviewer-info">
+                            <div class="reviewer-name">{{ $testimonial->user->name }}</div>
+                            <div class="review-date">{{ $testimonial->created_at->diffForHumans() }}</div>
+                        </div>
                     </div>
-                    @endfor
+                    @empty
+                        <center><p>Belum ada testimoni.</p></center>
+                    @endforelse
                 </div>
             </div>
 
             <div class="review-button">
-                <a href="{{ route('review') }}" class="btn-review">Tulis Testimoni</a>
-                <a href="{{ route('alltestimoni') }}" class="btn-review">Semua Testimoni</a>
+                <a href="{{ route('testimonial.create') }}" class="btn-review">Tulis Testimoni</a>
+                <a href="{{ route('testimonial.index') }}" class="btn-review">Semua Testimoni</a>
             </div>
         </div>
     </section>
@@ -298,7 +321,7 @@
                                 </select>
 
                                 <div id="qrisDetails" class="payment-details" style="display: none;">
-                                    <img src="path/to/qris-code.png" alt="QRIS Code" class="payment-qr">
+                                    <img src="/assets/img/qriscode.jpg" alt="QRIS Code" class="payment-qr">
                                     <p style="color: red"><em>Setelah dibayar silahkan kirim buktinya lewat WhatsApp.</em></p>
                                 </div>
 
@@ -334,17 +357,7 @@
                         <div>
                             <h3>Find Us On Map</h3>
                             <div class="h-64 rounded-lg overflow-hidden">
-                                <iframe
-                                    class="w-full h-full"
-                                    frameborder="0"
-                                    scrolling="no"
-                                    marginheight="0"
-                                    marginwidth="0"
-                                    allowfullscreen
-                                    loading="lazy"
-                                    referrerpolicy="no-referrer-when-downgrade"
-                                    src="https://maps.google.com/maps?q=-6.116312383077391, 106.15421359101309&z=15&output=embed">
-                                </iframe>
+                                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3967.1068223302327!2d106.15163951038814!3d-6.1163198599535535!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e418ba2eee04c2f%3A0x503397c55389611d!2sDimsum%20Date%20Ramayana%20Serang!5e0!3m2!1sid!2sid!4v1750401361264!5m2!1sid!2sid" width="400" height="300" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
                             </div>
                             <p>Ruko R5 Ramayana, Kotabaru, Kec. Serang,<br> Kota Serang, Banten 42112</p>
                         </div>
@@ -554,16 +567,16 @@
                         showLoginPrompt();
                     } else {
                         const orderItemsDiv = document.getElementById('orderItems');
-                        
+
                         // Isi input untuk summary teks (untuk pesan WA)
                         const summaryText = Array.from(orderItemsDiv.querySelectorAll('.order-item'))
                             .map(item => item.innerText.replace('\t', ' '))
                             .join('\n');
                         document.getElementById('orderedItemsSummaryInput').value = summaryText.trim();
-                        
+
                         // Isi input untuk total pembayaran
                         document.getElementById('totalPaymentInput').value = document.getElementById('totalAmount').textContent;
-                        
+
                         // Isi input BARU untuk data JSON (untuk disimpan ke database)
                         const structuredItems = [];
                         orderItemsDiv.querySelectorAll('.order-item').forEach(item => {
@@ -578,7 +591,7 @@
             }
 
             // "Tulis Testimoni" Button Validation
-            const tulisTestimoniBtn = document.querySelector('a.btn-review[href="{{ route('review') }}"]');
+            const tulisTestimoniBtn = document.querySelector('a.btn-review[href="{{ route('testimonial.index') }}"]');
             if (tulisTestimoniBtn) {
                 tulisTestimoniBtn.addEventListener('click', function(event) {
                     if (!isAuthenticated) {

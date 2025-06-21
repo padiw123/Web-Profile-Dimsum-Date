@@ -51,10 +51,10 @@
             margin: 0;
         }
 
-        .edit-btn {
+        .edit-icon {
             background: none;
             border: none;
-            color: var(--color-black);
+            color: var(--primary-color);
             cursor: pointer;
             font-size: 1.2rem;
         }
@@ -141,12 +141,16 @@
             <div class="profile-header">
                 <h2 style="font-family: 'Poppins', sans-serif">Profile</h2>
                 <a href="{{ route('profileupdate') }}" class="edit-btn">
-                    <i class="fas fa-edit"></i>
+                    <i class="fas fa-pencil-alt edit-icon"></i>
                 </a>
             </div>
             <div class="profile-content">
                 <div class="profile-image">
-                    <i class="fas fa-user placeholder-icon"></i>
+                    @if ($user->profile_photo_path)
+                        <img src="{{ asset('storage/' . $user->profile_photo_path) }}" alt="Profile Picture">
+                    @else
+                        <i class="fas fa-user placeholder-icon"></i>
+                    @endif
                 </div>
                 <div class="profile-info">
                     <div class="info-group">

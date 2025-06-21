@@ -10,7 +10,7 @@ class MenuSeeder extends Seeder
 {
     public function run()
     {
-        Menu::insert([
+        Menu::create([
             [
                 'name' => 'dimsum ayam',
                 'category' => 'dimsum ayam ',
