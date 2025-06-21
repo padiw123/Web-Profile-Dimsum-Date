@@ -13,11 +13,11 @@ class AuthController extends Controller
 {
     public function showLoginForm()
     {
-        return view('login'); // buat view ini nanti
+        return view('auth.login'); // buat view ini nanti
     }
     public function showRegisterForm()
     {
-        return view('Register');
+        return view('auth.Register');
     }
 
     public function register(Request $request)

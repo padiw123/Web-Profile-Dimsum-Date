@@ -2,20 +2,23 @@
 
 namespace App\Filament\Admin\Resources;
 
+use Filament\Forms;
+use Filament\Tables;
+use App\Models\Order;
+use Filament\Forms\Form;
+use Filament\Tables\Table;
+use Filament\Resources\Resource;
+use Illuminate\Database\Eloquent\Model;
+use Filament\Infolists\Components\TextEntry;
 use App\Filament\Admin\Resources\OrderResource\Pages;
 use App\Filament\Admin\Resources\OrderResource\RelationManagers;
-use App\Models\Order;
-use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
-use Filament\Tables;
-use Filament\Tables\Table;
 
 class OrderResource extends Resource
 {
     protected static ?string $model = Order::class;
+    protected static ?string $navigationGroup = 'Manajemen Pesanan';
     protected static ?string $navigationIcon = 'heroicon-o-shopping-cart';
-    protected static ?int $navigationSort = 2; // Atur urutan di navigasi
+    protected static ?string $recordTitleAttribute = 'id';
 
     public static function form(Form $form): Form
     {
@@ -36,7 +39,7 @@ class OrderResource extends Resource
                         Forms\Components\Textarea::make('notes')
                             ->columnSpanFull(),
                     ])->columns(2),
-                
+
                 Forms\Components\Section::make('Status Management')
                     ->schema([
                         Forms\Components\Select::make('status')
@@ -47,8 +50,7 @@ class OrderResource extends Resource
                                 'cancelled' => 'Cancelled',
                             ])
                             ->required(),
-                        
-                        // FIELD BARU: Mengatur Metode Pembayaran
+
                         Forms\Components\Select::make('payment_method')
                             ->options([
                                 'qris' => 'QRIS',
@@ -58,7 +60,6 @@ class OrderResource extends Resource
                             ])
                             ->required(),
 
-                        // FIELD BARU: Mengatur Status Pembayaran
                         Forms\Components\Select::make('payment_status')
                             ->options([
                                 'unpaid' => 'Unpaid',
@@ -86,8 +87,7 @@ class OrderResource extends Resource
                         default => 'gray',
                     })
                     ->searchable(),
-                
-                // KOLOM BARU: Status Pembayaran
+
                 Tables\Columns\TextColumn::make('payment_status')
                     ->label('Pembayaran')
                     ->badge()
@@ -104,7 +104,6 @@ class OrderResource extends Resource
                 Tables\Columns\TextColumn::make('created_at')->dateTime('d M Y')->sortable(),
             ])
             ->filters([
-                // FILTER BARU: Berdasarkan Status Order
                 Tables\Filters\SelectFilter::make('status')
                     ->options([
                         'pending' => 'Pending',
@@ -112,7 +111,6 @@ class OrderResource extends Resource
                         'completed' => 'Completed',
                         'cancelled' => 'Cancelled',
                     ]),
-                // FILTER BARU: Berdasarkan Status Pembayaran
                 Tables\Filters\SelectFilter::make('payment_status')
                     ->options([
                         'unpaid' => 'Unpaid',
@@ -128,7 +126,7 @@ class OrderResource extends Resource
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ])
-            ->defaultSort('created_at', 'desc'); // Urutkan berdasarkan yang terbaru
+            ->defaultSort('created_at', 'desc');
     }
 
     public static function getRelations(): array
@@ -144,6 +142,17 @@ class OrderResource extends Resource
             'index' => Pages\ListOrders::route('/'),
             'create' => Pages\CreateOrder::route('/create'),
             'edit' => Pages\EditOrder::route('/{record}/edit'),
+        ];
+    }
+    public static function getGlobalSearchResultDetails(Model $record): array
+    {
+        /** @var \App\Models\Order $record */
+        return [
+            TextEntry::make('user.name')->label('User')->state($record->user->name),
+            TextEntry::make('status')->label('Status')->state($record->status),
+            TextEntry::make('total_price')
+                ->label('Total Harga')
+                ->state('IDR ' . number_format($record->total_price, 0, ',', '.')),
         ];
     }
 }

@@ -15,6 +15,6 @@ class HomeController extends Controller
         $menus = Menu::all();
         $testimonials = Testimonial::with('user')->latest()->take(8)->get();
 
-        return view('welcome', compact('menus', 'promos', 'testimonials'));
+        return view('home', compact('menus', 'promos', 'testimonials'));
     }
 }

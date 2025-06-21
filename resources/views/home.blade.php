@@ -39,7 +39,11 @@
                         @auth
                             <div class="dropdown profile-dropdown">
                                 <button class="dropdown-toggle" type="button" id="userDropdown">
-                                    <img src="{{ asset('./assets/img/logo-dimsum.jpg') }}" alt="Profile" class="profile-img">
+                                    @if (auth()->user()->profile_photo_path)
+                                        <img src="{{ asset('storage/' . auth()->user()->profile_photo_path) }}" alt="Profile Picture" class="profile-img">
+                                    @else
+                                        <i class="fas fa-user placeholder-icon" class="profile-img"></i>
+                                    @endif
                                     <span>{{ auth()->user()->name }}</span>
                                     <i class="fas fa-chevron-down"></i>
                                 </button>
@@ -156,7 +160,13 @@
                 @foreach ($menus as $index => $menu)
                     <div class="menu-item {{ $index >= 6 ? 'hidden extra-menu' : '' }}" data-category="{{ $menu->category }}" data-id="{{ $menu->id }}">
                         <div class="menu-image">
-                            <img src="{{ asset('storage/' . $menu->image_url) }}" alt="{{ $menu->name }}">
+                            @if ($menu->image_url && file_exists(public_path('assets/img/menu/' . $menu->image_url)))
+                                <img src="{{ asset('assets/img/menu/' . $menu->image_url) }}" alt="{{ $menu->name }}">
+
+                            @elseif ($menu->image_url && file_exists(storage_path('app/public/menus/' . $menu->image_url)))
+                                <img src="{{ asset('storage/menus/' . $menu->image_url) }}" alt="{{ $menu->name }}">
+
+                            @endif
                         </div>
                         <div class="menu-content">
                             <h3>{{ $menu->name }}</h3>
@@ -185,9 +195,12 @@
     <!-- Edukasi Section -->
     <section id="edukasi" class="info-section" style="padding: 4rem 2rem; background-color: #f9f9f9;">
         <div class="container" style="max-width: 1140px; margin: 0 auto;">
+            <div class="section-header">
+                <h2>Edukasi</h2>
+            </div>
             <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 2rem;">
                 <div style="flex: 1; min-width: 300px;">
-                    <img src="/assets/img/dimsum-education.jpg" alt="Apa Itu Dimsum" style="width: 100%; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                    <img src="/assets/img/menu/ekkado2.png" alt="Apa Itu Dimsum" style="width: 100%; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
                 </div>
                 <div style="flex: 1; min-width: 300px;">
                     <h2 style="color: #B22222; font-size: 2rem; margin-bottom: 1rem;">Apa Itu Dimsum?</h2>
@@ -205,27 +218,6 @@
                     <p style="max-width: 800px; margin: 1rem auto 0; font-size: 1rem;">
                         Karena disajikan dalam porsi kecil, dimsum juga mendorong pola makan yang moderat dan momen kebersamaan saat berbagi hidangan bersama orang lain, menjadikannya bukan hanya bermanfaat untuk tubuh, tetapi juga mempererat hubungan sosial.
                     </p>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-    <!-- About Section -->
-    <section id="about" class="about">
-        <div class="container">
-            <div class="about-content">
-                <div class="about-image">
-                    <img src="" alt="About Dimsum Date">
-                </div>
-                <div class="about-text">
-                    <div class="section-header">
-                        <h2>Our Story</h2>
-                    </div>
-                    <p>Founded in 1985 by Master Chef Liu, Dimsum Date has been serving authentic dimsum for over three decades. Our recipes have been passed down through generations, preserving the art and tradition of handcrafted dimsum.</p>
-                    <p>Each dimsum is meticulously prepared by our team of skilled chefs who have trained for years to perfect their craft. We source only the freshest ingredients daily to ensure exceptional quality and flavor in every bite.</p>
-                    <p>Our restaurant combines traditional Chinese aesthetics with modern comfort, creating a warm and inviting atmosphere for an unforgettable dining experience.</p>
-                    <a href="#contact" class="btn btn-secondary">Contact Us</a>
                 </div>
             </div>
         </div>
@@ -254,7 +246,7 @@
                         </div>
                     </div>
                     @empty
-                    <p>Belum ada testimoni.</p>
+                        <center><p>Belum ada testimoni.</p></center>
                     @endforelse
                 </div>
             </div>
@@ -329,7 +321,7 @@
                                 </select>
 
                                 <div id="qrisDetails" class="payment-details" style="display: none;">
-                                    <img src="path/to/qris-code.png" alt="QRIS Code" class="payment-qr">
+                                    <img src="/assets/img/qriscode.jpg" alt="QRIS Code" class="payment-qr">
                                     <p style="color: red"><em>Setelah dibayar silahkan kirim buktinya lewat WhatsApp.</em></p>
                                 </div>
 
@@ -365,17 +357,7 @@
                         <div>
                             <h3>Find Us On Map</h3>
                             <div class="h-64 rounded-lg overflow-hidden">
-                                <iframe
-                                    class="w-full h-full"
-                                    frameborder="0"
-                                    scrolling="no"
-                                    marginheight="0"
-                                    marginwidth="0"
-                                    allowfullscreen
-                                    loading="lazy"
-                                    referrerpolicy="no-referrer-when-downgrade"
-                                    src="https://maps.google.com/maps?q=-6.116312383077391, 106.15421359101309&z=15&output=embed">
-                                </iframe>
+                                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3967.1068223302327!2d106.15163951038814!3d-6.1163198599535535!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e418ba2eee04c2f%3A0x503397c55389611d!2sDimsum%20Date%20Ramayana%20Serang!5e0!3m2!1sid!2sid!4v1750401361264!5m2!1sid!2sid" width="400" height="300" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
                             </div>
                             <p>Ruko R5 Ramayana, Kotabaru, Kec. Serang,<br> Kota Serang, Banten 42112</p>
                         </div>

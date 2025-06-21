@@ -4,9 +4,7 @@ namespace App\Providers\Filament;
 
 use Filament\Pages;
 use Filament\Panel;
-use Widgets\AccountWidget;
 use Filament\PanelProvider;
-use Widgets\FilamentInfoWidget;
 use Filament\Support\Colors\Color;
 use Filament\Http\Middleware\Authenticate;
 use App\Filament\Admin\Widgets\OrdersChart;
@@ -31,14 +29,15 @@ class AdminPanelProvider extends PanelProvider
         return $panel
             ->authGuard('admin')
             ->login(AdminLogin::class)
-            ->brandName('Dimsum Date')
             ->id('admin')
             ->path('admin')
+            ->globalSearch(true)
             ->colors([
                 'primary' => Color::Amber,
-            ])
+                ])
             ->brandLogo(asset('/assets/img/logo-dimsum.svg'))
             ->favicon(asset('/assets/img/logo-dimsum.svg'))
+            ->brandName('Dimsum Date')
             ->discoverResources(in: app_path('Filament/Admin/Resources'), for: 'App\\Filament\\Admin\\Resources')
             ->discoverPages(in: app_path('Filament/Admin/Pages'), for: 'App\\Filament\\Admin\\Pages')
             ->pages([

@@ -64,16 +64,15 @@
                     <div class="profile-image-section">
                         <div class="profile-image">
                             <img id="profileImagePreview"
-                                 src="{{ $user->profile_photo_path ? asset('storage/' . $user->profile_photo_path) : '' }}"
-                                 alt="Profile Preview"
-                                 style="{{ $user->profile_photo_path ? '' : 'display:none;' }}">
+                                src="{{ $user->profile_photo_path ? asset('storage/' . $user->profile_photo_path) : '' }}"
+                                alt="Profile Preview"
+                                style="{{ $user->profile_photo_path ? '' : 'display:none;' }}">
                             <i class="fas fa-user placeholder-icon" style="{{ $user->profile_photo_path ? 'display:none;' : '' }}"></i>
                             <label for="profile_picture" class="profile-image-overlay">
                                 <i class="fas fa-camera"></i>
                             </label>
                             <input type="file" id="profile_picture" name="profile_picture" style="display: none" accept="image/*">
                         </div>
-                        {{-- Menampilkan error untuk profile_picture --}}
                         @error('profile_picture')
                             <p class="error-message">{{ $message }}</p>
                         @enderror
@@ -84,7 +83,6 @@
                         <div class="form-group">
                             <label class="form-label" for="name">Nama</label>
                             <input type="text" class="form-input" id="name" name="name" value="{{ old('name', $user->name) }}" required>
-                            {{-- Menampilkan notifikasi error untuk 'name' --}}
                             @error('name')
                                 <p class="error-message">{{ $message }}</p>
                             @enderror

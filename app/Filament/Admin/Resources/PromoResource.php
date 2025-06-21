@@ -3,20 +3,17 @@
 namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\PromoResource\Pages;
-use App\Filament\Admin\Resources\PromoResource\RelationManagers;
 use App\Models\Promo;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class PromoResource extends Resource
 {
     protected static ?string $model = Promo::class;
-
+    protected static ?string $navigationGroup = 'Manajemen Website';
     protected static ?string $navigationIcon = 'heroicon-o-tag';
     protected static ?string $navigationLabel = 'Promo';
     protected static ?string $pluralModelLabel = 'Promotions';
