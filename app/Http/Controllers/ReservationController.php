@@ -50,7 +50,7 @@ class ReservationController extends Controller
         try {
             $menuIds = array_column($orderItems, 'menu_id');
             $menusInDb = Menu::whereIn('id', $menuIds)->get()->keyBy('id');
-            
+
             $serverTotalPrice = 0;
             foreach($orderItems as $item) {
                 $menu = $menusInDb->get($item['menu_id']);
@@ -99,13 +99,13 @@ class ReservationController extends Controller
                              "*Total Pembayaran:* " . $validated['total_payment'] . "\n\n" .
                              "Mohon untuk segera diproses. Terima kasih.";
 
-            $whatsappUrl = 'https://api.whatsapp.com/send?phone=62895335990575&text=' . urlencode($whatsappMessage);
+            $whatsappUrl = 'https://api.whatsapp.com/send?phone=62895803622422&text=' . urlencode($whatsappMessage);
 
             return redirect()->away($whatsappUrl);
 
         } catch (\Exception $e) {
             DB::rollBack(); // Batalkan semua jika ada error
-            
+
             Log::error('Reservation Error: ' . $e->getMessage() . ' on line ' . $e->getLine());
             return back()->with('error', 'Terjadi kesalahan sistem saat memproses pesanan Anda. Silakan coba lagi.');
         }
