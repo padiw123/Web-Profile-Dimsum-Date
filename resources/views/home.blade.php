@@ -163,8 +163,8 @@
                             @if ($menu->image_url && file_exists(public_path('assets/img/menu/' . $menu->image_url)))
                                 <img src="{{ asset('assets/img/menu/' . $menu->image_url) }}" alt="{{ $menu->name }}">
 
-                            @elseif ($menu->image_url && file_exists(storage_path('app/public/menus/' . $menu->image_url)))
-                                <img src="{{ asset('storage/menus/' . $menu->image_url) }}" alt="{{ $menu->name }}">
+                            @elseif ($menu->image_url && file_exists(storage_path('app/public/' . $menu->image_url)))
+                                <img src="{{ asset('storage/' . $menu->image_url) }}" alt="{{ $menu->name }}">
 
                             @endif
                         </div>
@@ -408,16 +408,6 @@
                         <li><a href="#testimoni">Testimoni</a></li>
                         <li><a href="#contact">Contact</a></li>
                     </ul>
-                </div>
-
-                <div class="footer-newsletter">
-                    <h3>Newsletter</h3>
-
-                    <form action="{{ route('newsletter.subscribe') }}" method="POST" class="newsletter-form">
-                        @csrf
-                        <input type="email" name="email" placeholder="Your Email" value="{{ old('email', optional(auth()->user())->email) }}" required>
-                        <button type="submit"><i class="fas fa-paper-plane"></i></button>
-                    </form>
                 </div>
             </div>
 

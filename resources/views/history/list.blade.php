@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Riwayat Pesanan - Dimsum Date</title>
+    <link rel="icon" href="/assets/img/logo-dimsum.svg" type="image/svg">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="{{ asset('./assets/css/dimsum.css') }}">
@@ -102,6 +103,23 @@
             text-transform: lowercase;
         }
 
+        .status-completed {
+            background-color: var(--success-color);
+            color: var(--light-color);
+        }
+
+        .status-cancelled {
+            background-color: var(--primary-color);
+            color: var(--light-color);
+        }
+        .status-confirmed {
+            background-color: var(--secondary-color);
+            color: var(--light-color);
+        }
+        .status-pending {
+            background-color: #333;
+            color: var(--light-color);
+        }
         .pagination {
             display: flex;
             justify-content: center;
@@ -135,7 +153,7 @@
                 // Hitung jumlah total item
                 $totalItems = $order->menus->sum('pivot.quantity');
             @endphp
-            
+
             <div class="order-card-new" onclick="window.location.href='{{ route('detailhistory', $order) }}'">
                 <div class="order-card-content">
                     <div class="order-items">
@@ -159,7 +177,8 @@
                     </div>
                     <div class="order-total">Rp {{ number_format($order->total_price, 0, ',', '.') }}</div>
                 </div>
-                <div class="order-status">
+                <div class="order-status @if($order->status == 'completed') status-completed @endif
+                    @if($order->status == 'cancelled') status-cancelled @if($order->status == 'confirmed') status-confirmed @if($order->status == 'pending') status-pending @endif">
                     @switch($order->status)
                         @case('pending')
                             menunggu
