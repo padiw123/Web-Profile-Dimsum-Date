@@ -777,51 +777,6 @@ textarea {
     color: var(--secondary-color);
 }
 
-.footer-newsletter h3 {
-    color: var(--light-color);
-    margin-bottom: 1.5rem;
-    position: relative;
-}
-
-.footer-newsletter h3::after {
-    content: '';
-    position: absolute;
-    width: 30px;
-    height: 2px;
-    background-color: var(--secondary-color);
-    bottom: -8px;
-    left: 0;
-}
-
-.footer-newsletter p {
-    margin-bottom: 1.5rem;
-    opacity: 0.8;
-}
-
-.newsletter-form {
-    display: flex;
-}
-
-.newsletter-form input {
-    flex: 1;
-    border: none;
-    border-radius: var(--border-radius) 0 0 var(--border-radius);
-}
-
-.newsletter-form button {
-    background-color: var(--primary-color);
-    color: var(--light-color);
-    border: none;
-    padding: 0 1.25rem;
-    border-radius: 0 var(--border-radius) var(--border-radius) 0;
-    cursor: pointer;
-    transition: background-color var(--transition-speed) ease;
-}
-
-.newsletter-form button:hover {
-    background-color: var(--accent-color);
-}
-
 .footer-bottom {
     text-align: center;
     padding-top: 2rem;
