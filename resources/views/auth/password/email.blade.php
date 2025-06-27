@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lupa Password - Dimsum Date</title>
     <link rel="icon" href="/assets/img/logo-dimsum.svg" type="image/svg">
-    <link rel="stylesheet" href="{{ asset('./assets/css/dimsum.css') }}">
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
         body {
             display: flex;
