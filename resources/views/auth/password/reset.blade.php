@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reset Password - Dimsum Date</title>
     <link rel="icon" href="/assets/img/logo-dimsum.svg" type="image/svg">
-    <link rel="stylesheet" href="{{ asset('./assets/css/dimsum.css') }}">
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
         /* Anda bisa menggunakan style yang sama persis dengan email.blade.php */
         body { display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #f5f5f5; }

@@ -52,6 +52,7 @@ Route::middleware(['auth'])->group(function () {
         $request->user()->sendEmailVerificationNotification();
         return back()->with('message', 'Link verifikasi baru telah dikirim ke email Anda!');
     })->middleware('throttle:6,1')->name('verification.send');
+    
 
 });
 
@@ -69,4 +70,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/testimoni/review', [TestimoniController::class, 'create'])->name('testimonial.create');
     Route::post('/testimoni/submit-review', [TestimoniController::class, 'store'])->name('testimonial.store');
     Route::get('/testimoni/history', [TestimoniController::class, 'history'])->name('testimonial.history');
+
+    //Favorit
+    Route::get('/', function () {
+    return view('home');
+});
+
+    //Favorit
+    Route::get('/favorit', [UserController::class, 'favorit'])->name('favorit');
+    Route::get('/', [HomeController::class, 'index'])->name('home');
+
 });

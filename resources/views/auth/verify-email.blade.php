@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Verifikasi Email - Dimsum Date</title>
     <link rel="icon" href="/assets/img/logo-dimsum.svg" type="image/svg">
-    <link rel="stylesheet" href="{{ asset('./assets/css/dimsum.css') }}">
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
         body { display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #f5f5f5; text-align: center; font-family: 'Poppins', sans-serif; }
         .notice-container { background-color: white; padding: 2.5rem; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); width: 100%; max-width: 550px; }
