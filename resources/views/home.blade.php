@@ -49,6 +49,7 @@
                                 </button>
                                 <ul class="dropdown-menu">
                                     <li><a href="{{ route('profile') }}" class="dropdown-item">Profile</a></li>
+                                    <li><a href="{{ route('favorit') }}" class="dropdown-item">Favorit</a></li>
                                     <li><a href="{{ route('testimonial.history') }}" class="dropdown-item">Riwayat Testimoni</a></li>
                                     <li><a href="{{ route('listhistory') }}" class="dropdown-item">Riwayat Pembelian</a></li>
                                     <li><hr class="dropdown-divider"></li>
@@ -79,7 +80,7 @@
             <p class="hero-subtitle">Handcrafted with tradition, served with passion</p>
             <div class="hero-buttons">
                 <a href="#menu" class="btn btn-primary">View Menu</a>
-                <a href="#contact" class="btn btn-secondary">Reserve Table</a>
+                <a href="#contact" class="btn btn-secondary">Reserve` Table</a>
             </div>
         </div>
     </section>
@@ -158,6 +159,27 @@
 
             <div class="menu-grid">
                 @foreach ($menus as $index => $menu)
+                            <div class="menu-item ..." data-id="{{ $menu->id }}">
+                            ...
+                            <div class="menu-content">
+                                <h3>{{ $menu->name }}</h3>
+
+                                {{-- Tombol Favorit --}}
+                                @auth
+                                    <form action="{{ route('favorit.toggle', $menu->id) }}" method="POST">
+                                        @csrf
+                                        <button type="submit" class="favorite-btn">
+                                            @if(in_array($menu->id, $favoritMenuIds))
+                                                <i class="fas fa-heart text-red-500"></i> {{-- Sudah difavoritkan --}}
+                                            @else
+                                                <i class="far fa-heart text-gray-500"></i> {{-- Belum difavoritkan --}}
+                                            @endif
+                                        </button>
+                                    </form>
+                                @endauth
+                            </div>
+                        </div>
+
                     <div class="menu-item {{ $index >= 6 ? 'hidden extra-menu' : '' }}" data-category="{{ $menu->category }}" data-id="{{ $menu->id }}">
                         <div class="menu-image">
                             @if ($menu->image_url && file_exists(public_path('assets/img/menu/' . $menu->image_url)))

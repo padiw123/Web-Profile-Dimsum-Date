@@ -14,7 +14,10 @@ class HomeController extends Controller
         $promos = Promo::all();
         $menus = Menu::all();
         $testimonials = Testimonial::with('user')->latest()->take(8)->get();
-
-        return view('home', compact('menus', 'promos', 'testimonials'));
+        $favoritMenuIds = Auth::check() 
+            ? Auth::user()->favorits()->pluck('menu_id')->toArray()
+            : [];
+        return view('home', compact('menus', 'promos', 'testimonials', 'favoritMenuIds'));
+        
     }
 }

@@ -225,7 +225,7 @@ section {
 }
 
 .nav-link.active {
-    color: #6b0000;
+   color: var(--secondary-color);
 }
 
 .nav-link.active::after {
@@ -1100,6 +1100,9 @@ textarea {
 
     .form-row {
         grid-template-columns: 1fr;
+    }
+    .contact{
+        width: 100%;
     }
 }
 
