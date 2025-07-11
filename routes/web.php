@@ -7,6 +7,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\MenuLikeController;
 use App\Http\Controllers\TestimoniController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\Auth\ResetPasswordController;
@@ -53,6 +54,7 @@ Route::middleware(['auth'])->group(function () {
         return back()->with('message', 'Link verifikasi baru telah dikirim ke email Anda!');
     })->middleware('throttle:6,1')->name('verification.send');
 
+    Route::post('/menu/{menu}/toggle-like', [MenuLikeController::class, 'toggleLike'])->name('menu.toggle-like');
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -69,4 +71,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/testimoni/review', [TestimoniController::class, 'create'])->name('testimonial.create');
     Route::post('/testimoni/submit-review', [TestimoniController::class, 'store'])->name('testimonial.store');
     Route::get('/testimoni/history', [TestimoniController::class, 'history'])->name('testimonial.history');
+
+    Route::get('/profile/favorites', [ProfileController::class, 'favorites'])->name('profile.favorites');
 });
