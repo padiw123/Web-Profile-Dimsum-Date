@@ -68,7 +68,7 @@ a {
 }
 
 a:hover {
-    color: var(--accent-color);
+    color: var(--secondary-color);
 }
 
 img {
@@ -225,7 +225,11 @@ section {
 }
 
 .nav-link.active {
+<<<<<<< HEAD
    color: var(--secondary-color);
+=======
+    color: var(--secondary-color) !important;
+>>>>>>> 5626a3260b67958f190755272fdc4bb4971435c0
 }
 
 .nav-link.active::after {
@@ -437,6 +441,42 @@ section {
     padding: 5px;
     font-size: 14px;
     background: white;
+}
+
+.menu-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.like-btn {
+    background: none;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    padding: 5px 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #B22222;
+}
+
+.like-btn .fa-heart {
+    font-size: 16px;
+}
+
+.like-btn .likes-count {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.like-btn .fas.fa-heart {
+    color: #B22222;
+}
+
+.like-btn .far.fa-heart {
+    color: #B22222;
 }
 
 /* About Section */

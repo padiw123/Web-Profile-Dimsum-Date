@@ -7,10 +7,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Dimsum Date</title>
     <link rel="icon" href="/assets/img/logo-dimsum.svg" type="image/svg">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body>
@@ -49,7 +50,11 @@
                                 </button>
                                 <ul class="dropdown-menu">
                                     <li><a href="{{ route('profile') }}" class="dropdown-item">Profile</a></li>
+<<<<<<< HEAD
                                     <li><a href="{{ route('favorit') }}" class="dropdown-item">Favorit</a></li>
+=======
+                                    <li><a href="{{ route('profile.favorites') }}" class="dropdown-item">Menu Favorit</a></li>
+>>>>>>> 5626a3260b67958f190755272fdc4bb4971435c0
                                     <li><a href="{{ route('testimonial.history') }}" class="dropdown-item">Riwayat Testimoni</a></li>
                                     <li><a href="{{ route('listhistory') }}" class="dropdown-item">Riwayat Pembelian</a></li>
                                     <li><hr class="dropdown-divider"></li>
@@ -148,6 +153,7 @@
             </div>
 
             <div class="menu-categories">
+                <button class="menu-category" data-category="favorit">Favorit</button> 
                 <button class="menu-category active" data-category="all">Semua</button>
                 <button class="menu-category" data-category="dimsum ayam">Dimsum Ayam</button>
                 <button class="menu-category" data-category="dimsum ayam udang">Dimsum Ayam Udang</button>
@@ -157,6 +163,7 @@
                 <button class="menu-category" data-category="minuman">Minuman</button>
             </div>
 
+<<<<<<< HEAD
             <div class="menu-grid">
                 @foreach ($menus as $index => $menu)
                             <div class="menu-item ..." data-id="{{ $menu->id }}">
@@ -181,26 +188,69 @@
                         </div>
 
                     <div class="menu-item {{ $index >= 6 ? 'hidden extra-menu' : '' }}" data-category="{{ $menu->category }}" data-id="{{ $menu->id }}">
+=======
+            <div id="favorite-menu-grid" class="menu-grid" style="display: none;">
+                @forelse ($topFavoriteMenus as $menu)
+                    {{-- ... Konten menu favorit Anda ... --}}
+                    <div class="menu-item" data-category="favorit" data-id="{{ $menu->id }}">
+>>>>>>> 5626a3260b67958f190755272fdc4bb4971435c0
                         <div class="menu-image">
                             @if ($menu->image_url && file_exists(public_path('assets/img/menu/' . $menu->image_url)))
                                 <img src="{{ asset('assets/img/menu/' . $menu->image_url) }}" alt="{{ $menu->name }}">
-
                             @elseif ($menu->image_url && file_exists(storage_path('app/public/' . $menu->image_url)))
                                 <img src="{{ asset('storage/' . $menu->image_url) }}" alt="{{ $menu->name }}">
-
                             @endif
                         </div>
                         <div class="menu-content">
                             <h3>{{ $menu->name }}</h3>
                             <span class="price">Rp {{ number_format($menu->price, 0, ',', '.') }}</span>
                             <p>{{ $menu->description }}</p>
-                            <div class="quantity-control">
-                                <button class="quantity-btn minus" onclick="updateQuantity(this, -1)">
-                                    <i class="fas fa-minus"></i>
+                            <div class="menu-actions">
+                                <div class="quantity-control">
+                                    <button class="quantity-btn minus" onclick="updateQuantity(this, -1)"><i class="fas fa-minus"></i></button>
+                                    <div class="quantity-display">0</div>
+                                    <button class="quantity-btn plus" onclick="updateQuantity(this, 1)"><i class="fas fa-plus"></i></button>
+                                </div>
+                                <button class="like-btn" data-menu-id="{{ $menu->id }}">
+                                    <i class="{{ (auth()->check() && auth()->user()->menuLikes()->where('menu_id', $menu->id)->exists()) ? 'fas' : 'far' }} fa-heart"></i>
+                                    <span class="likes-count">{{ $menu->likes_count }}</span>
                                 </button>
-                                <div class="quantity-display">0</div>
-                                <button class="quantity-btn plus" onclick="updateQuantity(this, 1)">
-                                    <i class="fas fa-plus"></i>
+                            </div>
+                        </div>
+                    </div>
+                @empty
+                    <p>Belum ada menu favorit.</p>
+                @endforelse
+            </div>
+
+            <div id="main-menu-grid" class="menu-grid">
+                @foreach ($menus as $index => $menu)
+                    {{-- ... Konten loop menu utama Anda ... --}}
+                    <div class="menu-item {{ $index >= 6 ? 'hidden extra-menu' : '' }}" data-category="{{ $menu->category }}" data-id="{{ $menu->id }}">
+                        <div class="menu-image">
+                            @if ($menu->image_url && file_exists(public_path('assets/img/menu/' . $menu->image_url)))
+                                <img src="{{ asset('assets/img/menu/' . $menu->image_url) }}" alt="{{ $menu->name }}">
+                            @elseif ($menu->image_url && file_exists(storage_path('app/public/' . $menu->image_url)))
+                                <img src="{{ asset('storage/' . $menu->image_url) }}" alt="{{ $menu->name }}">
+                            @endif
+                        </div>
+                        <div class="menu-content">
+                            <h3>{{ $menu->name }}</h3>
+                            <span class="price">Rp {{ number_format($menu->price, 0, ',', '.') }}</span>
+                            <p>{{ $menu->description }}</p>
+                            <div class="menu-actions">
+                                <div class="quantity-control">
+                                    <button class="quantity-btn minus" onclick="updateQuantity(this, -1)"><i class="fas fa-minus"></i></button>
+                                    <div class="quantity-display">0</div>
+                                    <button class="quantity-btn plus" onclick="updateQuantity(this, 1)"><i class="fas fa-plus"></i></button>
+                                </div>
+                                <button class="like-btn" data-menu-id="{{ $menu->id }}">
+                                    @auth
+                                        <i class="{{ (auth()->user()->menuLikes()->where('menu_id', $menu->id)->exists()) ? 'fas' : 'far' }} fa-heart"></i>
+                                    @else
+                                        <i class="far fa-heart"></i>
+                                    @endauth
+                                    <span class="likes-count">{{ $menu->likes()->count() }}</span>
                                 </button>
                             </div>
                         </div>
@@ -208,9 +258,10 @@
                 @endforeach
             </div>
 
-            <div class="menu-cta text-center mt-4">
+            <div class="menu-cta" style="display: flex; justify-content: center; margin-top: 1.5rem;">
                 <button id="toggleMenuBtn" class="btn btn-primary">View Full Menu</button>
             </div>
+
         </div>
     </section>
 
@@ -451,8 +502,6 @@
         </div>
     </div>
 
-    <script src="{{ asset('./assets/js/dimsum.js') }}"></script>
-
     <script>
         // --- Global Variables and Helper Functions ---
         const isAuthenticated = {{ auth()->check() ? 'true' : 'false' }};
@@ -569,6 +618,43 @@
                 if (event.target === loginPromptModal) {
                     hideLoginPrompt();
                 }
+            });
+
+            document.querySelectorAll('.like-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    if (!isAuthenticated) {
+                        showLoginPrompt();
+                        return;
+                    }
+
+                    const menuId = this.dataset.menuId;
+                    const icon = this.querySelector('i');
+                    const countSpan = this.querySelector('.likes-count');
+                    const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content'); // Pastikan ada meta tag CSRF
+
+                    fetch(`/menu/${menuId}/toggle-like`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': token
+                        },
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        // Update jumlah suka
+                        countSpan.textContent = data.likes_count;
+
+                        // Update ikon hati
+                        if (data.is_liked) {
+                            icon.classList.remove('far'); // Hapus ikon kosong
+                            icon.classList.add('fas');    // Tambah ikon penuh
+                        } else {
+                            icon.classList.remove('fas'); // Hapus ikon penuh
+                            icon.classList.add('far');    // Tambah ikon kosong
+                        }
+                    })
+                    .catch(error => console.error('Error:', error));
+                });
             });
 
             const reservationForm = document.querySelector('.contact-form form');

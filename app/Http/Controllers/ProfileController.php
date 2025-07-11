@@ -47,4 +47,13 @@ class ProfileController extends Controller
 
         return redirect()->route('profile')->with('success', 'Profile updated successfully!');
     }
+
+    public function favorites()
+    {
+        $user = Auth::user();
+
+        $user->load('menuLikes.menu');
+
+        return view('profile.favorites', compact('user'));
+    }
 }

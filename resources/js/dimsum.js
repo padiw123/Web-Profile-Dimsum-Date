@@ -32,69 +32,81 @@ document.addEventListener('DOMContentLoaded', function() {
     // Menu filtering
     const menuCategories = document.querySelectorAll('.menu-category');
     const menuItems = document.querySelectorAll('.menu-item');
+    const mainMenuGrid = document.getElementById('main-menu-grid');
+    const favoriteMenuGrid = document.getElementById('favorite-menu-grid');
     const toggleBtn = document.getElementById('toggleMenuBtn');
-    let isExpanded = false;
 
     // Menu Filtering
-    menuCategories.forEach(function(categoryBtn) {
-        categoryBtn.addEventListener('click', function() {
-            // Reset active class
-            menuCategories.forEach(btn => btn.classList.remove('active'));
-            categoryBtn.classList.add('active');
+    if (mainMenuGrid && favoriteMenuGrid && toggleBtn) {
+        const menuItems = mainMenuGrid.querySelectorAll('.menu-item');
+        let isExpanded = false;
 
-            const selectedCategory = categoryBtn.getAttribute('data-category');
-            let visibleCount = 0;
+        menuCategories.forEach(function(categoryBtn) {
+            categoryBtn.addEventListener('click', function() {
+                // Set tombol aktif
+                menuCategories.forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
 
-            // Reset state
-            isExpanded = false;
-            toggleBtn.textContent = 'View Full Menu';
+                const selectedCategory = this.getAttribute('data-category');
 
-            // Loop semua item
-            menuItems.forEach(item => {
-                const itemCategory = item.getAttribute('data-category');
+                // Reset state tombol "View Full Menu"
+                isExpanded = false;
+                toggleBtn.textContent = 'View Full Menu';
 
-                // Reset semua item
-                item.classList.add('hidden');
-                item.classList.remove('extra-menu');
+                if (selectedCategory === 'favorit') {
+                    // Tampilkan grid favorit, sembunyikan yang utama
+                    mainMenuGrid.style.display = 'none';
+                    favoriteMenuGrid.style.display = 'grid';
+                    toggleBtn.style.display = 'none';
+                } else {
+                    // Tampilkan grid utama, sembunyikan yang favorit
+                    mainMenuGrid.style.display = 'grid';
+                    favoriteMenuGrid.style.display = 'none';
+                    
+                    let visibleCount = 0;
+                    
+                    // Loop dan reset semua item di grid utama
+                    menuItems.forEach(item => {
+                        const itemCategory = item.getAttribute('data-category');
+                        
+                        // Sembunyikan semua item terlebih dahulu dan reset status 'extra'
+                        item.classList.add('hidden');
+                        item.classList.remove('extra-menu');
 
-                const isMatch = selectedCategory === 'all' || itemCategory === selectedCategory;
+                        const isMatch = selectedCategory === 'all' || itemCategory === selectedCategory;
 
-                if (isMatch) {
-                    if (visibleCount < 6) {
-                        item.classList.remove('hidden');
-                    } else {
-                        item.classList.add('extra-menu'); // Akan dikendalikan oleh tombol
-                        if (isExpanded) {
-                            item.classList.remove('hidden');
+                        if (isMatch) {
+                            // Tampilkan 6 item pertama yang cocok
+                            if (visibleCount < 6) {
+                                item.classList.remove('hidden');
+                            } else {
+                                // Tandai sisanya sebagai 'extra-menu' (tetap tersembunyi)
+                                item.classList.add('extra-menu');
+                            }
+                            visibleCount++;
                         }
+                    });
+
+                    // Tentukan apakah tombol "View Full Menu" perlu ditampilkan
+                    if (visibleCount > 6) {
+                        toggleBtn.style.display = 'block';
+                    } else {
+                        toggleBtn.style.display = 'none';
                     }
-                    visibleCount++;
                 }
             });
         });
-    });
 
-    // Toggle Full Menu
-    toggleBtn.addEventListener('click', () => {
-        const activeCategory = document.querySelector('.menu-category.active').getAttribute('data-category');
-        isExpanded = !isExpanded;
+        // Toggle Full Menu
+        toggleBtn.addEventListener('click', () => {
+            isExpanded = !isExpanded;
+            toggleBtn.textContent = isExpanded ? 'Show Less' : 'View Full Menu';
 
-        let visibleCount = 0;
-
-        menuItems.forEach(item => {
-            const itemCategory = item.getAttribute('data-category');
-            const isMatch = activeCategory === 'all' || itemCategory === activeCategory;
-
-            if (isMatch) {
-                if (visibleCount >= 6) {
-                    item.classList.toggle('hidden', !isExpanded);
-                }
-                visibleCount++;
-            }
+            mainMenuGrid.querySelectorAll('.extra-menu').forEach(item => {
+                item.classList.toggle('hidden', !isExpanded);
+            });
         });
-
-        toggleBtn.textContent = isExpanded ? 'Show Less' : 'View Full Menu';
-    });
+    }
 
     // Reveal animations on scroll
     const revealElements = document.querySelectorAll('.section-header, .featured-item, .menu-item, .about-content, .gallery-item, .contact-content');

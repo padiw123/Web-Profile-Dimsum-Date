@@ -54,10 +54,17 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(Order::class);
     }
+<<<<<<< HEAD
     
     public function favorits()
     {
     return $this->belongsToMany(Menu::class, 'favorits'); // pastikan nama tabel pivot `favorits`
+=======
+
+    public function menuLikes(): HasMany
+    {
+        return $this->hasMany(MenuLike::class);
+>>>>>>> 5626a3260b67958f190755272fdc4bb4971435c0
     }
 
 }

@@ -7,6 +7,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\MenuLikeController;
 use App\Http\Controllers\TestimoniController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\Auth\ResetPasswordController;
@@ -54,6 +55,7 @@ Route::middleware(['auth'])->group(function () {
     })->middleware('throttle:6,1')->name('verification.send');
     
 
+    Route::post('/menu/{menu}/toggle-like', [MenuLikeController::class, 'toggleLike'])->name('menu.toggle-like');
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -71,6 +73,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/testimoni/submit-review', [TestimoniController::class, 'store'])->name('testimonial.store');
     Route::get('/testimoni/history', [TestimoniController::class, 'history'])->name('testimonial.history');
 
+<<<<<<< HEAD
     //Favorit
     Route::get('/', function () {
     return view('home');
@@ -80,4 +83,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/favorit', [UserController::class, 'favorit'])->name('favorit');
     Route::get('/', [HomeController::class, 'index'])->name('home');
 
+=======
+    Route::get('/profile/favorites', [ProfileController::class, 'favorites'])->name('profile.favorites');
+>>>>>>> 5626a3260b67958f190755272fdc4bb4971435c0
 });
