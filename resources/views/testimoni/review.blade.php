@@ -183,6 +183,5 @@
         }
     </script>
 
-    <script src="{{ asset('./assets/js/dimsum.js') }}"></script>
 </body>
 </html>

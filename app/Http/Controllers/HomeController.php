@@ -12,9 +12,14 @@ class HomeController extends Controller
     public function index()
     {
         $promos = Promo::all();
-        $menus = Menu::all();
+        $menus = Menu::with('likes')->get();
         $testimonials = Testimonial::with('user')->latest()->take(8)->get();
 
-        return view('home', compact('menus', 'promos', 'testimonials'));
+        $topFavoriteMenus = Menu::withCount('likes')
+            ->orderByDesc('likes_count')
+            ->limit(3)
+            ->get();
+
+        return view('home', compact('menus', 'promos', 'testimonials', 'topFavoriteMenus'));
     }
 }
