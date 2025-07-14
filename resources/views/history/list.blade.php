@@ -51,6 +51,25 @@
             padding: 1.5rem;
         }
 
+        .order-service-type {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding-bottom: 0.75rem;
+            margin-bottom: 0.75rem;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #555;
+        }
+
+        .order-service-type .fa-utensils {
+            color: #0d6efd;
+        }
+
+        .order-service-type .fa-shopping-bag {
+            color: #198754;
+        }
         .order-items {
             margin-bottom: 1rem;
         }
@@ -125,15 +144,48 @@
             justify-content: center;
             margin-top: 2rem;
         }
+        @media (max-width: 600px) {
+            .history-container {
+                margin-top: 6rem;
+                padding: 80px 15px 30px 15px;
+            }
+
+            .order-card-content {
+                padding: 1rem;
+            }
+
+            .order-item {
+                font-size: 0.9rem;
+            }
+
+            .item-details {
+                gap: 0.75rem;
+            }
+
+            .order-total {
+                font-size: 1rem;
+            }
+
+            .pagination {
+                font-size: 0.9rem;
+            }
+
+            .pagination .page-item:first-child .page-link,
+            .pagination .page-item:last-child .page-link {
+                padding: 0.3rem 0.6rem;
+            }
+
+            .pagination .page-link {
+                padding: 0.4rem 0.6rem;
+            }
+        }
     </style>
 </head>
 <body>
     <nav class="navbar" id="navbar">
         <div class="container">
             <div class="navbar-brand">
-                {{-- Link ke halaman utama --}}
                 <a href="{{ url('/') }}">
-                    {{-- Path logo disesuaikan untuk helper `asset()` Laravel --}}
                     <img src="{{ asset('assets/img/logo-dimsum.svg') }}" alt="Dimsum Date" class="logo-img">
                     <span>Dimsum Date</span>
                 </a>
@@ -148,14 +200,21 @@
         </a>
         @forelse ($orders as $order)
             @php
-                // Ambil menu pertama untuk ditampilkan sebagai gambar utama
                 $firstMenu = $order->menus->first();
-                // Hitung jumlah total item
                 $totalItems = $order->menus->sum('pivot.quantity');
             @endphp
 
             <div class="order-card-new" onclick="window.location.href='{{ route('detailhistory', $order) }}'">
                 <div class="order-card-content">
+                    <div class="order-service-type">
+                        @if ($order->service_type == 'dine_in')
+                            <i class="fas fa-utensils"></i>
+                            <span>Dine In</span>
+                        @else
+                            <i class="fas fa-shopping-bag"></i>
+                            <span>Take Away</span>
+                        @endif
+                    </div>
                     <div class="order-items">
                         @foreach ($order->menus as $menu)
                             @if ($loop->index < 2)
@@ -177,8 +236,7 @@
                     </div>
                     <div class="order-total">Rp {{ number_format($order->total_price, 0, ',', '.') }}</div>
                 </div>
-                <div class="order-status @if($order->status == 'completed') status-completed @endif
-                    @if($order->status == 'cancelled') status-cancelled @if($order->status == 'confirmed') status-confirmed @if($order->status == 'pending') status-pending @endif">
+                <div class="order-status status-{{ $order->status }}">
                     @switch($order->status)
                         @case('pending')
                             menunggu
@@ -204,7 +262,6 @@
             </div>
         @endforelse
 
-        {{-- Paginasi --}}
         @if(isset($orders) && method_exists($orders, 'links'))
             <div class="pagination">
                 {{ $orders->links() }}
