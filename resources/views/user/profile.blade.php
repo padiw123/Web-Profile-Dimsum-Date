@@ -7,7 +7,7 @@
     <link rel="icon" href="/assets/img/logo-dimsum.svg" type="image/svg">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="{{ asset('../assets/css/dimsum.css') }}">
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
         :root {
             --primary-color: #B22222;
@@ -120,7 +120,31 @@
 
         @media (max-width: 768px) {
             .profile-container {
-                margin: 1rem;
+                margin: 6rem 2rem 2rem 2rem;
+            }
+
+            .profile-content {
+                flex-direction: column;
+                align-items: center;
+                gap: 1.5rem;
+                padding: 1.5rem;
+            }
+
+            .profile-image {
+                width: 150px;
+                height: 150px;
+            }
+
+            .profile-image .placeholder-icon {
+                font-size: 5rem;
+            }
+
+            .profile-info {
+                width: 100%;
+            }
+
+            .profile-header h2 {
+                font-size: 1.5rem;
             }
         }
     </style>

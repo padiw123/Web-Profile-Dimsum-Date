@@ -14,16 +14,15 @@ class ReservationController extends Controller
 {
     public function reserve(Request $request)
     {
-        // Baris debugging dd($request->all()); telah dihapus dari sini.
-
         $validator = Validator::make($request->all(), [
             'name'                  => 'required|string|max:255',
             'email'                 => 'required|email',
             'phone'                 => 'required|string|max:20',
             'date'                  => 'required|date',
             'time'                  => 'required',
-            'guests'                => 'required|string',
-            'payment_method'        => 'required|string|in:cash,qris,cimb,mandiri', // Validasi metode pembayaran
+            'service_type'          => 'required|string|in:dine_in,take_away',
+            'guests'                => 'required_if:service_type,dine_in|nullable|string',
+            'payment_method'        => 'required|string|in:cash,qris,cimb,mandiri',
             'message'               => 'nullable|string',
             'ordered_items_summary' => 'required|string',
             'total_payment'         => 'required|string',
@@ -59,17 +58,29 @@ class ReservationController extends Controller
                 }
             }
 
-            $notes = "Reservasi untuk {$validated['guests']} orang pada tanggal {$validated['date']} jam {$validated['time']}.";
-            if (!empty($validated['message'])) {
-                $notes .= "\nCatatan Khusus: " . $validated['message'];
+            $serviceType = $validated['service_type'];
+            $notes = "";
+            $reservationDetails = "";
+
+            if ($serviceType === 'dine_in') {
+                $notes = "Reservasi Dine In untuk {$validated['guests']} orang pada tanggal {$validated['date']} jam {$validated['time']}.";
+                $reservationDetails = "*Detail Reservasi:*\n" .
+                                    "Tanggal: {$validated['date']}\n" .
+                                    "Waktu: {$validated['time']}\n" .
+                                    "Jumlah Tamu: {$validated['guests']}\n\n";
+            } else {
+                $notes = "Pesanan Take Away untuk diambil pada tanggal {$validated['date']} jam {$validated['time']}.";
+                $reservationDetails = "*Info Pengambilan:*\n" .
+                                    "Tanggal: {$validated['date']}\n" .
+                                    "Waktu: {$validated['time']}\n\n";
             }
 
-            // Simpan order beserta informasi pembayaran
             $order = Order::create([
                 'user_id'         => $user->id,
                 'status'          => 'pending',
                 'total_price'     => $serverTotalPrice,
                 'notes'           => $notes,
+                'service_type'   => $serviceType,
                 'payment_method'  => $validated['payment_method'],
                 'payment_status'  => 'unpaid',
             ]);
@@ -85,19 +96,18 @@ class ReservationController extends Controller
 
             DB::commit();
 
-            // Jika semua berhasil, siapkan pesan dan redirect
             $whatsappMessage = "*Reservasi & Pesanan Baru*\n\n" .
-                             "*Order ID:* #{$order->id}\n" .
-                             "*Nama:* {$validated['name']}\n" .
-                             "*Telepon:* {$validated['phone']}\n\n" .
-                             "*Detail Reservasi:*\n" .
-                             "Tanggal: {$validated['date']}\n" .
-                             "Waktu: {$validated['time']}\n" .
-                             "Jumlah Tamu: {$validated['guests']}\n\n" .
-                             "*Rincian Pesanan:*\n" .
-                             $validated['ordered_items_summary'] . "\n\n" .
-                             "*Total Pembayaran:* " . $validated['total_payment'] . "\n\n" .
-                             "Mohon untuk segera diproses. Terima kasih.";
+                            "*Order ID:* #{$order->id}\n" .
+                            "*Nama:* {$validated['name']}\n" .
+                            "*Telepon:* {$validated['phone']}\n\n" .
+                            "*Detail Reservasi:*\n" .
+                            "Tanggal: {$validated['date']}\n" .
+                            "Waktu: {$validated['time']}\n" .
+                            $reservationDetails .
+                            "*Rincian Pesanan:*\n" .
+                            $validated['ordered_items_summary'] . "\n\n" .
+                            "*Total Pembayaran:* " . $validated['total_payment'] . "\n\n" .
+                            "Mohon untuk segera diproses. Terima kasih.";
 
             $whatsappUrl = 'https://api.whatsapp.com/send?phone=62895803622422&text=' . urlencode($whatsappMessage);
 

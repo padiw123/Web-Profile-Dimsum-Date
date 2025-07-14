@@ -6,7 +6,7 @@
     <title>Tulis Testimoni - Dimsum Date</title>
     <link rel="icon" href="/assets/img/logo-dimsum.svg" type="image/svg">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('./assets/css/dimsum.css') }}">
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
         :root {
             --primary-color: #B22222;
@@ -183,6 +183,5 @@
         }
     </script>
 
-    <script src="{{ asset('./assets/js/dimsum.js') }}"></script>
 </body>
 </html>

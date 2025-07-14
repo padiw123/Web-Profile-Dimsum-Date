@@ -54,4 +54,10 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(Order::class);
     }
+
+    public function menuLikes(): HasMany
+    {
+        return $this->hasMany(MenuLike::class);
+    }
+
 }

@@ -7,11 +7,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Dimsum Date</title>
     <link rel="icon" href="/assets/img/logo-dimsum.svg" type="image/svg">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="{{ asset('./assets/css/dimsum.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body>
     <!-- Navigation -->
@@ -49,6 +50,7 @@
                                 </button>
                                 <ul class="dropdown-menu">
                                     <li><a href="{{ route('profile') }}" class="dropdown-item">Profile</a></li>
+                                    <li><a href="{{ route('profile.favorites') }}" class="dropdown-item">Menu Favorit</a></li>
                                     <li><a href="{{ route('testimonial.history') }}" class="dropdown-item">Riwayat Testimoni</a></li>
                                     <li><a href="{{ route('listhistory') }}" class="dropdown-item">Riwayat Pembelian</a></li>
                                     <li><hr class="dropdown-divider"></li>
@@ -109,7 +111,10 @@
                                 <div class="description">
                                     <p>{{ $promo->description }}</p>
                                     @if($promo->price)
-                                        <p class="price">${{ number_format($promo->price, 2) }} <span>{{ $promo->price_note }}</span></p>
+                                        <p class="price">
+                                            Rp. {{ number_format($promo->price, 0, ',', '.') }}
+                                            <span>{{ $promo->price_note }}</span>
+                                        </p>
                                     @endif
                                     @if($promo->features)
                                         <ul>
@@ -122,7 +127,7 @@
                                 <a href="{{ $promo->cta_link ?? '#contact' }}" class="btn btn-secondary">Book Now</a>
                             </div>
                         </div>
-                        @endforeach
+                    @endforeach
                 </div>
 
                 <div class="promo-arrow next">
@@ -147,6 +152,7 @@
             </div>
 
             <div class="menu-categories">
+                <button class="menu-category" data-category="favorit">Favorit</button>
                 <button class="menu-category active" data-category="all">Semua</button>
                 <button class="menu-category" data-category="dimsum ayam">Dimsum Ayam</button>
                 <button class="menu-category" data-category="dimsum ayam udang">Dimsum Ayam Udang</button>
@@ -156,29 +162,65 @@
                 <button class="menu-category" data-category="minuman">Minuman</button>
             </div>
 
-            <div class="menu-grid">
-                @foreach ($menus as $index => $menu)
-                    <div class="menu-item {{ $index >= 6 ? 'hidden extra-menu' : '' }}" data-category="{{ $menu->category }}" data-id="{{ $menu->id }}">
+            <div id="favorite-menu-grid" class="menu-grid" style="display: none;">
+                @forelse ($topFavoriteMenus as $menu)
+                    <div class="menu-item" data-category="favorit" data-id="{{ $menu->id }}">
                         <div class="menu-image">
                             @if ($menu->image_url && file_exists(public_path('assets/img/menu/' . $menu->image_url)))
                                 <img src="{{ asset('assets/img/menu/' . $menu->image_url) }}" alt="{{ $menu->name }}">
-
                             @elseif ($menu->image_url && file_exists(storage_path('app/public/' . $menu->image_url)))
                                 <img src="{{ asset('storage/' . $menu->image_url) }}" alt="{{ $menu->name }}">
-
                             @endif
                         </div>
                         <div class="menu-content">
                             <h3>{{ $menu->name }}</h3>
                             <span class="price">Rp {{ number_format($menu->price, 0, ',', '.') }}</span>
                             <p>{{ $menu->description }}</p>
-                            <div class="quantity-control">
-                                <button class="quantity-btn minus" onclick="updateQuantity(this, -1)">
-                                    <i class="fas fa-minus"></i>
+                            <div class="menu-actions">
+                                <div class="quantity-control">
+                                    <button class="quantity-btn minus" onclick="updateQuantity(this, -1)"><i class="fas fa-minus"></i></button>
+                                    <div class="quantity-display">0</div>
+                                    <button class="quantity-btn plus" onclick="updateQuantity(this, 1)"><i class="fas fa-plus"></i></button>
+                                </div>
+                                <button class="like-btn" data-menu-id="{{ $menu->id }}">
+                                    <i class="{{ (auth()->check() && auth()->user()->menuLikes()->where('menu_id', $menu->id)->exists()) ? 'fas' : 'far' }} fa-heart"></i>
+                                    <span class="likes-count">{{ $menu->likes_count }}</span>
                                 </button>
-                                <div class="quantity-display">0</div>
-                                <button class="quantity-btn plus" onclick="updateQuantity(this, 1)">
-                                    <i class="fas fa-plus"></i>
+                            </div>
+                        </div>
+                    </div>
+                @empty
+                    <p>Belum ada menu favorit.</p>
+                @endforelse
+            </div>
+
+            <div id="main-menu-grid" class="menu-grid">
+                @foreach ($menus as $index => $menu)
+                    <div class="menu-item {{ $index >= 6 ? 'hidden extra-menu' : '' }}" data-category="{{ $menu->category }}" data-id="{{ $menu->id }}">
+                        <div class="menu-image">
+                            @if ($menu->image_url && file_exists(public_path('assets/img/menu/' . $menu->image_url)))
+                                <img src="{{ asset('assets/img/menu/' . $menu->image_url) }}" alt="{{ $menu->name }}">
+                            @elseif ($menu->image_url && file_exists(storage_path('app/public/' . $menu->image_url)))
+                                <img src="{{ asset('storage/' . $menu->image_url) }}" alt="{{ $menu->name }}">
+                            @endif
+                        </div>
+                        <div class="menu-content">
+                            <h3>{{ $menu->name }}</h3>
+                            <span class="price">Rp {{ number_format($menu->price, 0, ',', '.') }}</span>
+                            <p>{{ $menu->description }}</p>
+                            <div class="menu-actions">
+                                <div class="quantity-control">
+                                    <button class="quantity-btn minus" onclick="updateQuantity(this, -1)"><i class="fas fa-minus"></i></button>
+                                    <div class="quantity-display">0</div>
+                                    <button class="quantity-btn plus" onclick="updateQuantity(this, 1)"><i class="fas fa-plus"></i></button>
+                                </div>
+                                <button class="like-btn" data-menu-id="{{ $menu->id }}">
+                                    @auth
+                                        <i class="{{ (auth()->user()->menuLikes()->where('menu_id', $menu->id)->exists()) ? 'fas' : 'far' }} fa-heart"></i>
+                                    @else
+                                        <i class="far fa-heart"></i>
+                                    @endauth
+                                    <span class="likes-count">{{ $menu->likes()->count() }}</span>
                                 </button>
                             </div>
                         </div>
@@ -186,9 +228,10 @@
                 @endforeach
             </div>
 
-            <div class="menu-cta text-center mt-4">
+            <div class="menu-cta" style="display: flex; justify-content: center; margin-top: 1.5rem;">
                 <button id="toggleMenuBtn" class="btn btn-primary">View Full Menu</button>
             </div>
+
         </div>
     </section>
 
@@ -268,17 +311,14 @@
 
             <div class="contact-content">
                 <div class="contact-info">
-                    <!-- Order Summary -->
                     <div class="order-summary">
                         <h3>Rincian Pesanan</h3>
                         <div id="orderItems" class="order-items">
-                            <!-- Order items will be dynamically added here -->
                         </div>
                         <div class="order-total">
                             <h4>Total Pembayaran</h4>
                             <span id="totalAmount">Rp 0</span>
                         </div>
-
                     </div>
 
                     <div class="contact-form">
@@ -303,6 +343,16 @@
                                 </div>
                             </div>
                             <div class="form-group">
+                                <div>
+                                    <select name="service_type" id="service-type-select" required>
+                                        <option value="" disabled {{ old('service_type', '') ? '' : 'selected' }}>Pilih Jenis Layanan</option>
+                                        <option value="dine_in" {{ old('service_type') == 'dine_in' ? 'selected' : '' }}>Dine In</option>
+                                        <option value="take_away" {{ old('service_type') == 'take_away' ? 'selected' : '' }}>Take Away</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group" id="guests-container">
                                 <select name="guests" required>
                                     <option value="" disabled {{ old('guests') ? '' : 'selected' }}>Jumlah Orang</option>
                                     @foreach (['1' => '1 Orang', '2' => '2 Orang', '3' => '3 Orang', '4' => '4 Orang', '5' => '5 Orang', '6+' => '6+ Orang'] as $value => $label)
@@ -313,7 +363,7 @@
 
                             <div class="payment-method" style="margin-bottom: 1.5rem;">
                                 <select id="paymentSelect" name="payment_method" onchange="togglePaymentDetails()" required>
-                                    <option value="">Pilih metode pembayaran</option>
+                                    <option value="" disabled>Pilih metode pembayaran</option>
                                     <option value="cash">Tunai di tempat</option>
                                     <option value="qris">QRIS</option>
                                     <option value="cimb">Transfer Bank - CIMB Niaga</option>
@@ -429,13 +479,23 @@
         </div>
     </div>
 
-    <script src="{{ asset('./assets/js/dimsum.js') }}"></script>
+    <div id="alertOrderModal" class="auth-modal" style="display: none;">
+        <div class="auth-modal-content">
+            <span class="auth-modal-close-btn">&times;</span>
+            <h3>Halo</h3>
+            <p>Anda harus memilih menu setidaknya satu,.</p>
+            <div class="auth-modal-actions">
+                <button type="button" class="btn btn-secondary" id="cancelOrderBtnModal">OK</button>
+            </div>
+        </div>
+    </div>
 
     <script>
-        // --- Global Variables and Helper Functions ---
         const isAuthenticated = {{ auth()->check() ? 'true' : 'false' }};
         const loginUrl = "{{ route('login') }}";
-        let loginPromptModal = null; // Will be assigned in DOMContentLoaded
+        let loginPromptModal = null;
+        let alertModal = null;
+        let alertModalMessage = null;
 
         function showLoginPrompt() {
             if (loginPromptModal) {
@@ -449,7 +509,18 @@
             }
         }
 
-        // --- Functions for Inline Event Handlers (must be global) ---
+        function showAlertModal(message) {
+            if (alertModal) {
+                alertModalMessage.textContent = message;
+                alertModal.style.display = 'flex';
+            }
+        }
+
+        function hideAlertModal() {
+            if (alertModal) {
+                alertModal.style.display = 'none';
+            }
+        }
 
         window.updateQuantity = function(button, change) {
             if (!isAuthenticated) {
@@ -530,12 +601,15 @@
             }
         }
 
-        // --- DOMContentLoaded Event Listener for other initializations ---
         document.addEventListener("DOMContentLoaded", function () {
             // Initialize Modal Elements
             loginPromptModal = document.getElementById('loginPromptModal');
             const cancelLoginBtnModal = document.getElementById('cancelLoginBtnModal');
             const closeModalIcon = loginPromptModal ? loginPromptModal.querySelector('.auth-modal-close-btn') : null;
+
+            alertModal = document.getElementById('alertOrderModal');
+            alertModalMessage = alertModal ? alertModal.querySelector('.auth-modal-content p') : null;
+            const cancelOrderBtnModal = document.getElementById('cancelOrderBtnModal');
 
             if (cancelLoginBtnModal) {
                 cancelLoginBtnModal.addEventListener('click', hideLoginPrompt);
@@ -543,45 +617,106 @@
             if (closeModalIcon) {
                 closeModalIcon.addEventListener('click', hideLoginPrompt);
             }
-            window.addEventListener('click', function(event) {
-                if (event.target === loginPromptModal) {
-                    hideLoginPrompt();
-                }
+            if (cancelOrderBtnModal) {
+                cancelOrderBtnModal.addEventListener('click', hideAlertModal);
+            }
+            window.addEventListener('click', (event) => {
+                if (event.target === loginPromptModal) hideLoginPrompt();
+                if (event.target === alertModal) hideAlertModal();
             });
+
+            document.querySelectorAll('.like-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    if (!isAuthenticated) {
+                        showLoginPrompt();
+                        return;
+                    }
+
+                    const menuId = this.dataset.menuId;
+                    const icon = this.querySelector('i');
+                    const countSpan = this.querySelector('.likes-count');
+                    const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content'); // Pastikan ada meta tag CSRF
+
+                    fetch(`/menu/${menuId}/toggle-like`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': token
+                        },
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        countSpan.textContent = data.likes_count;
+
+                        if (data.is_liked) {
+                            icon.classList.remove('far'); // Hapus ikon kosong
+                            icon.classList.add('fas');    // Tambah ikon penuh
+                        } else {
+                            icon.classList.remove('fas'); // Hapus ikon penuh
+                            icon.classList.add('far');    // Tambah ikon kosong
+                        }
+                    })
+                    .catch(error => console.error('Error:', error));
+                });
+            });
+
+            const serviceTypeSelect = document.getElementById('service-type-select');
+            const guestsContainer = document.getElementById('guests-container');
+
+            function toggleGuestsVisibility() {
+                const selectedType = document.querySelector('input[name="service_type"]:selected').value;
+                guestsContainer.style.display = (selectedType === 'dine_in') ? 'block' : 'none';
+            }
+
+            function toggleGuestsVisibility() {
+                const selectedType = serviceTypeSelect.value;
+                guestsContainer.style.display = (selectedType === 'dine_in') ? 'block' : 'none';
+            }
+
+            serviceTypeSelect.addEventListener('change', toggleGuestsVisibility);
+            toggleGuestsVisibility();
 
             const reservationForm = document.querySelector('.contact-form form');
             if (reservationForm) {
+                reservationForm.addEventListener('focusin', function(event) {
+                    if (!isAuthenticated) {
+                        event.target.blur();
+                        showLoginPrompt();
+                    }
+                });
+
                 reservationForm.addEventListener('submit', function(event) {
                     if (!isAuthenticated) {
                         event.preventDefault();
                         showLoginPrompt();
-                    } else {
-                        const orderItemsDiv = document.getElementById('orderItems');
-
-                        // Isi input untuk summary teks (untuk pesan WA)
-                        const summaryText = Array.from(orderItemsDiv.querySelectorAll('.order-item'))
-                            .map(item => item.innerText.replace('\t', ' '))
-                            .join('\n');
-                        document.getElementById('orderedItemsSummaryInput').value = summaryText.trim();
-
-                        // Isi input untuk total pembayaran
-                        document.getElementById('totalPaymentInput').value = document.getElementById('totalAmount').textContent;
-
-                        // Isi input BARU untuk data JSON (untuk disimpan ke database)
-                        const structuredItems = [];
-                        orderItemsDiv.querySelectorAll('.order-item').forEach(item => {
-                            structuredItems.push({
-                                menu_id: item.getAttribute('data-id'),
-                                quantity: parseInt(item.querySelector('.item-quantity').textContent)
-                            });
-                        });
-                        document.getElementById('orderItemsInput').value = JSON.stringify(structuredItems);
+                        return;
                     }
+
+                    const orderItemsDiv = document.getElementById('orderItems');
+                    const hasItems = orderItemsDiv.querySelector('.order-item') !== null;
+
+                    if (!hasItems) {
+                        event.preventDefault();
+                        showAlertModal('Pilih setidaknya satu menu sebelum melakukan checkout.');
+                        return;
+                    }
+
+                    const summaryText = Array.from(orderItemsDiv.querySelectorAll('.order-item')).map(item => item.innerText.replace(/\s+/g, ' ')).join('\n');
+                    document.getElementById('orderedItemsSummaryInput').value = summaryText.trim();
+                    document.getElementById('totalPaymentInput').value = document.getElementById('totalAmount').textContent;
+
+                    const structuredItems = [];
+                    orderItemsDiv.querySelectorAll('.order-item').forEach(item => {
+                        structuredItems.push({
+                            menu_id: item.getAttribute('data-id'),
+                            quantity: parseInt(item.querySelector('.item-quantity').textContent)
+                        });
+                    });
+                    document.getElementById('orderItemsInput').value = JSON.stringify(structuredItems);
                 });
             }
 
-            // "Tulis Testimoni" Button Validation
-            const tulisTestimoniBtn = document.querySelector('a.btn-review[href="{{ route('testimonial.index') }}"]');
+            const tulisTestimoniBtn = document.querySelector('a.btn-review[href="{{ route('testimonial.create') }}"]');
             if (tulisTestimoniBtn) {
                 tulisTestimoniBtn.addEventListener('click', function(event) {
                     if (!isAuthenticated) {
@@ -591,7 +726,6 @@
                 });
             }
 
-            // Profile Dropdown Logic (only if elements exist - user is authenticated)
             const dropdownToggle = document.getElementById("userDropdown");
             const profileDropdown = document.querySelector(".profile-dropdown");
 
