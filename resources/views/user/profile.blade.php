@@ -120,7 +120,31 @@
 
         @media (max-width: 768px) {
             .profile-container {
-                margin: 1rem;
+                margin: 6rem 2rem 2rem 2rem;
+            }
+
+            .profile-content {
+                flex-direction: column;
+                align-items: center;
+                gap: 1.5rem;
+                padding: 1.5rem;
+            }
+
+            .profile-image {
+                width: 150px;
+                height: 150px;
+            }
+
+            .profile-image .placeholder-icon {
+                font-size: 5rem;
+            }
+
+            .profile-info {
+                width: 100%;
+            }
+
+            .profile-header h2 {
+                font-size: 1.5rem;
             }
         }
     </style>

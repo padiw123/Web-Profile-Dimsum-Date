@@ -111,7 +111,10 @@
                                 <div class="description">
                                     <p>{{ $promo->description }}</p>
                                     @if($promo->price)
-                                        <p class="price">${{ number_format($promo->price, 2) }} <span>{{ $promo->price_note }}</span></p>
+                                        <p class="price">
+                                            Rp. {{ number_format($promo->price, 0, ',', '.') }}
+                                            <span>{{ $promo->price_note }}</span>
+                                        </p>
                                     @endif
                                     @if($promo->features)
                                         <ul>
@@ -124,7 +127,7 @@
                                 <a href="{{ $promo->cta_link ?? '#contact' }}" class="btn btn-secondary">Book Now</a>
                             </div>
                         </div>
-                        @endforeach
+                    @endforeach
                 </div>
 
                 <div class="promo-arrow next">
@@ -149,7 +152,7 @@
             </div>
 
             <div class="menu-categories">
-                <button class="menu-category" data-category="favorit">Favorit</button> 
+                <button class="menu-category" data-category="favorit">Favorit</button>
                 <button class="menu-category active" data-category="all">Semua</button>
                 <button class="menu-category" data-category="dimsum ayam">Dimsum Ayam</button>
                 <button class="menu-category" data-category="dimsum ayam udang">Dimsum Ayam Udang</button>
@@ -161,7 +164,6 @@
 
             <div id="favorite-menu-grid" class="menu-grid" style="display: none;">
                 @forelse ($topFavoriteMenus as $menu)
-                    {{-- ... Konten menu favorit Anda ... --}}
                     <div class="menu-item" data-category="favorit" data-id="{{ $menu->id }}">
                         <div class="menu-image">
                             @if ($menu->image_url && file_exists(public_path('assets/img/menu/' . $menu->image_url)))
@@ -194,7 +196,6 @@
 
             <div id="main-menu-grid" class="menu-grid">
                 @foreach ($menus as $index => $menu)
-                    {{-- ... Konten loop menu utama Anda ... --}}
                     <div class="menu-item {{ $index >= 6 ? 'hidden extra-menu' : '' }}" data-category="{{ $menu->category }}" data-id="{{ $menu->id }}">
                         <div class="menu-image">
                             @if ($menu->image_url && file_exists(public_path('assets/img/menu/' . $menu->image_url)))
@@ -310,17 +311,14 @@
 
             <div class="contact-content">
                 <div class="contact-info">
-                    <!-- Order Summary -->
                     <div class="order-summary">
                         <h3>Rincian Pesanan</h3>
                         <div id="orderItems" class="order-items">
-                            <!-- Order items will be dynamically added here -->
                         </div>
                         <div class="order-total">
                             <h4>Total Pembayaran</h4>
                             <span id="totalAmount">Rp 0</span>
                         </div>
-
                     </div>
 
                     <div class="contact-form">
@@ -345,6 +343,16 @@
                                 </div>
                             </div>
                             <div class="form-group">
+                                <div>
+                                    <select name="service_type" id="service-type-select" required>
+                                        <option value="" disabled {{ old('service_type', '') ? '' : 'selected' }}>Pilih Jenis Layanan</option>
+                                        <option value="dine_in" {{ old('service_type') == 'dine_in' ? 'selected' : '' }}>Dine In</option>
+                                        <option value="take_away" {{ old('service_type') == 'take_away' ? 'selected' : '' }}>Take Away</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group" id="guests-container">
                                 <select name="guests" required>
                                     <option value="" disabled {{ old('guests') ? '' : 'selected' }}>Jumlah Orang</option>
                                     @foreach (['1' => '1 Orang', '2' => '2 Orang', '3' => '3 Orang', '4' => '4 Orang', '5' => '5 Orang', '6+' => '6+ Orang'] as $value => $label)
@@ -355,7 +363,7 @@
 
                             <div class="payment-method" style="margin-bottom: 1.5rem;">
                                 <select id="paymentSelect" name="payment_method" onchange="togglePaymentDetails()" required>
-                                    <option value="">Pilih metode pembayaran</option>
+                                    <option value="" disabled>Pilih metode pembayaran</option>
                                     <option value="cash">Tunai di tempat</option>
                                     <option value="qris">QRIS</option>
                                     <option value="cimb">Transfer Bank - CIMB Niaga</option>
@@ -471,11 +479,23 @@
         </div>
     </div>
 
+    <div id="alertOrderModal" class="auth-modal" style="display: none;">
+        <div class="auth-modal-content">
+            <span class="auth-modal-close-btn">&times;</span>
+            <h3>Halo</h3>
+            <p>Anda harus memilih menu setidaknya satu,.</p>
+            <div class="auth-modal-actions">
+                <button type="button" class="btn btn-secondary" id="cancelOrderBtnModal">OK</button>
+            </div>
+        </div>
+    </div>
+
     <script>
-        // --- Global Variables and Helper Functions ---
         const isAuthenticated = {{ auth()->check() ? 'true' : 'false' }};
         const loginUrl = "{{ route('login') }}";
-        let loginPromptModal = null; // Will be assigned in DOMContentLoaded
+        let loginPromptModal = null;
+        let alertModal = null;
+        let alertModalMessage = null;
 
         function showLoginPrompt() {
             if (loginPromptModal) {
@@ -489,7 +509,18 @@
             }
         }
 
-        // --- Functions for Inline Event Handlers (must be global) ---
+        function showAlertModal(message) {
+            if (alertModal) {
+                alertModalMessage.textContent = message;
+                alertModal.style.display = 'flex';
+            }
+        }
+
+        function hideAlertModal() {
+            if (alertModal) {
+                alertModal.style.display = 'none';
+            }
+        }
 
         window.updateQuantity = function(button, change) {
             if (!isAuthenticated) {
@@ -570,12 +601,15 @@
             }
         }
 
-        // --- DOMContentLoaded Event Listener for other initializations ---
         document.addEventListener("DOMContentLoaded", function () {
             // Initialize Modal Elements
             loginPromptModal = document.getElementById('loginPromptModal');
             const cancelLoginBtnModal = document.getElementById('cancelLoginBtnModal');
             const closeModalIcon = loginPromptModal ? loginPromptModal.querySelector('.auth-modal-close-btn') : null;
+
+            alertModal = document.getElementById('alertOrderModal');
+            alertModalMessage = alertModal ? alertModal.querySelector('.auth-modal-content p') : null;
+            const cancelOrderBtnModal = document.getElementById('cancelOrderBtnModal');
 
             if (cancelLoginBtnModal) {
                 cancelLoginBtnModal.addEventListener('click', hideLoginPrompt);
@@ -583,10 +617,12 @@
             if (closeModalIcon) {
                 closeModalIcon.addEventListener('click', hideLoginPrompt);
             }
-            window.addEventListener('click', function(event) {
-                if (event.target === loginPromptModal) {
-                    hideLoginPrompt();
-                }
+            if (cancelOrderBtnModal) {
+                cancelOrderBtnModal.addEventListener('click', hideAlertModal);
+            }
+            window.addEventListener('click', (event) => {
+                if (event.target === loginPromptModal) hideLoginPrompt();
+                if (event.target === alertModal) hideAlertModal();
             });
 
             document.querySelectorAll('.like-btn').forEach(button => {
@@ -610,10 +646,8 @@
                     })
                     .then(response => response.json())
                     .then(data => {
-                        // Update jumlah suka
                         countSpan.textContent = data.likes_count;
 
-                        // Update ikon hati
                         if (data.is_liked) {
                             icon.classList.remove('far'); // Hapus ikon kosong
                             icon.classList.add('fas');    // Tambah ikon penuh
@@ -626,39 +660,63 @@
                 });
             });
 
+            const serviceTypeSelect = document.getElementById('service-type-select');
+            const guestsContainer = document.getElementById('guests-container');
+
+            function toggleGuestsVisibility() {
+                const selectedType = document.querySelector('input[name="service_type"]:selected').value;
+                guestsContainer.style.display = (selectedType === 'dine_in') ? 'block' : 'none';
+            }
+
+            function toggleGuestsVisibility() {
+                const selectedType = serviceTypeSelect.value;
+                guestsContainer.style.display = (selectedType === 'dine_in') ? 'block' : 'none';
+            }
+
+            serviceTypeSelect.addEventListener('change', toggleGuestsVisibility);
+            toggleGuestsVisibility();
+
             const reservationForm = document.querySelector('.contact-form form');
             if (reservationForm) {
+                reservationForm.addEventListener('focusin', function(event) {
+                    if (!isAuthenticated) {
+                        event.target.blur();
+                        showLoginPrompt();
+                    }
+                });
+
                 reservationForm.addEventListener('submit', function(event) {
                     if (!isAuthenticated) {
                         event.preventDefault();
                         showLoginPrompt();
-                    } else {
-                        const orderItemsDiv = document.getElementById('orderItems');
-
-                        // Isi input untuk summary teks (untuk pesan WA)
-                        const summaryText = Array.from(orderItemsDiv.querySelectorAll('.order-item'))
-                            .map(item => item.innerText.replace('\t', ' '))
-                            .join('\n');
-                        document.getElementById('orderedItemsSummaryInput').value = summaryText.trim();
-
-                        // Isi input untuk total pembayaran
-                        document.getElementById('totalPaymentInput').value = document.getElementById('totalAmount').textContent;
-
-                        // Isi input BARU untuk data JSON (untuk disimpan ke database)
-                        const structuredItems = [];
-                        orderItemsDiv.querySelectorAll('.order-item').forEach(item => {
-                            structuredItems.push({
-                                menu_id: item.getAttribute('data-id'),
-                                quantity: parseInt(item.querySelector('.item-quantity').textContent)
-                            });
-                        });
-                        document.getElementById('orderItemsInput').value = JSON.stringify(structuredItems);
+                        return;
                     }
+
+                    const orderItemsDiv = document.getElementById('orderItems');
+                    const hasItems = orderItemsDiv.querySelector('.order-item') !== null;
+
+                    if (!hasItems) {
+                        event.preventDefault();
+                        showAlertModal('Pilih setidaknya satu menu sebelum melakukan checkout.');
+                        return;
+                    }
+
+                    const summaryText = Array.from(orderItemsDiv.querySelectorAll('.order-item')).map(item => item.innerText.replace(/\s+/g, ' ')).join('\n');
+                    document.getElementById('orderedItemsSummaryInput').value = summaryText.trim();
+                    document.getElementById('totalPaymentInput').value = document.getElementById('totalAmount').textContent;
+
+                    const structuredItems = [];
+                    orderItemsDiv.querySelectorAll('.order-item').forEach(item => {
+                        structuredItems.push({
+                            menu_id: item.getAttribute('data-id'),
+                            quantity: parseInt(item.querySelector('.item-quantity').textContent)
+                        });
+                    });
+                    document.getElementById('orderItemsInput').value = JSON.stringify(structuredItems);
                 });
             }
 
-            // "Tulis Testimoni" Button Validation
-            const tulisTestimoniBtn = document.querySelector('a.btn-review[href="{{ route('testimonial.index') }}"]');
+            const tulisTestimoniBtn = document.querySelector('a.btn-review[href="{{ route('testimonial.create') }}"]');
             if (tulisTestimoniBtn) {
                 tulisTestimoniBtn.addEventListener('click', function(event) {
                     if (!isAuthenticated) {
@@ -668,7 +726,6 @@
                 });
             }
 
-            // Profile Dropdown Logic (only if elements exist - user is authenticated)
             const dropdownToggle = document.getElementById("userDropdown");
             const profileDropdown = document.querySelector(".profile-dropdown");
 

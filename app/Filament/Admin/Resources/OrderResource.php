@@ -31,6 +31,14 @@ class OrderResource extends Resource
                             ->searchable()
                             ->required()
                             ->columnSpan(1),
+                        Forms\Components\Select::make('service_type')
+                            ->label('Jenis Layanan')
+                            ->options([
+                                'dine_in' => 'Dine In',
+                                'take_away' => 'Take Away',
+                            ])
+                            ->required()
+                            ->columnSpan(1),
                         Forms\Components\TextInput::make('total_price')
                             ->required()
                             ->numeric()
@@ -77,6 +85,16 @@ class OrderResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('id')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('user.name')->searchable()->sortable(),
+                Tables\Columns\TextColumn::make('service_type')
+                    ->label('Layanan')
+                    ->badge()
+                    ->formatStateUsing(fn (string $state): string => $state === 'dine_in' ? 'Dine In' : 'Take Away')
+                    ->color(fn (string $state): string => match ($state) {
+                        'dine_in' => 'info',
+                        'take_away' => 'success',
+                        default => 'gray',
+                    })
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('status')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
@@ -104,6 +122,12 @@ class OrderResource extends Resource
                 Tables\Columns\TextColumn::make('created_at')->dateTime('d M Y')->sortable(),
             ])
             ->filters([
+                Tables\Filters\SelectFilter::make('service_type')
+                    ->label('Jenis Layanan')
+                    ->options([
+                        'dine_in' => 'Dine In',
+                        'take_away' => 'Take Away',
+                    ]),
                 Tables\Filters\SelectFilter::make('status')
                     ->options([
                         'pending' => 'Pending',

@@ -15,15 +15,6 @@
             background-color: #F8F9FA;
         }
 
-        .navbar {
-            background-color: #ffffff;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 1000;
-        }
-        
         .page-container {
             max-width: 960px;
             margin: 8rem auto 4rem auto;
@@ -36,11 +27,12 @@
         }
 
         .page-header h1 {
-            font-family: 'Playfair Display', serif;
-            color: #333;
-            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            text-align: center;
         }
-        
+
         .page-header p {
             color: #6c757d;
             font-size: 1.1rem;
@@ -83,7 +75,7 @@
             display: flex;
             flex-direction: column;
         }
-        
+
         .menu-title-header {
             display: flex;
             justify-content: space-between;
@@ -153,6 +145,17 @@
         .empty-state .btn-primary:hover {
             background-color: #9e1f1f;
         }
+        @media screen and (max-width: 768px) {
+            .page-container {
+                padding: 0 1rem;
+            }
+            .page-header h1 {
+                font-size: 2rem;
+            }
+            .menu-item {
+                margin-bottom: 1.5rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -167,9 +170,9 @@
         </div>
     </nav>
 
-    <a href="javascript:history.back()" class="back-button">
+    <a href="{{ url()->previous() }}" class="back-button">
         <i class="fas fa-arrow-left"></i>
-        <span>Kembali</span>
+        <span class="back-text">Kembali</span>
     </a>
 
     <div class="page-container">
