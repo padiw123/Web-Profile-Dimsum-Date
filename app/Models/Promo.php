@@ -9,5 +9,19 @@ class Promo extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'description', 'price', 'price_note', 'features','cta_link'];
+    protected $fillable = [
+        'title',
+        'description',
+        'price',
+        'price_note',
+        'features',
+        'cta_link',
+        'discount_type',
+        'discount_value'
+    ];
+
+    protected $casts = [
+        'features' => 'array',
+        'discount_value' => 'float'
+    ];
 }

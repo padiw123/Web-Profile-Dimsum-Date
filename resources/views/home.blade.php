@@ -110,21 +110,36 @@
                                 <h3>{{ $promo->title }}</h3>
                                 <div class="description">
                                     <p>{{ $promo->description }}</p>
-                                    @if($promo->price)
+                                    @if($promo->price > 0 && $promo->discount_value > 0)
+                                        <p class="price" style="font-size: 1rem; color: #555;">
+                                            <i class="fas fa-shopping-cart"></i>
+                                            Min. Belanja: <span>Rp. {{ number_format($promo->price, 0, ',', '.') }}</span>
+                                        </p>
+                                    @elseif($promo->price > 0 && !$promo->discount_value)
                                         <p class="price">
                                             Rp. {{ number_format($promo->price, 0, ',', '.') }}
                                             <span>{{ $promo->price_note }}</span>
                                         </p>
                                     @endif
-                                    @if($promo->features)
+
+                                    @if(is_array($promo->features))
                                         <ul>
-                                            @foreach(json_decode($promo->features) as $feature)
+                                            @foreach($promo->features as $feature)
                                                 <li>{{ $feature }}</li>
                                             @endforeach
                                         </ul>
                                     @endif
                                 </div>
-                                <a href="{{ $promo->cta_link ?? '#contact' }}" class="btn btn-secondary">Book Now</a>
+                                <button
+                                    type="button"
+                                    class="btn btn-secondary apply-promo-btn"
+                                    @if($promo->discount_type && $promo->discount_value)
+                                        data-promo-id="{{ $promo->id }}"
+                                        data-promo-title="{{ $promo->title }}"
+                                        data-promo-type="{{ $promo->discount_type }}"
+                                        data-promo-value="{{ $promo->discount_value }}"
+                                    @endif
+                                >Book Now</button>
                             </div>
                         </div>
                     @endforeach
@@ -315,6 +330,16 @@
                         <h3>Rincian Pesanan</h3>
                         <div id="orderItems" class="order-items">
                         </div>
+                        <div id="discount-summary" class="discount-summary" style="display: none;">
+                            <div class="order-info-row">
+                                <span>Subtotal</span>
+                                <span id="subTotalAmount">Rp 0</span>
+                            </div>
+                            <div class="order-info-row discount-applied">
+                                <span id="discountLabel">Diskon</span>
+                                <span id="discountAmount">- Rp 0</span>
+                            </div>
+                        </div>
                         <div class="order-total">
                             <h4>Total Pembayaran</h4>
                             <span id="totalAmount">Rp 0</span>
@@ -336,10 +361,10 @@
                             </div>
                             <div class="form-row">
                                 <div class="form-group">
-                                    <input type="date" name="date" value="{{ old('date') }}" required>
+                                    <input type="date" name="date" value="{{ old('date') }}" placeholder="DD-MM-YYYY" required>
                                 </div>
                                 <div class="form-group">
-                                    <input type="time" name="time" value="{{ old('time') }}" required>
+                                    <input type="time" name="time" value="{{ old('time') }}" placeholder="HH:MM"  required>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -393,6 +418,7 @@
                             <div class="form-group">
                                 <textarea name="message" placeholder="Catatan Khusus">{{ old('message') }}</textarea>
                             </div>
+                            <input type="hidden" name="promo_id" id="appliedPromoIdInput">
                             <input type="hidden" name="ordered_items_summary" id="orderedItemsSummaryInput">
                             <input type="hidden" name="total_payment" id="totalPaymentInput">
                             <input type="hidden" name="order_items" id="orderItemsInput">
@@ -491,6 +517,7 @@
     </div>
 
     <script>
+        let appliedPromo = null;
         const isAuthenticated = {{ auth()->check() ? 'true' : 'false' }};
         const loginUrl = "{{ route('login') }}";
         let loginPromptModal = null;
@@ -556,7 +583,7 @@
                     itemElement.className = 'order-item';
                     itemElement.setAttribute('data-item', itemName);
                     itemElement.setAttribute('data-price', price);
-                    itemElement.setAttribute('data-id', menuId); // Set data-id di sini
+                    itemElement.setAttribute('data-id', menuId);
                     orderItems.appendChild(itemElement);
                 }
                 itemElement.innerHTML = `
@@ -567,13 +594,46 @@
                 itemElement.remove();
             }
 
-            let total = 0;
+            recalculateTotal();
+        }
+
+        function recalculateTotal() {
+            const orderItems = document.getElementById('orderItems');
+            const subTotalAmountDisplay = document.getElementById('subTotalAmount');
+            const totalAmountDisplay = document.getElementById('totalAmount');
+            const discountSummaryDiv = document.getElementById('discount-summary');
+            const discountLabel = document.getElementById('discountLabel');
+            const discountAmountDisplay = document.getElementById('discountAmount');
+
+            let subtotal = 0;
             orderItems.querySelectorAll('.order-item').forEach(item => {
                 const itemPrice = parseInt(item.getAttribute('data-price'));
                 const itemQuantity = parseInt(item.querySelector('.item-quantity').textContent);
-                total += itemPrice * itemQuantity;
+                subtotal += itemPrice * itemQuantity;
             });
-            totalAmountDisplay.textContent = `Rp ${total.toLocaleString('id-ID')}`;
+
+            let discountAmount = 0;
+            let finalTotal = subtotal;
+
+            if (appliedPromo && subtotal > 0) {
+                if (appliedPromo.type === 'fixed') {
+                    discountAmount = parseFloat(appliedPromo.value);
+                } else if (appliedPromo.type === 'percentage') {
+                    discountAmount = subtotal * (parseFloat(appliedPromo.value) / 100);
+                }
+
+                finalTotal = Math.max(0, subtotal - discountAmount);
+
+                subTotalAmountDisplay.textContent = `Rp ${subtotal.toLocaleString('id-ID')}`;
+                discountLabel.textContent = `Diskon (${appliedPromo.title})`;
+                discountAmountDisplay.textContent = `- Rp ${discountAmount.toLocaleString('id-ID')}`;
+                discountSummaryDiv.style.display = 'block';
+
+            } else {
+                discountSummaryDiv.style.display = 'none';
+            }
+
+            totalAmountDisplay.textContent = `Rp ${finalTotal.toLocaleString('id-ID')}`;
         }
 
         window.togglePaymentDetails = function() {
@@ -602,7 +662,6 @@
         }
 
         document.addEventListener("DOMContentLoaded", function () {
-            // Initialize Modal Elements
             loginPromptModal = document.getElementById('loginPromptModal');
             const cancelLoginBtnModal = document.getElementById('cancelLoginBtnModal');
             const closeModalIcon = loginPromptModal ? loginPromptModal.querySelector('.auth-modal-close-btn') : null;
@@ -664,17 +723,48 @@
             const guestsContainer = document.getElementById('guests-container');
 
             function toggleGuestsVisibility() {
-                const selectedType = document.querySelector('input[name="service_type"]:selected').value;
-                guestsContainer.style.display = (selectedType === 'dine_in') ? 'block' : 'none';
-            }
-
-            function toggleGuestsVisibility() {
                 const selectedType = serviceTypeSelect.value;
-                guestsContainer.style.display = (selectedType === 'dine_in') ? 'block' : 'none';
+                const guestsInput = guestsContainer.querySelector('select[name="guests"]');
+
+                if (selectedType === 'dine_in') {
+                    guestsContainer.style.display = 'block';
+                    guestsInput.setAttribute('required', 'required');
+                    guestsInput.disabled = false; // PASTIKAN input aktif
+                } else {
+                    guestsContainer.style.display = 'none';
+                    guestsInput.removeAttribute('required');
+                    guestsInput.disabled = true; // NONAKTIFKAN input agar tidak divalidasi
+                }
             }
 
             serviceTypeSelect.addEventListener('change', toggleGuestsVisibility);
             toggleGuestsVisibility();
+
+            document.querySelectorAll('.apply-promo-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const promoId = this.dataset.promoId;
+
+                    if (!promoId) {
+                        document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
+                        return;
+                    }
+
+                    appliedPromo = {
+                        id: promoId,
+                        title: this.dataset.promoTitle,
+                        type: this.dataset.promoType,
+                        value: this.dataset.promoValue
+                    };
+
+                    document.getElementById('appliedPromoIdInput').value = appliedPromo.id;
+
+                    recalculateTotal();
+
+                    showAlertModal(`Promo "${appliedPromo.title}" berhasil diterapkan!`);
+
+                    document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
+                });
+            });
 
             const reservationForm = document.querySelector('.contact-form form');
             if (reservationForm) {
