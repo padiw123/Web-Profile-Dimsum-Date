@@ -104,6 +104,23 @@
         .order-notes h4 { margin-bottom: 0.5rem; color: #333; }
         .order-notes p { color: #666; white-space: pre-wrap; }
 
+        .order-info .discount-row span:first-child {
+            color: #2e7d32; /* Warna hijau untuk label diskon */
+            font-weight: 600;
+        }
+        .order-info .discount-row span:last-child {
+            color: #2e7d32;
+            font-weight: 700;
+        }
+        .order-info .subtotal-row span:first-child {
+            color: #666;
+            font-weight: 500;
+        }
+        .order-info .subtotal-row span:last-child {
+            color: #333;
+            font-weight: 500;
+        }
+
         @media (max-width: 768px) {
             .detail-container {
                 margin: 6rem auto;
@@ -219,6 +236,16 @@
                     <span>Metode Pembayaran</span>
                     <span>{{ strtoupper($order->payment_method) }}</span>
                 </div>
+                @if($order->promo_id && $order->discount_amount > 0)
+                    <div class="order-info-row subtotal-row" style="margin-top: 1rem; border-top: 1px dashed #ccc; padding-top: 1rem;">
+                        <span>Subtotal</span>
+                        <span>Rp {{ number_format($order->total_price + $order->discount_amount, 0, ',', '.') }}</span>
+                    </div>
+                    <div class="order-info-row discount-row">
+                        <span>Diskon ({{ $order->promo->title ?? 'Promo' }})</span>
+                        <span>- Rp {{ number_format($order->discount_amount, 0, ',', '.') }}</span>
+                    </div>
+                @endif
                 <div class="order-info-row total-row">
                     <span>Total</span>
                     <span>Rp {{ number_format($order->total_price, 0, ',', '.') }}</span>
