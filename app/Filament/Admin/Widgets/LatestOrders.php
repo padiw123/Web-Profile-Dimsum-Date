@@ -23,8 +23,8 @@ class LatestOrders extends BaseWidget
             ->columns([
                 Tables\Columns\TextColumn::make('id')->label('Order ID'),
                 Tables\Columns\TextColumn::make('user.name')->label('Pelanggan'),
-                Tables\Columns\TextColumn::make('status')->badge(),
-                Tables\Columns\TextColumn::make('payment_status')->label('Pembayaran')->badge(),
+                Tables\Columns\TextColumn::make('status')->label('Status Pesanan')->badge(),
+                Tables\Columns\TextColumn::make('payment_status')->label('Status Pembayaran')->badge(),
                 Tables\Columns\TextColumn::make('total_price')->label('Total')->money('IDR'),
             ])
             ->actions([

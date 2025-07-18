@@ -21,7 +21,8 @@ class UserResource extends Resource
     protected static ?string $navigationGroup = 'Manajemen User';
     protected static ?string $navigationIcon = 'heroicon-o-users';
     protected static ?string $recordTitleAttribute = 'name';
-
+    protected static ?string $pluralModelLabel = 'Pengguna';
+    
     public static function form(Form $form): Form
     {
         return $form
@@ -115,7 +116,7 @@ class UserResource extends Resource
     {
         return [
             'index' => Pages\ListUsers::route('/'),
-            'create' => Pages\CreateUser::route('/create'),
+            //'create' => Pages\CreateUser::route('/create'),
             'edit' => Pages\EditUser::route('/{record}/edit'),
         ];
     }

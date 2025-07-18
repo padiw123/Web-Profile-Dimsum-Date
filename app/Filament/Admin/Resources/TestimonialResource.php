@@ -18,6 +18,7 @@ class TestimonialResource extends Resource
     protected static ?string $navigationGroup = 'Manajemen User';
     protected static ?string $navigationIcon = 'heroicon-o-star';
     protected static ?string $recordTitleAttribute = 'user.name';
+    protected static ?string $pluralModelLabel = 'Testimoni';
 
     public static function form(Form $form): Form
     {
@@ -94,7 +95,7 @@ class TestimonialResource extends Resource
     {
         return [
             'index' => Pages\ListTestimonials::route('/'),
-            'create' => Pages\CreateTestimonial::route('/create'),
+            // 'create' => Pages\CreateTestimonial::route('/create'),
             'edit' => Pages\EditTestimonial::route('/{record}/edit'),
         ];
     }
