@@ -128,7 +128,7 @@
     </style>
 </head>
 <body>
-    <nav class="navbar" id="navbar">
+   <nav class="navbar" id="navbar">
     <div class="container">
         <div class="navbar-brand">
             {{-- Link ke halaman utama --}}
@@ -139,6 +139,7 @@
         </div>
     </div>
 </nav>
+
 <div class="history-container">
     <a href="javascript:history.back()" class="back-button">
         <i class="fas fa-arrow-left"></i>
