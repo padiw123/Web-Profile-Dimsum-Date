@@ -33,8 +33,6 @@ Route::post('forgot-password', [ForgotPasswordController::class, 'sendResetLinkE
 Route::get('reset-password/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
 Route::post('reset-password', [ResetPasswordController::class, 'reset'])->name('password.update');
 
-Route::post('/reserve', [ReservationController::class, 'reserve'])->name('reserve');
-
 Route::get('/testimoni', [TestimoniController::class, 'index'])->name('testimonial.index');
 
 // Profile routes
@@ -62,6 +60,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
     Route::get('/profile/update', [ProfileController::class, 'edit'])->name('profileupdate');
     Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
+
+    Route::post('/reserve', [ReservationController::class, 'reserve'])->name('reserve');
 
     //History routes
     Route::get('/history', [HistoryController::class, 'index'])->name('listhistory');

@@ -15,6 +15,10 @@ class Order extends Model
     {
         return $this->belongsTo(User::class);
     }
+    public function promo(): BelongsTo
+    {
+        return $this->belongsTo(Promo::class);
+    }
     public function menus(): BelongsToMany
     {
         return $this->belongsToMany(Menu::class, 'order_menu')
