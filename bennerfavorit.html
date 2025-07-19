@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dimsum Date - Menu Favorit</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+        }
+
+        /* Header */
+        .header {
+            background-color: #333;
+            padding: 15px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .navbar {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background-color: #ff6b35;
+            border-radius: 50%;
+            margin-right: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .nav-menu a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            transition: color 0.3s;
+        }
+
+        .nav-menu a:hover, .nav-menu a.active {
+            color: #ff6b35;
+        }
+
+        .order-btn {
+            background-color: #ffc107;
+            color: #333;
+            padding: 10px 20px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        .order-btn:hover {
+            background-color: #e0a800;
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .section-title h1 {
+            color: #b71c1c;
+            font-size: 36px;
+            font-weight: bold;
+        }
+
+        .section-description {
+            text-align: center;
+            color: #666;
+            margin-bottom: 40px;
+            font-size: 16px;
+        }
+
+        /* Menu Cards */
+        .menu-container {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .nav-arrow {
+            background-color: rgba(0,0,0,0.1);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: #666;
+            transition: background-color 0.3s;
+            z-index: 10;
+        }
+
+        .nav-arrow:hover {
+            background-color: rgba(0,0,0,0.2);
+        }
+
+        .menu-slider {
+            overflow: hidden;
+            width: 820px;
+            position: relative;
+        }
+
+        .menu-grid {
+            display: flex;
+            gap: 20px;
+            transition: transform 0.5s ease;
+            width: calc(250px * 6 + 20px * 5); /* Width for 6 cards with gaps */
+        }
+
+        .menu-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+            width: 250px;
+            transition: transform 0.3s;
+        }
+
+        .menu-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .menu-image {
+            width: 100%;
+            height: 150px;
+            background-color: #ccc;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: #666;
+            font-weight: bold;
+        }
+
+        .menu-info h3 {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .menu-price {
+            color: #666;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        .menu-description {
+            color: #999;
+            font-size: 12px;
+            margin-bottom: 15px;
+        }
+
+        .menu-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .qty-btn {
+            width: 25px;
+            height: 25px;
+            border: none;
+            border-radius: 50%;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .qty-minus {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .qty-plus {
+            background-color: #4caf50;
+            color: white;
+        }
+
+        .qty-number {
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .like-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #e91e63;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* View Full Menu Button */
+        .view-full-menu {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .view-full-btn {
+            background-color: #b71c1c;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .view-full-btn:hover {
+            background-color: #8d1414;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+            }
+
+            .menu-grid {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .menu-container {
+                flex-direction: column;
+            }
+
+            .nav-arrow {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <nav class="navbar">
+            <div class="logo">
+                <div class="logo-icon">🥟</div>
+                Dimsum Date
+            </div>
+            <ul class="nav-menu">
+                <li><a href="#" class="active">Home</a></li>
+                <li><a href="#">Promo</a></li>
+                <li><a href="#">Menu</a></li>
+                <li><a href="#">Education</a></li>
+                <li><a href="#">Testimoni</a></li>
+                <li><a href="#">Contact</a></li>
+                <li><a href="#" class="order-btn">Order</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <div class="section-title">
+            <h1>Menu Favorit</h1>
+        </div>
+        <div class="section-description">
+            <p>Temukan dimsum favorit kami, cita rasa autentik yang jadi favorit banyak orang.</p>
+        </div>
+
+        <div class="menu-container">
+            <button class="nav-arrow" id="prevBtn">‹</button>
+            
+            <div class="menu-slider">
+                <div class="menu-grid" id="menuGrid">
+                    <div class="menu-card">
+                        <div class="menu-image">Siomay Ayam</div>
+                        <div class="menu-info">
+                            <h3>Siomay Ayam</h3>
+                            <div class="menu-price">Rp 25.000</div>
+                            <div class="menu-description">Siomay ayam dengan kuah kaldu segar</div>
+                            <div class="menu-actions">
+                                <div class="quantity-controls">
+                                    <button class="qty-btn qty-minus">−</button>
+                                    <span class="qty-number">1</span>
+                                    <button class="qty-btn qty-plus">+</button>
+                                </div>
+                                <button class="like-btn">♡ 12</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="menu-card">
+                        <div class="menu-image">Hakao Udang</div>
+                        <div class="menu-info">
+                            <h3>Hakao Udang</h3>
+                            <div class="menu-price">Rp 30.000</div>
+                            <div class="menu-description">Dimsum udang dengan kulit tipis transparan</div>
+                            <div class="menu-actions">
+                                <div class="quantity-controls">
+                                    <button class="qty-btn qty-minus">−</button>
+                                    <span class="qty-number">1</span>
+                                    <button class="qty-btn qty-plus">+</button>
+                                </div>
+                                <button class="like-btn">♡ 18</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="menu-card">
+                        <div class="menu-image">Lumpia Goreng</div>
+                        <div class="menu-info">
+                            <h3>Lumpia Goreng</h3>
+                            <div class="menu-price">Rp 20.000</div>
+                            <div class="menu-description">Lumpia crispy dengan isi sayuran segar</div>
+                            <div class="menu-actions">
+                                <div class="quantity-controls">
+                                    <button class="qty-btn qty-minus">−</button>
+                                    <span class="qty-number">1</span>
+                                    <button class="qty-btn qty-plus">+</button>
+                                </div>
+                                <button class="like-btn">♡ 15</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="menu-card">
+                        <div class="menu-image">Xiao Long Bao</div>
+                        <div class="menu-info">
+                            <h3>Xiao Long Bao</h3>
+                            <div class="menu-price">Rp 35.000</div>
+                            <div class="menu-description">Dimsum dengan kuah di dalam, specialty kami</div>
+                            <div class="menu-actions">
+                                <div class="quantity-controls">
+                                    <button class="qty-btn qty-minus">−</button>
+                                    <span class="qty-number">1</span>
+                                    <button class="qty-btn qty-plus">+</button>
+                                </div>
+                                <button class="like-btn">♡ 25</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="menu-card">
+                        <div class="menu-image">Pangsit Rebus</div>
+                        <div class="menu-info">
+                            <h3>Pangsit Rebus</h3>
+                            <div class="menu-price">Rp 22.000</div>
+                            <div class="menu-description">Pangsit lembut dengan isian daging babi</div>
+                            <div class="menu-actions">
+                                <div class="quantity-controls">
+                                    <button class="qty-btn qty-minus">−</button>
+                                    <span class="qty-number">1</span>
+                                    <button class="qty-btn qty-plus">+</button>
+                                </div>
+                                <button class="like-btn">♡ 9</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="menu-card">
+                        <div class="menu-image">Bakpao Char Siu</div>
+                        <div class="menu-info">
+                            <h3>Bakpao Char Siu</h3>
+                            <div class="menu-price">Rp 28.000</div>
+                            <div class="menu-description">Bakpao empuk dengan isian char siu manis</div>
+                            <div class="menu-actions">
+                                <div class="quantity-controls">
+                                    <button class="qty-btn qty-minus">−</button>
+                                    <span class="qty-number">1</span>
+                                    <button class="qty-btn qty-plus">+</button>
+                                </div>
+                                <button class="like-btn">♡ 14</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="nav-arrow" id="nextBtn">›</button>
+        </div>
+
+        <div class="view-full-menu">
+            <button class="view-full-btn">View Full Menu</button>
+        </div>
+    </main>
+
+    <script>
+        // Functionality for quantity controls
+        document.addEventListener('DOMContentLoaded', function() {
+            const qtyMinusBtns = document.querySelectorAll('.qty-minus');
+            const qtyPlusBtns = document.querySelectorAll('.qty-plus');
+
+            qtyMinusBtns.forEach((btn, index) => {
+                btn.addEventListener('click', function() {
+                    const qtySpan = this.nextElementSibling;
+                    let currentQty = parseInt(qtySpan.textContent);
+                    if (currentQty > 0) {
+                        qtySpan.textContent = currentQty - 1;
+                    }
+                });
+            });
+
+            qtyPlusBtns.forEach((btn, index) => {
+                btn.addEventListener('click', function() {
+                    const qtySpan = this.previousElementSibling;
+                    let currentQty = parseInt(qtySpan.textContent);
+                    qtySpan.textContent = currentQty + 1;
+                });
+            });
+
+            // Like button functionality
+            const likeBtns = document.querySelectorAll('.like-btn');
+            likeBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const likeCount = this.querySelector('span') || this.childNodes[1];
+                    let currentLikes = parseInt(likeCount.textContent.trim());
+                    this.innerHTML = `♥ ${currentLikes + 1}`;
+                    this.style.color = '#e91e63';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

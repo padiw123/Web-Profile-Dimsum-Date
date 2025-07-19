@@ -182,6 +182,35 @@
     </style>
 </head>
 <body>
+   <nav class="navbar" id="navbar">
+    <div class="container">
+        <div class="navbar-brand">
+            {{-- Link ke halaman utama --}}
+            <a href="{{ url('/') }}">
+                <img src="{{ asset('assets/img/logo-dimsum.svg') }}" alt="Dimsum Date" class="logo-img">
+                <span>Dimsum Date</span>
+            </a>
+        </div>
+    </div>
+</nav>
+
+<div class="history-container">
+    <a href="javascript:history.back()" class="back-button">
+        <i class="fas fa-arrow-left"></i>
+        <span class="back-text">Kembali</span>
+    </a>
+
+    @forelse ($orders as $order)
+        @php
+            $firstMenu = $order->menus->first();
+            $totalItems = $order->menus->sum('pivot.quantity');
+        @endphp
+
+        <div class="order-card-new" onclick="window.location.href='{{ route('detailhistory', $order) }}'">
+            <div class="order-card-content">
+                <div class="order-items">
+                    @foreach ($order->menus as $menu)
+                        @if ($loop->index < 2)
     <nav class="navbar" id="navbar">
         <div class="container">
             <div class="navbar-brand">
@@ -230,9 +259,21 @@
 
                         @if ($order->menus->count() > 2)
                             <div class="order-item">
-                                <span class="ellipsis-item">...</span>
+                                <span class="item-name">{{ $menu->name }}</span>
+                                <div class="item-details">
+                                    <span class="item-quantity">x{{ $menu->pivot->quantity }}</span>
+                                    <span class="item-price">Rp {{ number_format($menu->pivot->price * $menu->pivot->quantity, 0, ',', '.') }}</span>
+                                </div>
                             </div>
                         @endif
+
+                    @endforeach
+
+                    @if ($order->menus->count() > 2)
+                        <div class="order-item">
+                            <span class="ellipsis-item">...</span>
+                        </div>
+                    @endif
                     </div>
                     <div class="order-total">Rp {{ number_format($order->total_price, 0, ',', '.') }}</div>
                 </div>
@@ -254,20 +295,46 @@
                             {{ $order->status }}
                     @endswitch
                 </div>
+                <div class="order-total">Rp {{ number_format($order->total_price, 0, ',', '.') }}</div>
             </div>
-        @empty
-            <div class="no-history">
-                <p>Anda belum memiliki riwayat pesanan.</p>
-                <a href="{{ url('/#menu') }}" class="btn btn-primary">Mulai Belanja</a>
-            </div>
-        @endforelse
 
+            <div class="order-status 
+                @if($order->status == 'completed') status-completed @endif
+                @if($order->status == 'cancelled') status-cancelled @endif
+                @if($order->status == 'confirmed') status-confirmed @endif
+                @if($order->status == 'pending') status-pending @endif">
+                @switch($order->status)
+                    @case('pending')
+                        menunggu
+                        @break
+                    @case('confirmed')
+                        dikonfirmasi
+                        @break
+                    @case('completed')
+                        selesai
+                        @break
+                    @case('cancelled')
+                        dibatalkan
+                        @break
+                    @default
+                        {{ $order->status }}
+                @endswitch
         @if(isset($orders) && method_exists($orders, 'links'))
             <div class="pagination">
                 {{ $orders->links() }}
             </div>
-        @endif
-    </div>
+        </div>
+    @empty
+        <div class="no-history">
+            <p>Anda belum memiliki riwayat pesanan.</p>
+            <a href="{{ url('/#menu') }}" class="btn btn-primary">Mulai Belanja</a>
+        </div>
+    @endforelse
 
-</body>
-</html>
+    {{-- Paginasi --}}
+    @if(isset($orders) && method_exists($orders, 'links'))
+        <div class="pagination">
+            {{ $orders->links() }}
+        </div>
+    @endif
+</div>
